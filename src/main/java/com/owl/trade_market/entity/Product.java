@@ -46,18 +46,23 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     public Product() {
         this.createdAt = LocalDateTime.now();
     }
 
 
     // 상품 등록용
-    public Product(User seller, String title, String description, int price, String location) {
+    public Product(User seller, String title, String description, int price, String location, Category category) {
         this.seller = seller;
         this.title = title;
         this.description = description;
         this.price = price;
         this.location = location;
+        this.category = category;
     }
 
     // Business methods
