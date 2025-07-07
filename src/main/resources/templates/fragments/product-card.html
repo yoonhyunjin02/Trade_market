@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="productCard(product)">
+    <a th:href="@{'/api/products/' + ${product.id}}" class="item-link">
+        <div class="item">
+            <img th:src="@{${product.imageUrl}}" alt="상품 이미지">
+            <div class="item-info">
+                <p class="title" th:text="${product.title}">제목</p>
+                <p class="price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}">가격</p>
+                <p class="location" th:text="${product.location}">위치</p>
+                <p class="meta">
+                    조회 <span th:text="${product.viewCount}"></span> · 채팅 <span th:text="${product.chatCount}"></span>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+</body>
+</html>
