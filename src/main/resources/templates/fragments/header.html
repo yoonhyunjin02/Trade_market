@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Header</title>
 </head>
 <body>
+    <div th:fragment="common-header">
+        <header>
+            <div class="header-container">
+                <!--* 로고 영역 /-->
+                <h1 class="logo">
+                    <a th:href="@{/}">
+                        <img th:src="@{/images/logo/logo.svg}" style="height: 100px" alt="로고">
+                    </a>
+                </h1>
+                <!--* 메인 내비게이션 /-->
+                <nav aria-label="메인 메뉴">
+                    <ul>
+                        <li><a th:href="@{/products}">중고거래</a></li>
+                        <li th:if="${session.user != null}">
+                            <a th:href="@{/location}">동네인증</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
 
+	        <!--* 검색 + 사용자 관련 버튼 /-->
+	        <div class="header-actions" aria-label="사용자 메뉴">
+		        <!--* 상품 경로 제대로 정해지면 변경하기 /-->
+		        <form th:action="@{products(product_id=${product_id})}" method="get"
+		              role="search" aria-label="상품 검색">
+			        <input type="search" placeholder="물품이나 동네를 검색해보세요">
+		        </form>
+		        <div th:if="${session.user != null}">
+			        <a th:href="@{/chat}" class="btn btn-chat">채팅하기</a>
+			        <a th:href="@{/logout}" class="btn btn-logout">로그아웃</a>
+		        </div>
+		        <div th:if="${session.user == null}">
+			        <a th:href="@{/login}" class="btn btn-login">로그인</a>
+		        </div>
+	        </div>
+        </header>
+    </div>
 </body>
 </html>
