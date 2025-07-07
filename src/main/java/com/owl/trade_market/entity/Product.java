@@ -3,6 +3,8 @@ package com.owl.trade_market.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -10,6 +12,7 @@ import java.util.Objects;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,7 +22,7 @@ public class Product {
     @Column(nullable = false, name = "product_title")
     private String title;
 
-    @Column(columnDefinition = "TEXT", name = "product_description")
+    @Column(nullable = false, columnDefinition = "TEXT", name = "product_description")
     private String description;
 
     @Column(nullable = false, name = "product_price")
@@ -40,20 +43,21 @@ public class Product {
     @Column(name = "product_created_at")
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
+
     public Product() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Product(Long id, User seller, String title, String description, int price, String location, int viewCount, int chatCount, boolean soldOrNot, LocalDateTime createdAt) {
-        this.id = id;
+
+    // 상품 등록용
+    public Product(User seller, String title, String description, int price, String location) {
         this.seller = seller;
         this.title = title;
         this.description = description;
         this.price = price;
         this.location = location;
-        this.viewCount = viewCount;
-        this.chatCount = chatCount;
-        this.soldOrNot = soldOrNot;
-        this.createdAt = createdAt;
     }
 
     // Business methods
@@ -138,6 +142,14 @@ public class Product {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     @Override
