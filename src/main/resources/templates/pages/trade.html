@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Trade</title>
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/common/product-card.css">
+
+    <link rel="stylesheet" href="/css/pages/trade.css">
 </head>
 <body>
 
+<!-- Header Fragment -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- banner Section -->
+<section class="trade-banner">
+    <div class="banner-inner">
+        <div class="text">
+            <h1>믿을만한<br>이웃 간 중고거래</h1>
+            <p>동네 주민들과 가까운 따뜻한 거래를<br>지금 경험해보세요.</p>
+        </div>
+        <div class="image">
+            <img src="/images/tradebanner.png" alt="배너">
+        </div>
+    </div>
+</section>
+
+<!-- Product Grid Section -->
+<section class="popular-items">
+    <h2>중고거래 인기매물</h2>
+
+    <div class="item-grid">
+        <div th:each="product : ${products}"
+             th:replace="fragments/product-card :: productCard(${product})">
+        </div>
+    </div>
+</section>
+
+<!-- Floating Action Button -->
+<a th:href="@{/api/products/new}" class="floating-btn">거래글쓰기</a>
+
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
 </body>
+<script src="/js/common/header.js"></script>
+<script src="/js/common/footer.js"></script>
+<script src="/js/common/product-card.js"></script>
+
+<script src="/js/pages/trade.js"></script>
 </html>

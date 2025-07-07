@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Search</title>
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/common/product-card.css">
+
+    <link rel="stylesheet" href="/css/pages/search.css">
 </head>
 <body>
+<!-- Header Fragment -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- Search Result Section -->
+<section class="search-results">
+    <div class="item-grid">
+        <div th:each="product : ${products}"
+             th:replace="fragments/product-card :: productCard(${product})">
+        </div>
+    </div>
+</section>
+
+<!-- Pagination Section -->
+<div class="pagination">
+    <button class="page-btn prev">
+        <img src="/images/icons/arrow-left.svg" alt="이전">
+    </button>
+
+    <input type="number" id="pageInput" class="page-input" min="1" th:max="${totalPages}" th:value="${currentPage}">
+    <span th:text="'/ ' + ${totalPages}"></span>
+
+    <button class="page-btn next">
+        <img src="/images/icons/arrow-right.svg" alt="다음">
+    </button>
+</div>
+
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
 
 </body>
+<script src="/js/common/header.js"></script>
+<script src="/js/common/footer.js"></script>
+<script src="/js/common/product-card.js"></script>
+
+<script src="/js/pages/search.js"></script>
 </html>
