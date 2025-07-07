@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Footer</title>
 </head>
 <body>
+    <footer th:fragment="common-footer">
+        <div class="footer-container">
+            <nav aria-label="푸터 메뉴">
+                <ul>
+                    <li><a th:href="@{/products}">중고거래</a></li>
+                    <li><a th:href="@{/chat}">채팅하기</a></li>
+                </ul>
+            </nav>
 
+            <div class="app-download">
+                <span>앱 다운로드</span>
+                <a href="https://apps.apple.com" target="_blank" class="btn">App Store</a>
+                <a href="https://play.google.com" target="_blank" class="btn">Google Play</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
