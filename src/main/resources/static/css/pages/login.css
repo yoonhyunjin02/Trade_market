@@ -1,0 +1,122 @@
+/* 메인 컨텐츠 스타일 */
+main {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.login-section {
+    border-radius: 12px;
+    padding: 48px 40px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-section form {
+    margin-bottom: 32px;
+}
+
+.login-section form > div {
+    margin-bottom: 24px;
+}
+
+.login-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+.login-section input[type="text"],
+.login-section input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.login-section input[type="text"]:focus,
+.login-section input[type="password"]:focus {
+    border-color: #ff6f0f;
+}
+
+.login-section input::placeholder {
+    color: #adb5bd;
+}
+
+.login-section .btn-login {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.oauth-login {
+    margin-bottom: 32px;
+}
+
+.btn-google {
+    width: 100%;
+    padding: 14px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-google:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.signup-text {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.signup-text a {
+    color: #ff6f0f;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
+
+/* 반응형 디자인 - login */
+@media (max-width: 768px) {
+    .login-section {
+        padding: 32px 24px;
+        margin: 0 16px;
+    }
+
+    main {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-section {
+        padding: 24px 20px;
+    }
+}

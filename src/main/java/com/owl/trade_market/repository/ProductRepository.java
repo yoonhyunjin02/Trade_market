@@ -20,11 +20,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 키워드 + 카테고리 검색
     @Query("SELECT p FROM Product p WHERE " +
-            "(:keyword IS NULL OR p.title LIKE %:keyword% OR p.description LIKE %:keyword%) " +
-            "AND (:category IS NULL OR p.category = :category)")
+       "(:keyword IS NULL OR " +
+       "LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+       "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+       "AND (:category IS NULL OR p.category = :category) " +
+       "ORDER BY p.createdAt DESC")
     Page<Product> findByKeywordAndCategory(@Param("keyword") String keyword,
-                                           @Param("category") Category category,
-                                           Pageable pageable);
+                                       @Param("category") Category category,
+                                       Pageable pageable);
 
     // 카테고리별 조회
     Page<Product> findByCategory(Category category, Pageable pageable);

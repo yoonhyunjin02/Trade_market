@@ -10,4 +10,9 @@ public class HomeController {
     public String home() {
         return "redirect:/main";
     }
+
+    @GetMapping("/main")
+    public String main() {
+        return "pages/main";
+    }
 }
