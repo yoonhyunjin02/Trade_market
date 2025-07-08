@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")      // 내가 만든 /login 컨트롤러/뷰 사용
                         .loginProcessingUrl("/users/login") // form action URL
+                        .failureUrl("/login?error") //추가
                         .defaultSuccessUrl("/main", true)   // 로그인 성공 후 리다이렉트
                         .permitAll()
                 )
