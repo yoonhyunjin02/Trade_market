@@ -1,0 +1,106 @@
+footer {
+    background-color: #ff6f0f;
+    padding: 32px 0;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-container nav ul {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+.footer-container nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: opacity 0.2s;
+}
+
+.footer-container nav a:hover {
+    opacity: 0.8;
+}
+
+.app-download {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.app-download span {
+    color: white;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.app-download .btn {
+    background-color: white;
+    color: #ff6f0f;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.app-download .btn:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+}
+
+/* 푸터 반응형 */
+@media (max-width: 768px) {
+    footer {
+        padding: 24px 0;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 16px;
+    }
+
+    .footer-container nav ul {
+        gap: 24px;
+    }
+
+    .app-download {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .app-download span {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-container {
+        padding: 0 12px;
+    }
+
+    .footer-container nav ul {
+        gap: 20px;
+    }
+
+    .footer-container nav a {
+        font-size: 14px;
+    }
+
+    .app-download .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
