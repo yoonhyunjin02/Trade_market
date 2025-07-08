@@ -120,7 +120,7 @@
     <h2>중고거래 인기매물</h2>
 
     <div class="item-grid">
-        <div th:each="product : ${products}"
+        <div th:each="product : ${products} ?: ${defaultProducts}"
              th:replace="fragments/product-card :: productCard(${product})">
         </div>
     </div>

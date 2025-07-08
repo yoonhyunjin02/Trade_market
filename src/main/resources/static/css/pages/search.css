@@ -1,0 +1,48 @@
+body {
+  background-color: #F8F9FA;
+  margin: 0;
+  padding: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+  gap: 10px;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #4E4E4E;
+}
+
+/* 페이지 버튼 */
+.page-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.page-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.page-input {
+  width: 30px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-family: 'Pretendard', sans-serif;
+  color: #4E4E4E;
+  outline: none;
+}
+
+.pagination span {
+  font-size: 16px;
+  color: #4E4E4E;
+}

@@ -216,3 +216,43 @@
   margin-top: 4px;
   line-height: 1.4;
 }
+
+/* Section 5 */
+.popular-items {
+    background-color: #F8F9FA;
+    padding: 80px 0;
+    width: 100%;
+}
+
+.popular-items h2 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.03em;
+    color: #111111;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.more-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.more-link {
+    display: inline-block;
+    font-size: 17px;
+    font-weight: 400;
+    color: #111111;
+    text-decoration: none;
+    border-bottom: 1px solid #111111;
+    padding-bottom: 2px;
+    letter-spacing: 0.03em;
+    line-height: 100%;
+    transition: all 0.2s ease;
+}
+
+.more-link:hover {
+    opacity: 0.7;
+}
