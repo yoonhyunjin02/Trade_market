@@ -23,7 +23,7 @@ public class AuthController {
     //로그인 페이지 이동
     @GetMapping("/login")
     public String loginForm() {
-        return "login";
+        return "pages/login";
     }
 
     //로그인
@@ -51,7 +51,7 @@ public class AuthController {
     //회원가입 페이지 이동
     @GetMapping("/register")
     public String registerForm() {
-        return "register";
+        return "pages/register";
     }
 
     //회원가입
