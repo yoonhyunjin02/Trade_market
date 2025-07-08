@@ -1,0 +1,102 @@
+/* 카드 리스트 그리드 */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 210px);
+  gap: 24px;
+  justify-content: center;
+}
+
+/* 카드 전체 */
+.item {
+    width: 210px;
+    height: 315px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* 카드 클릭 링크 */
+.item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* 상품 이미지 */
+.item img {
+    width: 210px;
+    height: 210px;
+    border-radius: 12px;
+    background-color: #DBDCE2;
+    object-fit: cover;
+    display: block;
+}
+
+/* 텍스트 정보 영역 */
+.item-info {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    color: #111111;
+    margin-top: 8px;
+}
+
+/* 상품 제목 */
+.item-info .title {
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    line-height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+
+/* 상품 가격 */
+.item-info .price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111111;
+    letter-spacing: 0.03em;
+    line-height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+
+/* 상품 위치 */
+.item-info .location {
+    font-size: 14px;
+    font-weight: 400;
+    color: #898A93;
+    letter-spacing: 0.03em;
+    line-height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+
+/* 조회수 / 채팅수 */
+.item-info .meta {
+    font-size: 14px;
+    font-weight: 400;
+    color: #898A93;
+    letter-spacing: 0.03em;
+    line-height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
