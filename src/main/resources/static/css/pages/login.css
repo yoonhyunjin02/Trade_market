@@ -47,6 +47,10 @@ main {
     border-color: #ff6f0f;
 }
 
+#error {
+    color: #dc3545;
+}
+
 .login-section input::placeholder {
     color: #adb5bd;
 }
@@ -85,6 +89,10 @@ main {
 .btn-google:hover {
     background-color: #f8f9fa;
     border-color: #adb5bd;
+}
+
+#error {
+    text-align: center;
 }
 
 .signup-text {
