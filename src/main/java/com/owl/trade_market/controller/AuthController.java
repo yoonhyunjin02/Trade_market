@@ -27,13 +27,13 @@ public class AuthController {
     }
 
     //로그인
-    @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password,
+    @PostMapping("/users/login")
+    public String login(@RequestParam String userId,
+                        @RequestParam String userPassword,
                         HttpSession session,
                         RedirectAttributes redirectAttributes) {
         try {
-            Optional<User> user = userService.login(username, password);
+            Optional<User> user = userService.login(userId, userPassword);
             if (user.isPresent()) {
                 session.setAttribute("user", user.get());
                 return "redirect:/main";
@@ -55,16 +55,16 @@ public class AuthController {
     }
 
     //회원가입
-    @PostMapping("/register")
+    @PostMapping("/users/register")
     public String register(@RequestParam String userId,
-                           @RequestParam String username,
-                           @RequestParam String password,
+                           @RequestParam String userName,
+                           @RequestParam String userPassword,
                            @RequestParam String confirmPassword,
                            RedirectAttributes redirectAttributes) {
 
 
         try {
-            if (!password.equals(confirmPassword)) {
+            if (!userPassword.equals(confirmPassword)) {
                 redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
                 return "redirect:/register";
             }
@@ -74,12 +74,12 @@ public class AuthController {
                 return "redirect:/register";
             }
 
-            if (password.length() < 6) {
+            if (userPassword.length() < 6) {
                 redirectAttributes.addFlashAttribute("error", "비밀번호는 6자 이상이어야 합니다.");
                 return "redirect:/register";
             }
 
-            userService.register(new UserDto(userId, username, password));
+            userService.register(new UserDto(userId, userName, userPassword));
             redirectAttributes.addFlashAttribute("success", "회원가입이 완료되었습니다. 로그인해주세요.");
             return "redirect:/login";
         } catch (IllegalArgumentException e) {
@@ -90,5 +90,11 @@ public class AuthController {
             return "redirect:/register";
         }
 
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/main";
     }
 }
