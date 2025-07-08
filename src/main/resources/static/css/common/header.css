@@ -1,0 +1,178 @@
+/* 헤더 스타일 */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0 20px;
+}
+
+.header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    width: 100%;
+    padding: 5px 20px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 30px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo img {
+    height: 32px;
+    width: auto;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #495057;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: #ff6f0f;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-actions form {
+    position: relative;
+}
+
+.header-actions input[type="search"] {
+    width: 300px;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.header-actions input[type="search"]:focus {
+    border-color: #ff6f0f;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-login {
+    background-color: #ff6f0f;
+    color: #fff;
+}
+
+.btn-login:hover {
+    background-color: #e55a00;
+}
+
+.btn-logout {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-logout:hover {
+    background-color: #5a6268;
+}
+
+.btn-chat {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-chat:hover {
+    background-color: #218838;
+}
+
+/* 반응형 디자인 - header */
+@media (max-width: 768px) {
+    .header-wrapper {
+        padding: 0 16px;
+    }
+
+    .header-container {
+        flex-direction: column;
+        height: auto;
+        padding: 16px 0;
+        gap: 16px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .header-actions form {
+        flex: 1;
+        max-width: 300px;
+    }
+
+    .header-actions input[type="search"] {
+        width: 100%;
+    }
+
+    nav ul {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-wrapper {
+        padding: 0 12px;
+    }
+
+    .header-container {
+        padding: 12px 0;
+    }
+
+    .logo a::before {
+        font-size: 20px;
+    }
+
+    nav ul {
+        gap: 16px;
+    }
+
+    nav a {
+        font-size: 14px;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

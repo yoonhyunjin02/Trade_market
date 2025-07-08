@@ -3,6 +3,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>회원가입</title>
+	<link rel="stylesheet" th:href="@{/css/common/common.css}">
+	<link rel="stylesheet" th:href="@{/css/common/header.css}">
+	<link rel="stylesheet" th:href="@{/css/pages/register.css}">
+	<link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
 <!--* 공통 헤더 /-->
@@ -10,7 +14,7 @@
 
 <main>
 	<section class="register-section">
-		<form th:action="@{/users/register}" method="post" th:object="${userDto}">
+		<form th:action="@{/api/users/register}" method="post" th:object="${userDto}">
 			<div>
 				<label for="userId">아이디</label>
 				<input type="text" id="userId" th:field="*{userId}" placeholder="아이디를 입력해주세요">
@@ -28,7 +32,7 @@
 				<input type="password" id="userPassword" th:field="*{userPassword}" placeholder="비밀번호를 입력해주세요">
 				<div th:if="${#fields.hasErrors('userPassword')}" th:errors="*{userPassword}"></div>
 			</div>
-			
+
 			<div>
 				<label for="confirmPassword">비밀번호 확인</label>
 				<input type="password" id="confirmPassword"  th:field="*{confirmPassword}" placeholder="비밀번호를 다시 입력해주세요">
@@ -39,7 +43,7 @@
 		</form>
 
 		<p class="signin-text">
-			이미 계정이 있으신가요? <a th:href="@{/users/login}">로그인</a>
+			이미 계정이 있으신가요? <a th:href="@{/api/users/login}">로그인</a>
 		</p>
 	</section>
 </main>
