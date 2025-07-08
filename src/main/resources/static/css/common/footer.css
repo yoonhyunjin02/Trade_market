@@ -20,7 +20,7 @@ footer {
 }
 
 .footer-container nav a {
-    color: white;
+    color: #fff;
     text-decoration: none;
     font-weight: 500;
     font-size: 16px;
@@ -38,13 +38,13 @@ footer {
 }
 
 .app-download span {
-    color: white;
+    color: #fff;
     font-weight: 500;
     font-size: 16px;
 }
 
 .app-download .btn {
-    background-color: white;
+    background-color: #fff;
     color: #ff6f0f;
     padding: 10px 20px;
     border-radius: 8px;

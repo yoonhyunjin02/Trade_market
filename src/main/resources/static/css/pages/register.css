@@ -6,7 +6,7 @@ main {
     padding: 40px 20px;
 }
 
-/* 회원가입 섹션 스타일 */
+/* 회원가입 섹션 스타일 - login-section과 동일한 디자인 */
 .register-section {
     border-radius: 12px;
     padding: 48px 40px;
@@ -25,7 +25,7 @@ main {
     margin-bottom: 24px;
 }
 
-/* 라벨 스타일 */
+/* 라벨 스타일 - 로그인과 동일한 타이포그래피 */
 .register-section label {
     display: block;
     margin-bottom: 8px;
@@ -34,7 +34,7 @@ main {
     font-size: 14px;
 }
 
-/* 입력 필드 스타일 */
+/* 입력 필드 스타일 - 로그인과 완전히 동일 */
 .register-section input[type="text"],
 .register-section input[type="password"] {
     width: 100%;
@@ -58,7 +58,7 @@ main {
     color: #adb5bd;
 }
 
-/* 회원가입 버튼 스타일 */
+/* 회원가입 버튼 스타일 - 로그인 버튼과 동일한 크기와 스타일 */
 .register-section .btn-register {
     width: 100%;
     padding: 14px;
@@ -69,13 +69,13 @@ main {
     cursor: pointer;
     border-radius: 8px;
     background-color: #ff6f0f; /* 브랜드 컬러 */
-    color: white;
+    color: #fff;
     transition: background-color 0.2s;
 }
 
 /* 버튼 호버 효과 */
 .register-section .btn-register:hover {
-    background-color: #e55a00;
+    background-color: #e55a00; /* 더 진한 오렌지 */
 }
 
 /* 로그인 링크 텍스트 스타일 - signup-text와 동일 */
@@ -124,7 +124,7 @@ main {
 
 /* 추가 개선사항 - 접근성 */
 .register-section input:invalid {
-    box-shadow: none;
+    box-shadow: none; /* 브라우저 기본 유효성 검사 스타일 제거 */
 }
 
 /* 로딩 상태 버튼 (선택사항) */

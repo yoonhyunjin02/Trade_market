@@ -3,7 +3,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #FFF;
+    background-color: #fff;
     border-bottom: 1px solid #e9ecef;
     padding: 0 20px;
 }
@@ -93,7 +93,7 @@ nav a:hover {
 
 .btn-login {
     background-color: #ff6f0f;
-    color: white;
+    color: #fff;
 }
 
 .btn-login:hover {
@@ -102,7 +102,7 @@ nav a:hover {
 
 .btn-logout {
     background-color: #6c757d;
-    color: white;
+    color: #fff;
 }
 
 .btn-logout:hover {
@@ -111,7 +111,7 @@ nav a:hover {
 
 .btn-chat {
     background-color: #28a745;
-    color: white;
+    color: #fff;
 }
 
 .btn-chat:hover {
