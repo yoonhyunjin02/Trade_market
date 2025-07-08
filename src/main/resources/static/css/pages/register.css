@@ -1,0 +1,145 @@
+main {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* 회원가입 섹션 스타일 - login-section과 동일한 디자인 */
+.register-section {
+    border-radius: 12px;
+    padding: 48px 40px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* 폼 기본 스타일 */
+.register-section form {
+    margin-bottom: 32px;
+}
+
+/* 각 입력 필드 그룹 간격 */
+.register-section form > div {
+    margin-bottom: 24px;
+}
+
+/* 라벨 스타일 - 로그인과 동일한 타이포그래피 */
+.register-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+/* 입력 필드 스타일 - 로그인과 완전히 동일 */
+.register-section input[type="text"],
+.register-section input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box; /* 패딩을 포함한 전체 너비 계산 */
+}
+
+/* 입력 필드 포커스 효과 - 브랜드 컬러 적용 */
+.register-section input[type="text"]:focus,
+.register-section input[type="password"]:focus {
+    border-color: #ff6f0f;
+}
+
+/* 플레이스홀더 스타일 */
+.register-section input::placeholder {
+    color: #adb5bd;
+}
+
+/* 회원가입 버튼 스타일 - 로그인 버튼과 동일한 크기와 스타일 */
+.register-section .btn-register {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 8px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: #ff6f0f; /* 브랜드 컬러 */
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+/* 버튼 호버 효과 */
+.register-section .btn-register:hover {
+    background-color: #e55a00; /* 더 진한 오렌지 */
+}
+
+/* 로그인 링크 텍스트 스타일 - signup-text와 동일 */
+.signin-text {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    margin: 0;
+}
+
+.signin-text a {
+    color: #ff6f0f;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signin-text a:hover {
+    text-decoration: underline;
+}
+
+/* 에러가 있는 입력 필드 스타일 */
+.register-section input.error {
+    border-color: #dc3545;
+}
+
+.register-section input.error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+/* 반응형 디자인 - 모바일 최적화 */
+@media (max-width: 480px) {
+    main {
+        padding: 20px 16px;
+    }
+
+    .register-section {
+        padding: 32px 24px;
+    }
+
+    .register-section input[type="text"],
+    .register-section input[type="password"] {
+        font-size: 16px; /* iOS 줌 방지 */
+    }
+}
+
+/* 추가 개선사항 - 접근성 */
+.register-section input:invalid {
+    box-shadow: none; /* 브라우저 기본 유효성 검사 스타일 제거 */
+}
+
+/* 로딩 상태 버튼 (선택사항) */
+.register-section .btn-register:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* 성공 메시지 스타일 (필요시 사용) */
+.register-section .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    border: 1px solid #c3e6cb;
+    font-size: 14px;
+}
