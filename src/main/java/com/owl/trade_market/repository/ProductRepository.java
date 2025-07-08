@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
-            "(:category IS NULL OR :category = '' OR p.category = :category) " +
+            "(:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+            "(:category IS NULL OR p.category = :category) " +
             "ORDER BY p.createdAt DESC")
     Page<Product> findByKeywordAndCategory(@Param("keyword") String keyword,
                                            @Param("category") Category category,
