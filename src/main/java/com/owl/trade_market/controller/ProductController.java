@@ -30,10 +30,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    /**
-     * 상품 목록 페이지 (trade.html)
-     * 모든 상품을 최신순으로 표시 - 페이징 없이 전체 로드
-     */
+    //상품 목록 페이지 (trade.html)
     @GetMapping
     public String productList(@RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
@@ -71,9 +68,7 @@ public class ProductController {
         return "pages/trade";
     }
 
-    /**
-     * 상품 등록 폼 페이지 (write.html)
-     */
+    //상품 등록 폼 페이지 (write.html)
     @GetMapping("/new")
     public String writeForm(Model model,
                             HttpSession session,
@@ -89,15 +84,11 @@ public class ProductController {
         model.addAttribute("user", user);
         model.addAttribute("productDto", new ProductDto());
         // TODO: 카테고리 목록 추가 (CategoryService 구현 후)
-        // List<Category> categories = categoryService.findAll();
-        // model.addAttribute("categories", categories);
 
         return "pages/write";
     }
 
-    /**
-     * 상품 등록 처리
-     */
+    //상품 등록 처리
     @PostMapping("/new")
     public String createProduct(@Valid @ModelAttribute ProductDto productDto,
                                 @RequestParam(required = false) Long categoryId,
@@ -140,10 +131,6 @@ public class ProductController {
 
             // TODO: Category 조회 로직 (임시로 null 처리)
             Category category = null;
-            // if (categoryId != null) {
-            //     Optional<Category> categoryOpt = categoryService.findById(categoryId);
-            //     category = categoryOpt.orElse(null);
-            // }
 
             // 상품 생성
             Product product = productService.createProduct(
@@ -164,9 +151,7 @@ public class ProductController {
         }
     }
 
-    /**
-     * 상품 상세 페이지 (trade_post.html)
-     */
+    //상품상세 페이지 (trade_post.html)
     @GetMapping("/{id}")
     public String productDetail(@PathVariable Long id,
                                 Model model,
@@ -205,9 +190,7 @@ public class ProductController {
         return "pages/trade_post";
     }
 
-    /**
-     * 상품 수정 폼 페이지
-     */
+    //상품 수정 폼 페이지
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id,
                            Model model,
@@ -256,9 +239,7 @@ public class ProductController {
         return "pages/write"; // 같은 폼 재사용
     }
 
-    /**
-     * 상품 수정 처리
-     */
+    //상품 수정 처리
     @PostMapping("/{id}/edit")
     public String updateProduct(@PathVariable Long id,
                                 @Valid @ModelAttribute ProductDto productDto,
@@ -310,10 +291,6 @@ public class ProductController {
 
             // TODO: Category 조회 로직
             Category category = null;
-            // if (categoryId != null) {
-            //     Optional<Category> categoryOpt = categoryService.findById(categoryId);
-            //     category = categoryOpt.orElse(null);
-            // }
 
             // 상품 정보 업데이트
             Product updatedProduct = productService.updateProduct(
@@ -334,9 +311,7 @@ public class ProductController {
         }
     }
 
-    /**
-     * 상품 삭제 처리
-     */
+    //상품 삭제 처리
     @PostMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id,
                                 HttpSession session,
@@ -376,9 +351,7 @@ public class ProductController {
         }
     }
 
-    /**
-     * 검색 페이지 (search.html)
-     */
+    //검색 페이지 (search.html)
     @GetMapping("/search")
     public String searchProducts(@RequestParam String keyword,
                                  @RequestParam(required = false) Long categoryId,
@@ -399,10 +372,7 @@ public class ProductController {
 
             // TODO: Category 조회 로직
             Category category = null;
-            // if (categoryId != null) {
-            //     Optional<Category> categoryOpt = categoryService.findById(categoryId);
-            //     category = categoryOpt.orElse(null);
-            // }
+
 
             // 검색 결과 전체 반환
             Page<Product> searchPage = productService.searchProduct(
@@ -423,9 +393,7 @@ public class ProductController {
         return "pages/search";
     }
 
-    /**
-     * 카테고리별 상품 조회
-     */
+    //카테고리별 상품 조회
     @GetMapping("/category/{categoryId}")
     public String productsByCategory(@PathVariable Long categoryId,
                                      Model model,
@@ -437,15 +405,6 @@ public class ProductController {
 
         try {
             // TODO: Category 조회 및 해당 카테고리 상품 조회 로직
-            // Optional<Category> categoryOpt = categoryService.findById(categoryId);
-            // if (categoryOpt.isEmpty()) {
-            //     model.addAttribute("error", "존재하지 않는 카테고리입니다.");
-            //     model.addAttribute("products", java.util.Collections.emptyList());
-            //     return "pages/trade";
-            // }
-
-            // Category category = categoryOpt.get();
-            // List<Product> categoryProducts = productService.findByCategory(category, Sort.by("createdAt").descending());
 
             // 임시로 전체 조회
             List<Product> allProducts = productService.findAll(Sort.by("createdAt").descending());
@@ -461,13 +420,13 @@ public class ProductController {
         return "pages/trade";
     }
 
-    /**
-     * 별칭 URL 처리 (/trade -> /api/products)
-     */
-    @GetMapping("/trade")
-    public String tradeAlias() {
-        return "redirect:/api/products";
-    }
+//    /**
+//     * 별칭 URL 처리 (/trade -> /api/products)
+//     */
+//    @GetMapping("/trade")
+//    public String tradeAlias() {
+//        return "redirect:/api/products";
+//    }
 
     /**
      * OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드
