@@ -33,10 +33,9 @@
                         <span>App Store</span>
                     </a>
                 </div>
-
-                <div class="mascot-image">
-                    <img src="/images/mascot.png" alt="당근마켓 캐릭터">
-                </div>
+            </div>
+            <div class="mascot-image">
+                <img src="/images/mascot.png" alt="당근마켓 캐릭터">
             </div>
         </div>
     </section>
@@ -112,19 +111,21 @@
     </section>
 
     <!-- Section 5 -->
-<!--    <section class="popular-items">-->
-<!--        <h2>중고거래 인기매물</h2>-->
+    <section class="popular-items">
+        <h2>중고거래 인기매물</h2>
 
-<!--        <div class="item-grid">-->
-<!--            <div th:each="product : ${products} ?: ${defaultProducts}"-->
-<!--                 th:replace="fragments/product-card :: productCard(${product})">-->
-<!--            </div>-->
-<!--        </div>-->
+        <!-- 반복하면서 각각 productCard fragment 렌더링 -->
+        <div class="item-grid">
+            <div th:each="product : ${products} ?: ${defaultProducts}">
+                <div th:replace="fragments/product-card :: productCard(${product})"></div>
+            </div>
+        </div>
 
-<!--        <div class="more-btn">-->
-<!--            <a th:href="@{/api/products}" class="btn">인기매물 더 보기</a>-->
-<!--        </div>-->
-<!--    </section>-->
+        <div class="more-btn">
+            <a th:href="@{/api/products}" class="btn">인기매물 더 보기</a>
+        </div>
+    </section>
+
 </main>
 
 <!-- Footer Fragment -->
