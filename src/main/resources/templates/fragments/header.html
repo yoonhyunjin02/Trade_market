@@ -30,13 +30,14 @@
 			<!--* 검색 + 사용자 관련 버튼 /-->
 			<div class="header-actions" aria-label="사용자 메뉴">
 				<!--* 상품 경로 제대로 정해지면 변경하기 /-->
-				<form th:action="@{/api/products(product_id=${product_id})}" method="get"
+				<form class="form-group" th:action="@{/api/products/search}" method="get"
 				      role="search" aria-label="상품 검색">
-					<input id="search" type="search" placeholder="물품이나 동네를 검색해보세요">
+					<input id="search" name="keyword" type="search" placeholder="물품이나 동네를 검색해보세요">
+					<button type="submit" style="display: none"></button> <!--* 엔터 제출 보장용 /-->
 				</form>
 				<div th:if="${session.user != null}">
 					<a th:href="@{/api/chat}" class="btn btn-chat">채팅하기</a>
-					<a th:href="@{/api/users/logout}" class="btn btn-logout">로그아웃</a>
+					<a th:href="@{/logout}" class="btn btn-logout">로그아웃</a>
 				</div>
 				<div th:if="${session.user == null}">
 					<a th:href="@{/login}" class="btn btn-login">로그인</a>
