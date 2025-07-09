@@ -37,7 +37,7 @@
 				</form>
 				<div th:if="${session.user != null}">
 					<a th:href="@{/api/chat}" class="btn btn-chat">채팅하기</a>
-					<a th:href="@{/api/users/logout}" class="btn btn-logout">로그아웃</a>
+					<a th:href="@{/logout}" class="btn btn-logout">로그아웃</a>
 				</div>
 				<div th:if="${session.user == null}">
 					<a th:href="@{/login}" class="btn btn-login">로그인</a>
