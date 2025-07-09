@@ -6,13 +6,13 @@ main {
     padding: 40px 20px;
 }
 
-/* 회원가입 섹션 스타일 - login-section과 동일한 디자인 */
+/* 회원가입 섹션 스타일 */
 .register-section {
     border-radius: 12px;
     padding: 48px 40px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
 }
 
 /* 폼 기본 스타일 */
@@ -94,6 +94,10 @@ main {
 
 .signin-text a:hover {
     text-decoration: underline;
+}
+
+.error-message {
+    color: #dc3545;
 }
 
 /* 에러가 있는 입력 필드 스타일 */
