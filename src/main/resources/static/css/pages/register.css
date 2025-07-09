@@ -96,6 +96,10 @@ main {
     text-decoration: underline;
 }
 
+.error-message {
+    color: #dc3545;
+}
+
 /* 에러가 있는 입력 필드 스타일 */
 .register-section input.error {
     border-color: #dc3545;
