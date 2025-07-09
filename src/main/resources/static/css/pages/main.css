@@ -61,6 +61,11 @@
   width: 20px;
   height: 20px;
 }
+.mascot-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
 
 .mascot-image img {
   width: 510px;
