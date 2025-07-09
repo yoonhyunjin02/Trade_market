@@ -11,10 +11,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 60px;
+  flex-direction: row;
 }
 
 .mascot-content {
   flex: 1;
+  text-align: left;
 }
 
 .mascot-content h1 {
