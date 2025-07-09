@@ -13,7 +13,7 @@
 <body>
 
 <!-- Header Fragment -->
-<div th:replace="fragments/header :: header"></div>
+<div th:replace="fragments/header :: common-header"></div>
 
 <main>
     <!-- Section 1 -->
@@ -120,10 +120,11 @@
                 <div th:replace="fragments/product-card :: productCard(${product})"></div>
             </div>
         </div>
-
+      
         <div class="more-btn">
             <a th:href="@{/api/products}" class="btn">인기매물 더 보기</a>
         </div>
+      
     </section>
 
 </main>

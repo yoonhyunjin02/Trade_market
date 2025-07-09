@@ -17,7 +17,7 @@ public class User {
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
-    @Column(name = "user_password", nullable = false, length = 255)
+    @Column(name = "user_password", length = 255)
     private String userPassword;
 
     @Column(name = "user_location", length = 255)
@@ -29,6 +29,9 @@ public class User {
 
     @Column(name = "provider_id")
     private String providerId;
+
+    @Column(name = "user_email", length = 50)
+    private  String userEmail;
 
     // Product과 1:N 관계
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,8 +50,8 @@ public class User {
     }
 
     // 3. 소셜 로그인용 생성자
-    public User(String userId, String userName, AuthProvider provider, String providerId) {
-        this.userId = userId;       // 이메일을 아이디로 사용
+    public User(String userEmail, String userName, AuthProvider provider, String providerId) {
+        this.userEmail = userEmail;       // 이메일을 아이디로 사용
         this.userName = userName;   // 소셜에서 지정한 이름
         this.provider = provider;   // 소셜 종류
         this.providerId = providerId;
@@ -117,6 +120,13 @@ public class User {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     @Override
