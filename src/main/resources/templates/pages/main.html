@@ -15,120 +15,119 @@
 <!-- Header Fragment -->
 <div th:replace="fragments/header :: common-header"></div>
 
-<!-- Section 1: Mascot -->
-<section class="mascot">
-    <div class="mascot-inner">
-        <div class="mascot-content">
-            <h1>당신 근처의<br>지역 생활 커뮤니티</h1>
-            <p>동네에서 가능한 모든 것<br>당근에서 가까운 이웃과 함께해요.</p>
+<main>
+    <!-- Section 1 -->
+    <section class="mascot">
+        <div class="mascot-inner">
+            <div class="mascot-content">
+                <h1>당신 근처의<br>지역 생활 커뮤니티</h1>
+                <p>동네에서 가능한 모든 것<br>당근에서 가까운 이웃과 함께해요.</p>
 
-            <div class="download-buttons">
-                <a href="#" class="btn">
-                    <img src="images/google_logo.svg" alt="Google Play" class="store-logo">
-                    <span>Google Play</span>
-                </a>
-                <a href="#" class="btn">
-                    <img src="images/apple_logo.svg" alt="App Store" class="store-logo">
-                    <span>App Store</span>
-                </a>
+                <div class="download-buttons">
+                    <a href="#" class="btn">
+                        <img src="/images/logo/googleplay_logo.svg" alt="Google Play" class="store-logo">
+                        <span>Google Play</span>
+                    </a>
+                    <a href="#" class="btn">
+                        <img src="/images/logo/apple_logo.svg" alt="App Store" class="store-logo">
+                        <span>App Store</span>
+                    </a>
+                </div>
             </div>
-
             <div class="mascot-image">
                 <img src="/images/mascot.png" alt="당근마켓 캐릭터">
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Section 2: 직거래 마켓 소개 -->
-<section class="market-info">
-    <div class="market-info-inner">
-        <div class="market-image">
-            <img src="/images/image1.png" alt="중고 직거래 소개 이미지">
+    <!-- Section 2 -->
+    <section class="market-info">
+        <figure class="market-info-inner">
+            <img class="market-image" src="/images/image1.png" alt="중고 직거래 소개 이미지">
+            <figcaption class="market-text">
+                <h2>우리 동네<br>중고 직거래 마켓</h2>
+                <p>동네 주민들과 거래하고<br>마음을 가까워지는 경험을 지금 경험해보세요.</p>
+                <a th:href="@{api/products}" class="market-btn">인기매물 보기</a>
+            </figcaption>
+        </figure>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="community-life">
+        <div class="community-inner">
+            <article class="community-text">
+                <h2>이웃과 함께 하는<br>동네생활</h2>
+                <p>우리 동네의 다양한 이야기를 이웃과 함께 나누어요.</p>
+
+                <ul class="feature-list">
+                    <li>
+                        <div class="icon-circle">
+                            <img src="/images/icons/question.svg" alt="동네질문 아이콘">
+                        </div>
+                        <div class="feature-content">
+                            <div>우리 동네질문</div>
+                            <p>궁금한 게 있을 땐 이웃에게 물어보세요.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-circle">
+                            <img src="/images/icons/lost.svg" alt="분실센터 아이콘">
+                        </div>
+                        <div class="feature-content">
+                            <div>동네분실센터</div>
+                            <p>무언가를 잃어버렸을 때, 함께 찾을 수 있어요.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-circle">
+                            <img src="/images/icons/meet.svg" alt="동네모임 아이콘">
+                        </div>
+                        <div class="feature-content">
+                            <div>동네모임</div>
+                            <p>관심사가 비슷한 이웃과 오프라인으로 만나요.</p>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+            <aside class="community-image">
+                <img src="/images/image2.png" alt="동네생활 예시 이미지">
+            </aside>
         </div>
-        <div class="market-text">
-            <h2>우리 동네<br>중고 직거래 마켓</h2>
-            <p>동네 주민들과 거래하고<br>마음을 가까워지는 경험을 지금 경험해보세요.</p>
-            <a th:href="@{api/products}" class="market-btn">인기매물 보기</a>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="market-info">
+        <figure class="market-info-inner">
+            <img class="market-image" src="/images/image3.png" alt="동네 가게 예시 이미지">
+
+            <figcaption class="market-text">
+                <h2>내 근처에서 찾는<br>동네가게</h2>
+                <p>
+                    우리 동네 가게를 찾고 있나요?<br>
+                    동네 주민이 남긴 진짜 후기를 함께 확인해보세요!
+                </p>
+            </figcaption>
+        </figure>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="popular-items">
+        <h2>중고거래 인기매물</h2>
+
+        <!-- 반복하면서 각각 productCard fragment 렌더링 -->
+        <div class="item-grid">
+            <div th:each="product : ${products} ?: ${defaultProducts}">
+                <div th:replace="fragments/product-card :: productCard(${product})"></div>
+            </div>
         </div>
-    </div>
-</section>
-
-<!-- Section 3: 동네생활 소개 -->
-<section class="community-life">
-    <div class="community-inner">
-        <div class="community-text">
-            <h2>이웃과 함께 하는<br>동네생활</h2>
-            <p>우리 동네의 다양한 이야기를 이웃과 함께 나누어요.</p>
-
-            <ul class="feature-list">
-                <li>
-                    <div class="icon-circle">
-                    <img src="/images/icons/question.svg" alt="동네질문 아이콘">
-                    </div>
-                    <div class="feature-content">
-                        <div>우리 동네질문</div>
-                        <p>궁금한 게 있을 땐 이웃에게 물어보세요.</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon-circle">
-                    <img src="/images/icons/lost.svg" alt="분실센터 아이콘">
-                    </div>
-                    <div class="feature-content">
-                        <div>동네분실센터</div>
-                        <p>무언가를 잃어버렸을 때, 함께 찾을 수 있어요.</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon-circle">
-                    <img src="/images/icons/meet.svg" alt="동네모임 아이콘">
-                    </div>
-                    <div class="feature-content">
-                        <div>동네모임</div>
-                        <p>관심사가 비슷한 이웃과 오프라인으로 만나요.</p>
-                    </div>
-                </li>
-            </ul>
+      
+        <div class="more-btn">
+            <a th:href="@{/api/products}" class="btn">인기매물 더 보기</a>
         </div>
-        <div class="community-image">
-            <img src="/images/image2.png" alt="동네생활 예시 이미지">
-        </div>
-    </div>
-</section>
+      
+    </section>
 
-
-<!-- Section 4: 동네 가게 -->
-<section class="market-info">
-    <div class="market-info-inner">
-        <div class="market-image">
-            <img src="/images/image3.png" alt="동네 가게 예시 이미지">
-        </div>
-
-        <div class="market-text">
-            <h2>내 근처에서 찾는<br>동네가게</h2>
-            <p>
-                우리 동네 가게를 찾고 있나요?<br>
-                동네 주민이 남긴 진짜 후기를 함께 확인해보세요!
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- Section 5: 인기매물 리스트 -->
-<section class="popular-items">
-    <h2>중고거래 인기매물</h2>
-
-    <div class="item-grid">
-        <div th:each="product : ${products ?: defaultProducts}"
-             th:replace="fragments/product-card :: productCard(${product})">
-        </div>
-    </div>
-
-    <div class="more-btn">
-        <a th:href="@{/api/products}" class="btn">인기매물 더 보기</a>
-    </div>
-</section>
+</main>
 
 <!-- Footer Fragment -->
 <div th:replace="fragments/footer :: footer"></div>

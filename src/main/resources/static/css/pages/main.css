@@ -11,10 +11,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 60px;
+  flex-direction: row;
 }
 
 .mascot-content {
   flex: 1;
+  text-align: left;
 }
 
 .mascot-content h1 {
@@ -58,6 +60,11 @@
 .store-logo {
   width: 20px;
   height: 20px;
+}
+.mascot-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .mascot-image img {
