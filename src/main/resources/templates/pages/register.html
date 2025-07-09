@@ -17,13 +17,15 @@
 		<form th:action="@{/users/register}" method="post" th:object="${userDto}">
 			<div>
 				<label for="userId">아이디</label>
-				<input type="text" id="userId" th:field="*{userId}" th:classappend="${error != null and error.contains('사용자명') ? 'error' : ''}" placeholder="아이디를 입력해주세요">
-				<div class="error-message" th:if="${error != null and error.contains('사용자명')}" th:text="${error}"></div>
+				<input type="text" id="userId" th:field="*{userId}" th:classappend="${error != null and error.contains('사용자명은') ? 'error' : ''}" placeholder="아이디를 입력해주세요">
+				<div class="error-message" th:if="${error != null and error.contains('사용자명은')}" th:text="${error}"></div>
+				<div class="error-message" th:if="${error != null and error.contains('아이디입니다')}" th:text="${error}"></div>
 			</div>
 
 			<div>
 				<label for="userName">닉네임</label>
-				<input type="text" id="userName" th:field="*{userName}" placeholder="닉네임을 입력해주세요">
+				<input type="text" id="userName" th:field="*{userName}" th:classappend="${error != null and error.contains('사용자명입니다') ? 'error' : ''}" placeholder="닉네임을 입력해주세요">
+				<div class="error-message" th:if="${error != null and error.contains('사용자명입니다')}" th:text="${error}"></div>
 			</div>
 
 			<div>
