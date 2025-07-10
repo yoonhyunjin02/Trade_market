@@ -1,5 +1,7 @@
 package com.owl.trade_market.controller;
 
+import com.owl.trade_market.entity.User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,13 +36,16 @@ public class LocationController {
     // 3) 동네 인증 확정 처리
     @PostMapping("/api/location/confirm")
     public String confirmLocation(
-            @RequestParam("address") String address
+            @RequestParam("address") String address,
+            HttpSession session
     ) {
-        // address를 DB나 세션에 실제 저장하는 로직 추가
-        // address를 받아서 사용자가 입력한 currentAddress와 비교
-        // 인증이 완료되면 main 페이지로 돌아감 + address를 location에 저장
-        return "pages/main";
+        User user = (User) session.getAttribute("user");
+        user.setUserLocation(address);
+        session.setAttribute("user", user);
+        // 또는 userService.updateLocation(user.getId(), address);
+        return "redirect:/main";
     }
+
 
 
 }

@@ -21,8 +21,9 @@
     <section class="location-section">
 
         <h2>어디에 살고 계신가요?</h2>
-        <!--        csrf 기능넣을것-->
-        <form th:action="@{/api/location}" method="post" class="location-form">
+
+        <form id="set-form" th:action="@{/api/location}" method="post" class="location-form">
+            <!--        csrf 기능넣을것-->
             <div class="input-group">
                 <input type="text"
                        id="address"
@@ -35,23 +36,26 @@
 
         <div class="map-container">
             <h2>현재 위치로 동네 인증하기</h2>
-            <!-- 구글맵이 준비되기 전 더미 이미지나 회색 박스로 표시 -->
+            <div id="map" class="map-placeholder">지도 로딩 중</div>
         </div>
 
-        <p class="current-location"
-           th:text="'현재 위치는 ' + ${currentAddress} + '입니다.'">
-        </p>
+        <p id="compare-msg" class="current-location" style="display:none;"></p>
 
-        <form th:action="@{/api/location/confirm}" method="post">
-            <!--            csrf 기능넣을것-->
-            <button type="submit" class="btn btn-confirm">
+        <form id="confirm-form" th:action="@{/api/location/confirm}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <!-- 숨겨진 필드: 최종 주소 -->
+            <input type="hidden" name="address" id="confirm-address" value=""/>
+            <button
+                    type="submit"
+                    id="confirm-btn"
+                    class="btn btn-confirm"
+                    disabled>
                 동네인증 완료하기
             </button>
         </form>
     </section>
 
-    <h1>구글 맵</h1>
-    <div id="map"></div>
+
 </main>
 
 <!-- 공통 푸터 -->
