@@ -20,9 +20,10 @@
 				<!--* 메인 내비게이션 /-->
 				<nav aria-label="메인 메뉴">
 					<ul>
-						<li><a th:href="@{/api/products}">중고거래</a></li>
-						<li sec:authorize="isAuthenticated()">
-							<a th:href="@{/api/location}">동네인증</a>
+						<li><a th:href="@{/products}">중고거래</a></li>
+						<li th:if="${session.user != null}">
+							<a th:href="@{/location}">동네인증</a>
+
 						</li>
 					</ul>
 				</nav>
@@ -31,7 +32,7 @@
 			<!--* 검색 + 사용자 관련 버튼 /-->
 			<div class="header-actions" aria-label="사용자 메뉴">
 				<!--* 상품 경로 제대로 정해지면 변경하기 /-->
-				<form class="form-group" th:action="@{/api/products/search}" method="get"
+				<form class="form-group" th:action="@{/products/search}" method="get"
 				      role="search" aria-label="상품 검색">
 					<input id="search" name="keyword" type="search" placeholder="물품이나 동네를 검색해보세요">
 					<button type="submit" style="display: none"></button> <!--* 엔터 제출 보장용 /-->
