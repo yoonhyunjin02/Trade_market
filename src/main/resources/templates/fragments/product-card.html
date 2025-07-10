@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="productCard(product)">
-    <a th:href="@{'/api/products/' + ${product.id}}" class="item-link">
+    <a th:href="@{'/products/' + ${product.id}}" class="item-link">
         <div class="item">
 <!--            이미지가 비어있으면 기본이미지, 아니면 이미지 중에 첫번째 이미지-->
             <img th:src="${#lists.isEmpty(product.images)}
