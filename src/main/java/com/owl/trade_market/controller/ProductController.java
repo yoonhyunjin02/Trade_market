@@ -4,6 +4,7 @@ import com.owl.trade_market.dto.ProductDto;
 import com.owl.trade_market.entity.Category;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
+import com.owl.trade_market.service.CategoryService;
 import com.owl.trade_market.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,11 +25,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     //상품 목록 페이지 (trade.html)
     @GetMapping
@@ -43,14 +47,26 @@ public class ProductController {
 
         try {
             List<Product> allProducts;
+            Category selectedCategory = null;
+
+            // 카테고리 필터가 있는 경우
+            if (categoryId != null) {
+                Optional<Category> categoryOpt = categoryService.findById(categoryId);
+                if (categoryOpt.isPresent()) {
+                    selectedCategory = categoryOpt.get();
+                }
+            }
 
             if (keyword != null && !keyword.trim().isEmpty()) {
-                // 검색 시에도 전체 결과 반환
+                // 키워드 + 카테고리 검색
                 Page<Product> searchPage = productService.searchProduct(
-                        keyword.trim(), null,
+                        keyword.trim(), selectedCategory,
                         Pageable.unpaged(Sort.by("createdAt").descending())
                 );
                 allProducts = searchPage.getContent();
+            } else if (selectedCategory != null) {
+                // 카테고리만 필터링
+                allProducts = productService.findByCategory(selectedCategory, Sort.by("createdAt").descending());
             } else {
                 // 전체 상품 조회
                 allProducts = productService.findAll(Sort.by("createdAt").descending());
@@ -59,9 +75,106 @@ public class ProductController {
             model.addAttribute("products", allProducts);
             model.addAttribute("keyword", keyword);
             model.addAttribute("categoryId", categoryId);
+            model.addAttribute("selectedCategory", selectedCategory);
+
+            // 인기 카테고리 목록 추가 (필터용)
+            List<Category> popularCategories = categoryService.getPopularCategories(10);
+            model.addAttribute("popularCategories", popularCategories);
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
+            model.addAttribute("products", java.util.Collections.emptyList());
+        }
+
+        return "pages/trade";
+    }
+
+    //검색 페이지 (search.html)
+    @GetMapping("/search")
+    public String searchProducts(@RequestParam String keyword,
+                                 @RequestParam(required = false) Long categoryId,
+                                 Model model,
+                                 HttpSession session,
+                                 @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        User user = getCurrentUser(session, oauth2User);
+        model.addAttribute("user", user);
+
+        try {
+            // 검색어 유효성 검사
+            if (keyword == null || keyword.trim().isEmpty()) {
+                model.addAttribute("error", "검색어를 입력해주세요.");
+                model.addAttribute("products", java.util.Collections.emptyList());
+                return "pages/search";
+            }
+
+            // 카테고리 조회
+            Category category = null;
+            if (categoryId != null) {
+                Optional<Category> categoryOpt = categoryService.findById(categoryId);
+                if (categoryOpt.isPresent()) {
+                    category = categoryOpt.get();
+                }
+            }
+
+            // 검색 실행
+            Page<Product> searchPage = productService.searchProduct(
+                    keyword.trim(), category,
+                    Pageable.unpaged(Sort.by("createdAt").descending())
+            );
+            List<Product> searchResults = searchPage.getContent();
+
+            model.addAttribute("products", searchResults);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("selectedCategory", category);
+
+            // 인기 카테고리 목록 추가
+            List<Category> popularCategories = categoryService.getPopularCategories(10);
+            model.addAttribute("popularCategories", popularCategories);
+
+        } catch (Exception e) {
+            model.addAttribute("error", "검색 중 오류가 발생했습니다.");
+            model.addAttribute("products", java.util.Collections.emptyList());
+        }
+
+        return "pages/search";
+    }
+
+    //카테고리별 상품 조회
+    @GetMapping("/category/{categoryId}")
+    public String productsByCategory(@PathVariable Long categoryId,
+                                     Model model,
+                                     HttpSession session,
+                                     @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        User user = getCurrentUser(session, oauth2User);
+        model.addAttribute("user", user);
+
+        try {
+            // 카테고리 조회
+            Optional<Category> categoryOpt = categoryService.findById(categoryId);
+            if (categoryOpt.isEmpty()) {
+                model.addAttribute("error", "존재하지 않는 카테고리입니다.");
+                model.addAttribute("products", java.util.Collections.emptyList());
+                return "pages/trade";
+            }
+
+            Category category = categoryOpt.get();
+
+            // 해당 카테고리 상품 조회
+            List<Product> categoryProducts = productService.findByCategory(category, Sort.by("createdAt").descending());
+
+            model.addAttribute("products", categoryProducts);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("selectedCategory", category);
+
+            // 인기 카테고리 목록 추가
+            List<Category> popularCategories = categoryService.getPopularCategories(10);
+            model.addAttribute("popularCategories", popularCategories);
+
+        } catch (Exception e) {
+            model.addAttribute("error", "카테고리 상품을 불러오는 중 오류가 발생했습니다.");
             model.addAttribute("products", java.util.Collections.emptyList());
         }
 
@@ -83,7 +196,6 @@ public class ProductController {
 
         model.addAttribute("user", user);
         model.addAttribute("productDto", new ProductDto());
-        // TODO: 카테고리 목록 추가 (CategoryService 구현 후)
 
         return "pages/write";
     }
@@ -91,7 +203,6 @@ public class ProductController {
     //상품 등록 처리
     @PostMapping("/new")
     public String createProduct(@Valid @ModelAttribute ProductDto productDto,
-                                @RequestParam(required = false) Long categoryId,
                                 BindingResult result,
                                 HttpSession session,
                                 @AuthenticationPrincipal OAuth2User oauth2User,
@@ -108,7 +219,10 @@ public class ProductController {
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
-            // TODO: 카테고리 목록 다시 설정
+
+            // 인기 카테고리 목록 다시 설정
+            List<Category> popularCategories = categoryService.getPopularCategories(20);
+            model.addAttribute("popularCategories", popularCategories);
             return "pages/write";
         }
 
@@ -116,21 +230,24 @@ public class ProductController {
             // 추가 유효성 검사
             if (productDto.getTitle().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "상품 제목을 입력해주세요.");
-                return "redirect:/api/products/new";
+                return "redirect:/products/new";
             }
 
             if (productDto.getDescription().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "상품 설명을 입력해주세요.");
-                return "redirect:/api/products/new";
+                return "redirect:/products/new";
             }
 
             if (productDto.getPrice() <= 0) {
                 redirectAttributes.addFlashAttribute("error", "올바른 가격을 입력해주세요.");
-                return "redirect:/api/products/new";
+                return "redirect:/products/new";
             }
 
-            // TODO: Category 조회 로직 (임시로 null 처리)
+            // 카테고리 처리 (사용자가 입력한 카테고리명으로 찾기/생성)
             Category category = null;
+            if (productDto.getCategoryName() != null && !productDto.getCategoryName().trim().isEmpty()) {
+                category = categoryService.findOrCreateCategory(productDto.getCategoryName().trim());
+            }
 
             // 상품 생성
             Product product = productService.createProduct(
@@ -138,16 +255,21 @@ public class ProductController {
                     user,
                     productDto.getDescription().trim(),
                     productDto.getPrice(),
-                    user.getUserLocation(), // 사용자 위치 사용
+                    user.getUserLocation(),
                     category
             );
 
+            // 카테고리 상품 수 증가
+            if (category != null) {
+                categoryService.increaseCategoryCount(category);
+            }
+
             redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 등록되었습니다.");
-            return "redirect:/api/products/" + product.getId();
+            return "redirect:/products/" + product.getId();
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 등록 중 오류가 발생했습니다.");
-            return "redirect:/api/products/new";
+            return "redirect:/products/new";
         }
     }
 
@@ -167,7 +289,7 @@ public class ProductController {
 
             if (productOpt.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/api/products";
+                return "redirect:/products";
             }
 
             Product product = productOpt.get();
@@ -184,7 +306,7 @@ public class ProductController {
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 정보를 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/api/products";
+            return "redirect:/products";
         }
 
         return "pages/trade_post";
@@ -208,7 +330,7 @@ public class ProductController {
             Optional<Product> productOpt = productService.findById(id);
             if (productOpt.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/api/products";
+                return "redirect:/products";
             }
 
             Product product = productOpt.get();
@@ -216,24 +338,29 @@ public class ProductController {
             // 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "수정 권한이 없습니다.");
-                return "redirect:/api/products/" + id;
+                return "redirect:/products/" + id;
             }
 
-            // ProductDto로 변환
+            // ProductDto로 변환 (카테고리명 포함)
+            String categoryName = product.getCategory() != null ? product.getCategory().getName() : "";
             ProductDto productDto = new ProductDto(
                     product.getTitle(),
                     product.getDescription(),
-                    product.getPrice()
+                    product.getPrice(),
+                    categoryName
             );
 
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
             model.addAttribute("productId", id);
-            // TODO: 카테고리 목록 추가
+
+            // 인기 카테고리 목록 추가
+            List<Category> popularCategories = categoryService.getPopularCategories(20);
+            model.addAttribute("popularCategories", popularCategories);
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 정보를 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/api/products/" + id;
+            return "redirect:/products/" + id;
         }
 
         return "pages/write"; // 같은 폼 재사용
@@ -243,7 +370,6 @@ public class ProductController {
     @PostMapping("/{id}/edit")
     public String updateProduct(@PathVariable Long id,
                                 @Valid @ModelAttribute ProductDto productDto,
-                                @RequestParam(required = false) Long categoryId,
                                 BindingResult result,
                                 HttpSession session,
                                 @AuthenticationPrincipal OAuth2User oauth2User,
@@ -260,25 +386,18 @@ public class ProductController {
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
             model.addAttribute("productId", id);
+
+            // 인기 카테고리 목록 다시 설정
+            List<Category> popularCategories = categoryService.getPopularCategories(20);
+            model.addAttribute("popularCategories", popularCategories);
             return "pages/write";
         }
 
         try {
-            // 추가 유효성 검사
-            if (productDto.getTitle().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "상품 제목을 입력해주세요.");
-                return "redirect:/api/products/" + id + "/edit";
-            }
-
-            if (productDto.getDescription().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "상품 설명을 입력해주세요.");
-                return "redirect:/api/products/" + id + "/edit";
-            }
-
             Optional<Product> productOpt = productService.findById(id);
             if (productOpt.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/api/products";
+                return "redirect:/products";
             }
 
             Product product = productOpt.get();
@@ -286,11 +405,17 @@ public class ProductController {
             // 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "수정 권한이 없습니다.");
-                return "redirect:/api/products/" + id;
+                return "redirect:/products/" + id;
             }
 
-            // TODO: Category 조회 로직
-            Category category = null;
+            // 기존 카테고리 저장 (카운트 조정용)
+            Category oldCategory = product.getCategory();
+
+            // 새 카테고리 처리
+            Category newCategory = null;
+            if (productDto.getCategoryName() != null && !productDto.getCategoryName().trim().isEmpty()) {
+                newCategory = categoryService.findOrCreateCategory(productDto.getCategoryName().trim());
+            }
 
             // 상품 정보 업데이트
             Product updatedProduct = productService.updateProduct(
@@ -299,15 +424,23 @@ public class ProductController {
                     productDto.getDescription().trim(),
                     productDto.getPrice(),
                     user.getUserLocation(),
-                    category
+                    newCategory
             );
 
+            // 카테고리 변경 시 카운트 조정
+            if (oldCategory != null && !oldCategory.equals(newCategory)) {
+                categoryService.decreaseCategoryCount(oldCategory);
+            }
+            if (newCategory != null && !newCategory.equals(oldCategory)) {
+                categoryService.increaseCategoryCount(newCategory);
+            }
+
             redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 수정되었습니다.");
-            return "redirect:/api/products/" + id;
+            return "redirect:/products/" + id;
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 수정 중 오류가 발생했습니다.");
-            return "redirect:/api/products/" + id + "/edit";
+            return "redirect:/products/" + id + "/edit";
         }
     }
 
@@ -328,7 +461,7 @@ public class ProductController {
             Optional<Product> productOpt = productService.findById(id);
             if (productOpt.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/api/products";
+                return "redirect:/products";
             }
 
             Product product = productOpt.get();
@@ -336,97 +469,28 @@ public class ProductController {
             // 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "삭제 권한이 없습니다.");
-                return "redirect:/api/products/" + id;
+                return "redirect:/products/" + id;
             }
+
+            // 카테고리 정보 저장 (삭제 후 카운트 감소용)
+            Category category = product.getCategory();
 
             // 상품 삭제
             productService.deleteProduct(id);
 
+            // 카테고리 상품 수 감소
+            if (category != null) {
+                categoryService.decreaseCategoryCount(category);
+            }
+
             redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 삭제되었습니다.");
-            return "redirect:/api/products";
+            return "redirect:/products";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 삭제 중 오류가 발생했습니다.");
-            return "redirect:/api/products/" + id;
+            return "redirect:/products/" + id;
         }
     }
-
-    //검색 페이지 (search.html)
-    @GetMapping("/search")
-    public String searchProducts(@RequestParam String keyword,
-                                 @RequestParam(required = false) Long categoryId,
-                                 Model model,
-                                 HttpSession session,
-                                 @AuthenticationPrincipal OAuth2User oauth2User) {
-
-        User user = getCurrentUser(session, oauth2User);
-        model.addAttribute("user", user);
-
-        try {
-            // 검색어 유효성 검사
-            if (keyword == null || keyword.trim().isEmpty()) {
-                model.addAttribute("error", "검색어를 입력해주세요.");
-                model.addAttribute("products", java.util.Collections.emptyList());
-                return "pages/search";
-            }
-
-            // TODO: Category 조회 로직
-            Category category = null;
-
-
-            // 검색 결과 전체 반환
-            Page<Product> searchPage = productService.searchProduct(
-                    keyword.trim(), category,
-                    Pageable.unpaged(Sort.by("createdAt").descending())
-            );
-            List<Product> searchResults = searchPage.getContent();
-
-            model.addAttribute("products", searchResults);
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("categoryId", categoryId);
-
-        } catch (Exception e) {
-            model.addAttribute("error", "검색 중 오류가 발생했습니다.");
-            model.addAttribute("products", java.util.Collections.emptyList());
-        }
-
-        return "pages/search";
-    }
-
-    //카테고리별 상품 조회
-    @GetMapping("/category/{categoryId}")
-    public String productsByCategory(@PathVariable Long categoryId,
-                                     Model model,
-                                     HttpSession session,
-                                     @AuthenticationPrincipal OAuth2User oauth2User) {
-
-        User user = getCurrentUser(session, oauth2User);
-        model.addAttribute("user", user);
-
-        try {
-            // TODO: Category 조회 및 해당 카테고리 상품 조회 로직
-
-            // 임시로 전체 조회
-            List<Product> allProducts = productService.findAll(Sort.by("createdAt").descending());
-
-            model.addAttribute("products", allProducts);
-            model.addAttribute("categoryId", categoryId);
-
-        } catch (Exception e) {
-            model.addAttribute("error", "카테고리 상품을 불러오는 중 오류가 발생했습니다.");
-            model.addAttribute("products", java.util.Collections.emptyList());
-        }
-
-        return "pages/trade";
-    }
-
-//    /**
-//     * 별칭 URL 처리 (/trade -> /api/products)
-//     */
-//    @GetMapping("/trade")
-//    public String tradeAlias() {
-//        return "redirect:/api/products";
-//    }
 
     /**
      * OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드

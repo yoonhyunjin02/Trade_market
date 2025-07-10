@@ -16,6 +16,10 @@ public class ProductDto {
     @NotBlank(message = "상품가격은 필수입니다.")
     private int price;
 
+    // 카테고리명 추가 (사용자가 직접 입력)
+    @Size(max = 50, message = "카테고리명은 50자를 초과할 수 없습니다.")
+    private String categoryName;
+
     public ProductDto() {
     }
 
@@ -23,6 +27,14 @@ public class ProductDto {
         this.title = title;
         this.description = description;
         this.price = price;
+    }
+
+    // 카테고리명 포함 생성자 추가
+    public ProductDto(String title, String description, int price, String categoryName) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.categoryName = categoryName;
     }
 
     public int getPrice() {
@@ -49,12 +61,21 @@ public class ProductDto {
         this.title = title;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     @Override
     public String toString() {
         return "ProductDto{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
+                ", categoryName='" + categoryName + '\'' +
                 '}';
     }
 }
