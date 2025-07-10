@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .passwordParameter("userPassword") // 커스텀 password사용(기본: password)
                         .loginProcessingUrl("/users/login") // form action URL
                         .failureUrl("/login?error") //추가
-                        .defaultSuccessUrl("/main", true)   // 로그인 성공 후 리다이렉트
+                        .defaultSuccessUrl("/main", false)   // 로그인 성공 후 리다이렉트
                         .permitAll()
                 )
                 // 3) 로그아웃 설정

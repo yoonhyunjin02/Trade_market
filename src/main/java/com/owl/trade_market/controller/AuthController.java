@@ -3,11 +3,14 @@ package com.owl.trade_market.controller;
 import com.owl.trade_market.dto.UserDto;
 import com.owl.trade_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -19,7 +22,21 @@ public class AuthController {
 
     //로그인 페이지 이동
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(@RequestHeader(value = "Referer", required = false) String referer) {
+
+        // 인증 객체 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 상태 체크: 로그인상태라면 원래 페이지로 리다이렉트
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication.getPrincipal() instanceof String && authentication.getPrincipal().equals("anonymousUser"))) {
+            // referer가 null이거나, 자기 자신(/login)에서 다시 들어온 경우는 메인으로
+            if (referer == null || referer.contains("/login")) {
+                return "redirect:/main";
+            }
+
+            return "redirect:" + referer;
+        }
         return "pages/login";
     }
 
