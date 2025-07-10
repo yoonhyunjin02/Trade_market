@@ -1,5 +1,6 @@
 package com.owl.trade_market.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LocationController {
 
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey; // application.properties에 적어놓은 키를 담는 객체
+
     // 1) 폼 화면 표시 (currentAddress 더미값 세팅)
     @GetMapping("/location")
     public String showLocationForm(Model model) {
         model.addAttribute("currentAddress", "");  // 더미 주소
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // Google Map API 키 주입
         return "pages/location";
     }
 
@@ -36,4 +41,6 @@ public class LocationController {
         // 인증이 완료되면 main 페이지로 돌아감 + address를 location에 저장
         return "pages/main";
     }
+
+
 }

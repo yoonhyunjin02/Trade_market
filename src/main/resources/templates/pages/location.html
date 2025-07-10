@@ -49,17 +49,26 @@
             </button>
         </form>
     </section>
+
+    <h1>구글 맵</h1>
+    <div id="map"></div>
 </main>
 
 <!-- 공통 푸터 -->
 <div th:replace="fragments/footer :: common-footer"></div>
 
-<!-- 구글맵 스크립트 (추후 실제 API 키와 함께 사용) -->
-<!--
-<script
-  src="구글 맵 키"
-  async defer></script>
--->
 <script th:src="@{/js/pages/location.js}"></script>
+
+<script
+        th:attr="src=
+    @{https://maps.googleapis.com/maps/api/js(
+        key=${googleMapsApiKey},
+        libraries='places',
+        callback='initMap'
+    )}"
+        async defer>
+</script>
+
+
 </body>
 </html>
