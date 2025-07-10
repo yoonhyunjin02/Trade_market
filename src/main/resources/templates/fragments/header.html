@@ -38,7 +38,7 @@
 					<button type="submit" style="display: none"></button> <!--* 엔터 제출 보장용 /-->
 				</form>
 				<div sec:authorize="isAuthenticated()">
-					<a th:href="@{/api/chat}" class="btn-main btn-chat">채팅하기</a>
+					<a th:href="@{/chat}" class="btn-main btn-chat">채팅하기</a>
 					<form class="logout-form" th:action="@{/logout}" method="post" style="display:inline;">
 						<button type="submit" class="btn-main btn-logout">로그아웃</button>
 					</form>
