@@ -1,7 +1,6 @@
 /* banner */
 .trade-banner {
   width: 100%;
-  max-width: 1440px;
   height: 360px;
   background-color: #FFFAE0;
   display: flex;
@@ -26,6 +25,8 @@
   flex-direction: column;
   justify-content: center;
   gap: 20px;
+  background-color: transparent;
+  border: none;
 }
 
 .banner-inner .text h1 {

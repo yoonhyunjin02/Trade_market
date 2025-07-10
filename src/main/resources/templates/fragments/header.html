@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8">
 	<title>Header</title>
@@ -22,6 +23,7 @@
 						<li><a th:href="@{/products}">중고거래</a></li>
 						<li th:if="${session.user != null}">
 							<a th:href="@{/location}">동네인증</a>
+
 						</li>
 					</ul>
 				</nav>
@@ -35,12 +37,15 @@
 					<input id="search" name="keyword" type="search" placeholder="물품이나 동네를 검색해보세요">
 					<button type="submit" style="display: none"></button> <!--* 엔터 제출 보장용 /-->
 				</form>
-				<div th:if="${session.user != null}">
-					<a th:href="@{/api/chat}" class="btn btn-chat">채팅하기</a>
-					<a th:href="@{/logout}" class="btn btn-logout">로그아웃</a>
+				<div sec:authorize="isAuthenticated()">
+					<a th:href="@{/api/chat}" class="btn-main btn-chat">채팅하기</a>
+					<form class="logout-form" th:action="@{/logout}" method="post" style="display:inline;">
+						<button type="submit" class="btn-main btn-logout">로그아웃</button>
+					</form>
 				</div>
-				<div th:if="${session.user == null}">
-					<a th:href="@{/login}" class="btn btn-login">로그인</a>
+				<!--* 로그인 하지 않은 사용자에게만 '로그인' 버튼 표시/-->
+				<div sec:authorize="isAnonymous()">
+					<a th:href="@{/login}" class="btn-main btn-login">로그인</a>
 				</div>
 			</div>
 		</div>
