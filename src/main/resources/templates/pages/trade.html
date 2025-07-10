@@ -13,37 +13,47 @@
 <body>
 
 <!-- Header Fragment -->
-<div th:replace="fragments/header :: header"></div>
+<header th:replace="fragments/header :: header"></header>
 
-<!-- banner Section -->
-<section class="trade-banner">
-    <div class="banner-inner">
-        <div class="text">
-            <h1>믿을만한<br>이웃 간 중고거래</h1>
-            <p>동네 주민들과 가까운 따뜻한 거래를<br>지금 경험해보세요.</p>
+<main>
+    <!-- Banner Section -->
+    <section class="trade-banner">
+        <div class="banner-inner">
+            <header class="text">
+                <h1>믿을만한<br>이웃 간 중고거래</h1>
+                <p>동네 주민들과 가까운 따뜻한 거래를<br>지금 경험해보세요.</p>
+            </header>
+            <figure class="image">
+                <img src="/images/tradebanner.png" alt="중고거래 배너 이미지" />
+            </figure>
         </div>
-        <div class="image">
-            <img src="/images/tradebanner.png" alt="배너">
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- Product Grid Section -->
-<section class="popular-items">
-    <h2>중고거래 인기매물</h2>
+    <!-- Product Grid Section -->
+    <section class="popular-items" aria-labelledby="popular-title">
+        <h2 id="popular-title">중고거래 인기매물</h2>
 
-    <div class="item-grid">
-        <div th:each="product : ${products}"
-             th:replace="fragments/product-card :: productCard(${product})">
+        <div class="item-grid">
+            <div th:if="${#lists.isEmpty(products)}"
+                 th:each="product : ${defaultProducts}">
+                <article th:replace="fragments/product-card :: productCard(${product})"></article>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(products)}"
+                 th:each="product : ${products}">
+                <article th:replace="fragments/product-card :: productCard(${product})"></article>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</main>
 
 <!-- Floating Action Button -->
-<a th:href="@{/api/products/new}" class="floating-btn">거래글쓰기</a>
+<nav>
+    <a th:href="@{/api/products/new}" class="floating-btn" aria-label="중고 거래글 작성">거래글쓰기</a>
+</nav>
 
 <!-- Footer Fragment -->
-<div th:replace="fragments/footer :: footer"></div>
+<footer th:replace="fragments/footer :: footer"></footer>
 
 </body>
 <script src="/js/common/header.js"></script>
