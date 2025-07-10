@@ -3,6 +3,8 @@ package com.owl.trade_market.controller;
 import com.owl.trade_market.dto.UserDto;
 import com.owl.trade_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,15 @@ public class AuthController {
     //로그인 페이지 이동
     @GetMapping("/login")
     public String loginForm() {
+        // 인증 객체 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 상태 체크: 로그인상태라면 redirect:/main
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication.getPrincipal() instanceof String && authentication.getPrincipal().equals("anonymousUser"))) {
+            // 로그인상태 이므로 /main으로 리다이렉트
+            return "redirect:/main";
+        }
         return "pages/login";
     }
 
