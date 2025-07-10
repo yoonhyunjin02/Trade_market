@@ -12,7 +12,7 @@ public class LocationController {
     // 1) 폼 화면 표시 (currentAddress 더미값 세팅)
     @GetMapping("/location")
     public String showLocationForm(Model model) {
-        model.addAttribute("currentAddress", "서울 강서구 화곡동");  // 더미 주소
+        model.addAttribute("currentAddress", "");  // 더미 주소
         return "pages/location";
     }
 
