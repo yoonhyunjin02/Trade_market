@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Trade</title>
-    <link rel="stylesheet" href="/css/common/common.css">
-    <link rel="stylesheet" href="/css/common/header.css">
-    <link rel="stylesheet" href="/css/common/footer.css">
-    <link rel="stylesheet" href="/css/common/product-card.css">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/product-card.css}">
 
-    <link rel="stylesheet" href="/css/pages/trade.css">
+    <link rel="stylesheet" th:href="@{/css/pages/trade.css}">
 </head>
 <body>
 
@@ -30,19 +30,26 @@
     </section>
 
     <!-- Product Grid Section -->
+<!--    <section class="popular-items" aria-labelledby="popular-title">-->
+<!--        <h2 id="popular-title">중고거래 인기매물</h2>-->
+
+<!--        <div class="item-grid">-->
+<!--            <div th:if="${#lists.isEmpty(products)}"-->
+<!--                 th:each="product : ${defaultProducts}">-->
+<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
+<!--            </div>-->
+
+<!--            <div th:unless="${#lists.isEmpty(products)}"-->
+<!--                 th:each="product : ${products}">-->
+<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section class="popular-items" aria-labelledby="popular-title">
         <h2 id="popular-title">중고거래 인기매물</h2>
 
-        <div class="item-grid">
-            <div th:if="${#lists.isEmpty(products)}"
-                 th:each="product : ${defaultProducts}">
-                <article th:replace="fragments/product-card :: productCard(${product})"></article>
-            </div>
-
-            <div th:unless="${#lists.isEmpty(products)}"
-                 th:each="product : ${products}">
-                <article th:replace="fragments/product-card :: productCard(${product})"></article>
-            </div>
+        <div class="item-grid" id="product-container">
+            <!-- 상품 카드들이 JS로 여기에 추가될 예정 -->
         </div>
     </section>
 </main>

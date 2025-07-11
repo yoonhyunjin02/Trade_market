@@ -39,7 +39,8 @@ public class SecurityConfig {
                                 "/register", "/users/register",
                                 "/login", "/users/login",
                                 "/login/oauth2/**",   // 콜백 경로 허용
-                                "/api/products"
+                                "/products",
+                                "/products/search"
                         ).permitAll()
                         // 그 외에는 모두 인증 필요
                         .anyRequest().authenticated()
