@@ -11,7 +11,7 @@ public interface UserService {
     User register(UserDto userDto);
 
     // 로그인
-    Optional<User> login(String userId, String userPassword);
+//    Optional<User> login(String userId, String userPassword);
 
     // 사용자 찾기
     Optional<User> findByUserId(String userId);

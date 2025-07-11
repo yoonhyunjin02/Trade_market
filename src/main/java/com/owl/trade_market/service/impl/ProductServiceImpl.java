@@ -84,14 +84,19 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
+//        if (category != null) {
+//            return productRepository.findByKeywordAndCategory(keyword, category, pageable);
+//        } else {
+//            return productRepository.findByKeyword(keyword, pageable);
+//        }
+//    }
     @Override
     @Transactional(readOnly = true)
     public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
-        if (category != null) {
-            return productRepository.findByKeywordAndCategory(keyword, category, pageable);
-        } else {
-            return productRepository.findByKeyword(keyword, pageable);
-        }
+        return productRepository.search(keyword, category, pageable);
     }
 
     @Override

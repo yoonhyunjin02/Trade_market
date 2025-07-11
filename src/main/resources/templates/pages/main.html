@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
-    <link rel="stylesheet" href="/css/common/common.css">
-    <link rel="stylesheet" href="/css/common/header.css">
-    <link rel="stylesheet" href="/css/common/footer.css">
-    <link rel="stylesheet" href="/css/common/product-card.css">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/product-card.css}">
 
-    <link rel="stylesheet" href="/css/pages/main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/main.css}">
 </head>
 <body>
 
@@ -47,7 +47,7 @@
             <figcaption class="market-text">
                 <h2>우리 동네<br>중고 직거래 마켓</h2>
                 <p>동네 주민들과 거래하고<br>마음을 가까워지는 경험을 지금 경험해보세요.</p>
-                <a th:href="@{api/products}" class="market-btn">인기매물 보기</a>
+                <a th:href="@{/products}" class="market-btn">인기매물 보기</a>
             </figcaption>
         </figure>
     </section>
@@ -115,8 +115,12 @@
         <h2>중고거래 인기매물</h2>
 
         <!-- 반복하면서 각각 productCard fragment 렌더링 -->
-        <div class="item-grid">
-            <div th:each="product : ${products} ?: ${defaultProducts}">
+        <div th:if="${#lists.isEmpty(products)}" class="empty-message">
+            등록된 상품이 없습니다.
+        </div>
+
+        <div class="item-grid" th:if="${!#lists.isEmpty(products)}">
+            <div th:each="product : ${products}">
                 <div th:replace="fragments/product-card :: productCard(${product})"></div>
             </div>
         </div>
@@ -124,7 +128,6 @@
         <div class="more-btn">
             <a th:href="@{/products}" class="btn">인기매물 더 보기</a>
         </div>
-      
     </section>
 
 </main>
