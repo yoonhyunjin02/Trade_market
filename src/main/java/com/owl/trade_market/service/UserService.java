@@ -21,4 +21,13 @@ public interface UserService {
 
     // 사용자명 중복 확인
     boolean existsByUserName(String userName);
+
+    void updateLocation(String username, String address);
+
+
+
+
+    // 소셜 로그인용: 이메일로 위치 업데이트
+    void updateLocationByEmail(String email, String address);
 }
+
