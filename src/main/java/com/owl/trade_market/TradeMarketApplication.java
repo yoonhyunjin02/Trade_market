@@ -13,6 +13,7 @@ public class TradeMarketApplication {
 		System.setProperty("GOOGLE_CLIENT_SECRET", dotenv.get("GOOGLE_CLIENT_SECRET"));
 		System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
 		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+		System.setProperty("google.maps.api.key", dotenv.get("GOOGLE_MAPS_API_KEY"));
 
 		SpringApplication.run(TradeMarketApplication.class, args);
 	}
