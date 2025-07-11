@@ -22,7 +22,7 @@
 
         <h2>어디에 살고 계신가요?</h2>
 
-        <form id="set-form" th:action="@{/api/location}" method="post" class="location-form">
+        <form id="set-form" th:action="@{/location}" method="post" class="location-form">
             <!--        csrf 기능넣을것-->
             <div class="input-group">
                 <input type="text"
@@ -41,10 +41,11 @@
 
         <p id="compare-msg" class="current-location" style="display:none;"></p>
 
-        <form id="confirm-form" th:action="@{/api/location/confirm}" method="post">
+        <form id="confirm-form" th:action="@{/location/confirm}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <!-- 숨겨진 필드: 최종 주소 -->
             <input type="hidden" name="address" id="confirm-address" value=""/>
+
             <button
                     type="submit"
                     id="confirm-btn"

@@ -24,7 +24,7 @@ public class LocationController {
     }
 
     // 2) 사용자가 입력한 주소를 받아 같은 뷰로 렌더링
-    @PostMapping("/api/location")
+    @PostMapping("/location")
     public String submitLocation(
             @RequestParam("address") String address,
             Model model
@@ -34,7 +34,7 @@ public class LocationController {
     }
 
     // 3) 동네 인증 확정 처리
-    @PostMapping("/api/location/confirm")
+    @PostMapping("/location/confirm")
     public String confirmLocation(
             @RequestParam("address") String address,
             HttpSession session
@@ -43,7 +43,7 @@ public class LocationController {
         user.setUserLocation(address);
         session.setAttribute("user", user);
         // 또는 userService.updateLocation(user.getId(), address);
-        return "redirect:/main";
+        return "redirect:pages/main";
     }
 
 
