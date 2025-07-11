@@ -85,8 +85,7 @@ public class AuthController {
     public String register(@ModelAttribute UserDto userDto,
                            RedirectAttributes redirectAttributes) {
 
-
-        try {
+            // try-catch 블록 삭제 / 모든 예외는 GlobalExceptionHandler가 처리
             if (!userDto.isPasswordMatching()) {
                 redirectAttributes.addFlashAttribute("userDto", userDto);
                 redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
@@ -104,19 +103,11 @@ public class AuthController {
                 redirectAttributes.addFlashAttribute("error", "비밀번호는 6자 이상이어야 합니다.");
                 return "redirect:/register";
             }
-
+            
+            // 서비스 호출: 여기서 발생하는 예외는 GlobalExceptionHandler가 가로채서 처리
             userService.register(userDto);
             redirectAttributes.addFlashAttribute("success", "회원가입이 완료되었습니다. 로그인해주세요.");
             return "redirect:/login";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("userDto", userDto);
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/register";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("userDto", userDto);
-            redirectAttributes.addFlashAttribute("error", "회원가입 중 오류가 발생했습니다.");
-            return "redirect:/register";
-        }
 
     }
 
