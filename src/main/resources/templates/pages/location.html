@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>동네인증</title>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+
+    <!-- 페이지 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/pages/location.css}">
 </head>
 <body>
+<!-- 공통 헤더 -->
+<div th:replace="fragments/header :: common-header"></div>
+
+<main class="location-page">
+    <section class="location-section">
+
+        <h2>어디에 살고 계신가요?</h2>
+        <!--        csrf 기능넣을것-->
+        <form th:action="@{/api/location}" method="post" class="location-form">
+            <div class="input-group">
+                <input type="text"
+                       id="address"
+                       name="address"
+                       placeholder="예) 서울 강서구 화곡동"
+                       class="address-input"/>
+                <button type="submit" class="btn btn-set">내 동네 설정</button>
+            </div>
+        </form>
+
+        <div class="map-container">
+            <h2>현재 위치로 동네 인증하기</h2>
+            <!-- 구글맵이 준비되기 전 더미 이미지나 회색 박스로 표시 -->
+        </div>
+
+        <p class="current-location"
+           th:text="'현재 위치는 ' + ${currentAddress} + '입니다.'">
+        </p>
+
+        <form th:action="@{/api/location/confirm}" method="post">
+            <!--            csrf 기능넣을것-->
+            <button type="submit" class="btn btn-confirm">
+                동네인증 완료하기
+            </button>
+        </form>
+    </section>
+
+    <h1>구글 맵</h1>
+    <div id="map"></div>
+</main>
+
+<!-- 공통 푸터 -->
+<div th:replace="fragments/footer :: common-footer"></div>
+
+<script th:src="@{/js/pages/location.js}"></script>
+
+<script
+        th:attr="src=
+    @{https://maps.googleapis.com/maps/api/js(
+        key=${googleMapsApiKey},
+        libraries='places',
+        callback='initMap'
+    )}"
+        async defer>
+</script>
+
 
 </body>
 </html>

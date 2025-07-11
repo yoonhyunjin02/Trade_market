@@ -4,6 +4,15 @@ body {
   padding: 0;
 }
 
+/* Search Result Section */
+.no-result-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
@@ -16,7 +25,6 @@ body {
   color: #4E4E4E;
 }
 
-/* 페이지 버튼 */
 .page-btn {
   background: none;
   border: none;
@@ -24,6 +32,15 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
+  opacity: 0.3; /* 기본은 흐리게 */
+  pointer-events: none; /* 클릭 비활성화 */
+  transition: opacity 0.2s ease-in-out;
+}
+
+.page-btn.active {
+  opacity: 1;
+  pointer-events: auto; /* 클릭 활성화 */
+  cursor: pointer;
 }
 
 .page-btn img {
@@ -45,4 +62,38 @@ body {
 .pagination span {
   font-size: 16px;
   color: #4E4E4E;
+}
+
+#pageForm {
+  display: inline;
+}
+
+#pageInput {
+  width: 15px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+  color: inherit;
+  text-align: center;
+  outline: none;
+  appearance: textfield;
+}
+
+#pageInput::-webkit-inner-spin-button,
+#pageInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pagination input[type="number"] {
+  width: 15px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+  appearance: textfield; /* 크롬에서 화살표 제거 */
 }

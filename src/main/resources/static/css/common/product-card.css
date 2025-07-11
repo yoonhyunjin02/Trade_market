@@ -4,6 +4,8 @@
   grid-template-columns: repeat(4, 210px);
   gap: 24px;
   justify-content: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 /* 카드 전체 */

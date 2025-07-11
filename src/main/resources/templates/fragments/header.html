@@ -21,9 +21,8 @@
 				<nav aria-label="메인 메뉴">
 					<ul>
 						<li><a th:href="@{/products}">중고거래</a></li>
-						<li th:if="${session.user != null}">
+						<li sec:authorize="isAuthenticated()">
 							<a th:href="@{/location}">동네인증</a>
-
 						</li>
 					</ul>
 				</nav>
