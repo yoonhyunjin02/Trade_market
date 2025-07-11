@@ -1,10 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${productId != null ? '상품 수정' : '상품 등록'}">상품 등록</title>
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/write.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
+<!--* 공통 헤더 *-->
+<div th:replace="~{fragments/header :: common-header}"></div>
+
+<main>
+    <section class="write-section">
+        <div class="write-container">
+            <!-- 상품 등록/수정 폼 -->
+            <form th:action="${productId != null ? '/products/' + productId + '/edit' : '/products/new'}"
+                  method="post"
+                  th:object="${productDto}"
+                  class="write-form">
+
+                <!-- 상단 영역: 이미지 업로드 + 제목 + 가격 -->
+                <div class="top-section">
+                    <!-- 이미지 업로드 영역 -->
+                    <div class="image-upload-section">
+                        <div class="image-upload-area">
+                            <div class="upload-placeholder">
+                                <div class="camera-icon">📷</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 제목 + 가격 영역 -->
+                    <div class="title-price-section">
+                        <!-- 글 제목 -->
+                        <div class="form-group">
+                            <label for="title">글 제목</label>
+                            <input type="text"
+                                   id="title"
+                                   th:field="*{title}"
+                                   th:classappend="${#fields.hasErrors('title') ? 'error' : ''}"
+                                   placeholder="글 제목"
+                                   maxlength="100">
+                            <div class="error-message"
+                                 th:if="${#fields.hasErrors('title')}"
+                                 th:errors="*{title}"></div>
+                        </div>
+
+                        <!-- 카테고리 -->
+                        <div class="form-group">
+                            <label for="categoryName">카테고리</label>
+                            <input type="text"
+                                   id="categoryName"
+                                   th:field="*{categoryName}"
+                                   th:classappend="${#fields.hasErrors('categoryName') ? 'error' : ''}"
+                                   placeholder="카테고리"
+                                   maxlength="50">
+                            <div class="error-message"
+                                 th:if="${#fields.hasErrors('categoryName')}"
+                                 th:errors="*{categoryName}"></div>
+                        </div>
+
+                        <!-- 가격 -->
+                        <div class="form-group">
+                            <label for="price">가격</label>
+                            <input type="text"
+                                   id="price"
+                                   th:field="*{price}"
+                                   th:classappend="${#fields.hasErrors('price') ? 'error' : ''}"
+                                   placeholder="가격"
+                                   maxlength="15">
+                            <div class="error-message"
+                                 th:if="${#fields.hasErrors('price')}"
+                                 th:errors="*{price}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상품 설명 -->
+                <div class="form-group">
+                    <label for="description">물품 설명</label>
+                    <textarea id="description"
+                              th:field="*{description}"
+                              th:classappend="${#fields.hasErrors('description') ? 'error' : ''}"
+                              placeholder="게시글 내용을 작성해주세요."
+                              rows="10"></textarea>
+                    <div class="error-message"
+                         th:if="${#fields.hasErrors('description')}"
+                         th:errors="*{description}"></div>
+                </div>
+
+                <!-- 거래 희망 장소 -->
+                <div class="form-group">
+                    <label for="location">거래 희망 장소</label>
+                    <input type="text"
+                           id="location"
+                           th:field="*{location}"
+                           placeholder="거래를 희망하는 장소">
+                </div>
+
+                <!-- 제출 버튼 -->
+                <button type="submit" class="btn-submit">
+                    완료
+                </button>
+
+            </form>
+        </div>
+    </section>
+</main>
+
+<!--* 공통 푸터 *-->
+<div th:replace="~{fragments/footer :: common-footer}"></div>
+
+<!-- JavaScript 파일들 -->
+<script src="/js/common/header.js"></script>
+<script src="/js/common/footer.js"></script>
+<script src="/js/pages/write.js"></script>
 
 </body>
 </html>

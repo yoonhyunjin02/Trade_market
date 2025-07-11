@@ -254,7 +254,7 @@ public class ProductController {
                     user,
                     productDto.getDescription().trim(),
                     productDto.getPrice(),
-                    user.getUserLocation(),
+                    productDto.getLocation(),
                     category
             );
 
@@ -346,6 +346,7 @@ public class ProductController {
                     product.getTitle(),
                     product.getDescription(),
                     product.getPrice(),
+                    product.getCategory() != null ? product.getCategory().getName() : "",
                     categoryName
             );
 
