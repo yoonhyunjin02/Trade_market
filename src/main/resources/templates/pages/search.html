@@ -3,42 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Search</title>
-    <link rel="stylesheet" href="/css/common/common.css">
-    <link rel="stylesheet" href="/css/common/header.css">
-    <link rel="stylesheet" href="/css/common/footer.css">
-    <link rel="stylesheet" href="/css/common/product-card.css">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/product-card.css}">
 
-    <link rel="stylesheet" href="/css/pages/search.css">
+    <link rel="stylesheet" th:href="@{/css/pages/search.css}">
 </head>
 <body>
+
 <!-- Header Fragment -->
-<div th:replace="fragments/header :: header"></div>
+<header th:replace="fragments/header :: header"></header>
 
-<!-- Search Result Section -->
-<section class="search-results">
-    <div class="item-grid">
-        <div th:each="product : ${products}"
-             th:replace="fragments/product-card :: productCard(${product})">
+<main>
+    <!-- Search Result Section -->
+    <section class="search-results">
+        <p th:if="${#lists.isEmpty(products)}" class="no-result-message">검색 결과가 없습니다.</p>
+
+        <div class="item-grid">
+            <div th:each="product : ${products}"
+                 th:include="fragments/product-card :: productCard(${product})">
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Pagination Section -->
-<div class="pagination">
-    <button class="page-btn prev">
-        <img src="/images/icons/arrow-left.svg" alt="이전">
-    </button>
+    <!-- Pagination Section -->
+    <nav class="pagination"
+         th:if="${page != null && page.totalPages > 1}">
 
-    <input type="number" id="pageInput" class="page-input" min="1" th:max="${totalPages}" th:value="${currentPage}">
-    <span th:text="'/ ' + ${totalPages}"></span>
+        <!-- 이전 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
+        <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number - 1})}"
+           th:class="'page-btn prev' + (${page.hasPrevious()} ? ' active' : ' disabled')">
+            <img src="/images/icons/arrow-left.svg" alt="이전">
+        </a>
 
-    <button class="page-btn next">
-        <img src="/images/icons/arrow-right.svg" alt="다음">
-    </button>
-</div>
+        <!-- 현재 페이지 입력창 -->
+        <form id="pageForm" onsubmit="return goToPageInput()">
+            <input type="number"
+                   id="pageInput"
+                   name="pageInput"
+                   min="1"
+                   th:attr="max=${page.totalPages}"
+                   th:value="${page.number + 1}">
+            / <span th:text="${page.totalPages}">1</span>
+        </form>
+
+        <!-- 다음 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
+        <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number + 1})}"
+           th:class="'page-btn next' + (${page.hasNext()} ? ' active' : ' disabled')">
+            <img src="/images/icons/arrow-right.svg" alt="다음">
+        </a>
+    </nav>
+</main>
 
 <!-- Footer Fragment -->
-<div th:replace="fragments/footer :: footer"></div>
+<footer th:replace="fragments/footer :: footer"></footer>
 
 </body>
 <script src="/js/common/header.js"></script>
