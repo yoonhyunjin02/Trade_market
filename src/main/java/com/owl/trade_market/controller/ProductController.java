@@ -2,6 +2,7 @@ package com.owl.trade_market.controller;
 
 import com.owl.trade_market.dto.ProductDto;
 import com.owl.trade_market.entity.Category;
+import com.owl.trade_market.entity.Image;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.service.CategoryService;
@@ -9,9 +10,7 @@ import com.owl.trade_market.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -93,6 +93,7 @@ public class ProductController {
     @GetMapping("/search")
     public String searchProducts(@RequestParam String keyword,
                                  @RequestParam(required = false) Long categoryId,
+                                 @RequestParam(defaultValue = "0") int page,
                                  Model model,
                                  HttpSession session,
                                  @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -111,25 +112,23 @@ public class ProductController {
             // 카테고리 조회
             Category category = null;
             if (categoryId != null) {
-                Optional<Category> categoryOpt = categoryService.findById(categoryId);
-                if (categoryOpt.isPresent()) {
-                    category = categoryOpt.get();
-                }
+                category = categoryService.findById(categoryId).orElse(null);
             }
 
-            // 검색 실행
-            Page<Product> searchPage = productService.searchProduct(
-                    keyword.trim(), category,
-                    Pageable.unpaged(Sort.by("createdAt").descending())
-            );
-            List<Product> searchResults = searchPage.getContent();
+            // 페이징 처리
+            Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
 
-            model.addAttribute("products", searchResults);
+            // 검색 실행
+            Page<Product> searchPage = productService.searchProduct(keyword.trim(), category, pageable);
+
+            // 모델 속성 등록
+            model.addAttribute("page", searchPage);
+            model.addAttribute("products", searchPage.getContent());
             model.addAttribute("keyword", keyword);
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", category);
 
-            // 인기 카테고리 목록 추가
+            // 인기 카테고리 추가
             List<Category> popularCategories = categoryService.getPopularCategories(10);
             model.addAttribute("popularCategories", popularCategories);
 

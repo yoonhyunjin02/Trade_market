@@ -8,5 +8,4 @@ public class TradeMarketApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TradeMarketApplication.class, args);
 	}
-
 }
