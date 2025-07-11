@@ -2,6 +2,7 @@ package com.owl.trade_market.controller;
 
 import com.owl.trade_market.dto.UserDto;
 import com.owl.trade_market.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +23,8 @@ public class AuthController {
 
     //로그인 페이지 이동
     @GetMapping("/login")
-    public String loginForm(@RequestHeader(value = "Referer", required = false) String referer) {
+    public String loginForm(@RequestHeader(value = "Referer", required = false) String referer,
+                            HttpSession session) {
 
         // 인증 객체 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,6 +38,12 @@ public class AuthController {
             }
 
             return "redirect:" + referer;
+        }
+
+        // 로그인 전 머물던 URL을 세션에 저장
+        // 로그인/회원가입 페이지에서 온 경우는 저장하지 않음
+        if (referer != null && !referer.contains("/login") && !referer.contains("/register")) {
+            session.setAttribute("previousUrl", referer);
         }
         return "pages/login";
     }
@@ -77,8 +85,7 @@ public class AuthController {
     public String register(@ModelAttribute UserDto userDto,
                            RedirectAttributes redirectAttributes) {
 
-
-        try {
+            // try-catch 블록 삭제 / 모든 예외는 GlobalExceptionHandler가 처리
             if (!userDto.isPasswordMatching()) {
                 redirectAttributes.addFlashAttribute("userDto", userDto);
                 redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
@@ -96,19 +103,11 @@ public class AuthController {
                 redirectAttributes.addFlashAttribute("error", "비밀번호는 6자 이상이어야 합니다.");
                 return "redirect:/register";
             }
-
+            
+            // 서비스 호출: 여기서 발생하는 예외는 GlobalExceptionHandler가 가로채서 처리
             userService.register(userDto);
             redirectAttributes.addFlashAttribute("success", "회원가입이 완료되었습니다. 로그인해주세요.");
             return "redirect:/login";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("userDto", userDto);
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/register";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("userDto", userDto);
-            redirectAttributes.addFlashAttribute("error", "회원가입 중 오류가 발생했습니다.");
-            return "redirect:/register";
-        }
 
     }
 
