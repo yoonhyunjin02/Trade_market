@@ -1,10 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>상품 상세</title>
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/pages/trade_post.css">
 </head>
 <body>
 
+<!-- Header Fragment -->
+<header th:replace="fragments/header :: header"></header>
+
+<main class="product-detail">
+    <!-- 뒤로가기 -->
+    <div class="back-nav">
+        <button class="back-btn" onclick="history.back()">← 뒤로가기</button>
+    </div>
+
+    <div class="product-container">
+        <!-- 상품 이미지 -->
+        <div class="product-image">
+            <img th:src="${product.imageUrl}" th:alt="${product.title}" src="/images/default-product.jpg" alt="상품 이미지">
+        </div>
+
+        <!-- 상품 정보 -->
+        <div class="product-info">
+            <!-- 판매자 정보 -->
+            <div class="seller-info">
+                <span class="seller-name" th:text="${product.seller.userName}">판매자명</span>
+                <span class="seller-location" th:text="${product.seller.userLocation}">판매자 위치</span>
+            </div>
+
+            <!-- 상품 제목 -->
+            <h1 class="product-title" th:text="${product.title}">상품 제목</h1>
+
+            <!-- 카테고리와 시간 -->
+            <div class="product-meta">
+                <span class="category" th:text="${product.category?.name}">카테고리</span>
+                <span class="separator">•</span>
+                <span class="time" th:text="${#temporals.format(product.createdAt, 'M월 d일')}">등록일</span>
+                <span class="separator">•</span>
+                <span class="location" th:text="${product.location}">거래장소</span>
+            </div>
+
+            <!-- 상품 설명 -->
+            <div class="product-description">
+                <p th:text="${product.description}">상품 설명</p>
+            </div>
+
+            <!-- 조회수, 채팅 정보 -->
+            <div class="product-stats">
+                <span>조회 <span th:text="${product.viewCount}"></span></span>
+                <span>채팅 <span th:text="${product.chatCount}"></span></span>
+            </div>
+
+            <!-- 가격과 채팅하기 버튼 -->
+            <div class="product-bottom">
+                <div class="price-section">
+                    <span class="price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' 원'"></span>
+                </div>
+
+                <!-- 판매자가 아닌 경우만 채팅하기 버튼 표시 -->
+                <div class="action-buttons" th:unless="${isOwner}">
+                    <button class="btn-chat">채팅하기</button>
+                </div>
+            </div>
+
+            <!-- 신고/수정 링크 -->
+            <div class="bottom-links">
+                <a href="#" th:if="${!isOwner}">신고하기</a>
+                <a href="#" th:if="${isOwner}">수정하기</a>
+                <span th:if="${!isOwner}">|</span>
+                <a href="#" th:if="${!isOwner}">수정하기</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
 </body>
+<script src="/js/common/header.js"></script>
+<script src="/js/common/footer.js"></script>
+<script src="/js/pages/trade_post.js"></script>
 </html>
