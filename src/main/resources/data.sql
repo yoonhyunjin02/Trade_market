@@ -1,6 +1,9 @@
--- 카테고리 삽입
+-- 1. 카테고리 삽입 (존재하지 않을 때만)
 INSERT INTO category (category_id, category_name, product_count)
-VALUES (1, '전자기기', 0);
+SELECT 1, '전자기기', 0
+WHERE NOT EXISTS (
+  SELECT 1 FROM category WHERE category_id = 1
+);
 
 -- 제품 8개 삽입
 INSERT INTO products (
