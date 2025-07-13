@@ -34,7 +34,7 @@
         <!-- 이전 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
         <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number - 1})}"
            th:class="'page-btn prev' + (${page.hasPrevious()} ? ' active' : ' disabled')">
-            <img src="/images/icons/arrow-left.svg" alt="이전">
+            <img src="/images/icons/arrow.svg" alt="이전" class="flip-horizontal">
         </a>
 
         <!-- 현재 페이지 입력창 -->
@@ -51,7 +51,7 @@
         <!-- 다음 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
         <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number + 1})}"
            th:class="'page-btn next' + (${page.hasNext()} ? ' active' : ' disabled')">
-            <img src="/images/icons/arrow-right.svg" alt="다음">
+            <img src="/images/icons/arrow.svg" alt="다음">
         </a>
     </nav>
 </main>
@@ -59,10 +59,10 @@
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
-</body>
 <script src="/js/common/header.js"></script>
 <script src="/js/common/footer.js"></script>
 <script src="/js/common/product-card.js"></script>
 
 <script src="/js/pages/search.js"></script>
+</body>
 </html>

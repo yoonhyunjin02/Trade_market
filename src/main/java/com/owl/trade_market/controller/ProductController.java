@@ -19,10 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/products")
@@ -34,9 +31,11 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    //상품 목록 페이지 (trade.html)
+    //상품 목록 초기 페이지 (trade.html)
     @GetMapping
-    public String productList(@RequestParam(required = false) String keyword,
+    public String productList(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "16") int size,
+                              @RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
                               Model model,
                               HttpSession session,
@@ -46,8 +45,10 @@ public class ProductController {
         model.addAttribute("user", user);
 
         try {
-            List<Product> allProducts;
+            Page<Product> productPage;
             Category selectedCategory = null;
+
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
             // 카테고리 필터가 있는 경우
             if (categoryId != null) {
@@ -58,21 +59,15 @@ public class ProductController {
             }
 
             if (keyword != null && !keyword.trim().isEmpty()) {
-                // 키워드 + 카테고리 검색
-                Page<Product> searchPage = productService.searchProduct(
-                        keyword.trim(), selectedCategory,
-                        Pageable.unpaged(Sort.by("createdAt").descending())
-                );
-                allProducts = searchPage.getContent();
+                productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
             } else if (selectedCategory != null) {
-                // 카테고리만 필터링
-                allProducts = productService.findByCategory(selectedCategory, Sort.by("createdAt").descending());
+                productPage = productService.findByCategory(selectedCategory, pageable);
             } else {
-                // 전체 상품 조회
-                allProducts = productService.findAll(Sort.by("createdAt").descending());
+                productPage = productService.findAll(pageable);
             }
 
-            model.addAttribute("products", allProducts);
+            model.addAttribute("products", productPage.getContent());
+            model.addAttribute("hasNext", productPage.hasNext());
             model.addAttribute("keyword", keyword);
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
@@ -83,7 +78,8 @@ public class ProductController {
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
-            model.addAttribute("products", java.util.Collections.emptyList());
+            model.addAttribute("products", Collections.emptyList());
+            model.addAttribute("hasNext", false);
         }
 
         return "pages/trade";

@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<!-- null 체크 추가 -->
-<div th:if="${product != null}" th:fragment="productCard(product)">
+<article th:if="${product != null}" th:fragment="productCard(product)">
     <a th:href="@{'/products/' + ${product.id}}" class="item-link">
         <div class="item">
 
-            <!-- 이미지: 비었거나 null이면 기본 이미지 -->
-            <img th:if="${#lists.isEmpty(product.images) or product.images[0]?.image == null}"
+            <!-- 기본 이미지: 이미지가 없거나 비었거나 첫 이미지가 null일 때 -->
+            <img th:if="${product.images == null or product.images.size() == 0 or product.images[0].image == null}"
                  src="/images/mascot.png"
-                 alt="기본 이미지"/>
+                 alt="기본 이미지" />
 
-            <!-- 이미지: 첫 이미지가 있을 때만 -->
-            <img th:if="${!#lists.isEmpty(product.images) and product.images[0]?.image != null}"
+            <!-- 실제 이미지: 첫 이미지가 존재할 때만 -->
+            <img th:if="${product.images != null and product.images.size() > 0 and product.images[0].image != null}"
                  th:src="@{${product.images[0].image}}"
-                 alt="상품 이미지"/>
+                 alt="상품 이미지" />
 
             <div class="item-info">
                 <p class="title" th:text="${product.title}">제목</p>
@@ -28,6 +24,11 @@
             </div>
         </div>
     </a>
+</article>
+
+<!-- 🔽 안전하게 여러 카드 렌더링 -->
+<div th:fragment="productCardList">
+    <div th:each="product : ${products}">
+        <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+    </div>
 </div>
-</body>
-</html>

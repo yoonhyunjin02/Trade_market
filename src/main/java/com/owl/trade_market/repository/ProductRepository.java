@@ -14,20 +14,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-//    // 키워드 검색 (제목 + 설명)
-//    @Query("SELECT p FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword%")
-//    Page<Product> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
-//
-//    // 키워드 + 카테고리 검색
-//    @Query("SELECT p FROM Product p WHERE " +
-//       "(:keyword IS NULL OR " +
-//       "LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//       "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-//       "AND (:category IS NULL OR p.category = :category) " +
-//       "ORDER BY p.createdAt DESC")
-//    Page<Product> findByKeywordAndCategory(@Param("keyword") String keyword,
-//                                       @Param("category") Category category,
-//                                       Pageable pageable);
     // 검색
     @Query("""
     SELECT p FROM Product p
@@ -46,6 +32,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             Pageable pageable
     );
 
+    // 검색어만 있을 때
+    Page<Product> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
 
 
     // 카테고리별 조회

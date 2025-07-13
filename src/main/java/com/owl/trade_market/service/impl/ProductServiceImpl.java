@@ -84,26 +84,37 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
-//        if (category != null) {
-//            return productRepository.findByKeywordAndCategory(keyword, category, pageable);
-//        } else {
-//            return productRepository.findByKeyword(keyword, pageable);
-//        }
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> searchProductByKeyword(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Page.empty(pageable); // 또는 전체 반환도 가능: return productRepository.findAll(pageable);
+        }
+        return productRepository.findByTitleContainingIgnoreCase(keyword.trim(), pageable);
+    }
+
+
+
     @Override
     @Transactional(readOnly = true)
     public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 키워드 없으면 그냥 카테고리 필터만으로 검색
+            return productRepository.findByCategory(category, pageable);
+        }
+
         return productRepository.search(keyword, category, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Product> findByCategory(Category category, Pageable pageable) {
+        if (category == null) {
+            return Page.empty(pageable); // 또는 throw new IllegalArgumentException("category is null");
+        }
         return productRepository.findByCategory(category, pageable);
     }
+
 
     @Override
     @Transactional(readOnly = true)

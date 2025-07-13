@@ -30,42 +30,27 @@
     </section>
 
     <!-- Product Grid Section -->
-<!--    <section class="popular-items" aria-labelledby="popular-title">-->
-<!--        <h2 id="popular-title">중고거래 인기매물</h2>-->
-
-<!--        <div class="item-grid">-->
-<!--            <div th:if="${#lists.isEmpty(products)}"-->
-<!--                 th:each="product : ${defaultProducts}">-->
-<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
-<!--            </div>-->
-
-<!--            <div th:unless="${#lists.isEmpty(products)}"-->
-<!--                 th:each="product : ${products}">-->
-<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
     <section class="popular-items" aria-labelledby="popular-title">
         <h2 id="popular-title">중고거래 인기매물</h2>
 
         <div class="item-grid" id="product-container">
-            <!-- 상품 카드들이 JS로 여기에 추가될 예정 -->
+            <div th:each="product : ${products}">
+                <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+            </div>
         </div>
+        <div id="scroll-sentinel"></div>
     </section>
+
 </main>
 
 <!-- Floating Action Button -->
 <nav>
-    <a th:href="@{/api/products/new}" class="floating-btn" aria-label="중고 거래글 작성">거래글쓰기</a>
+    <a th:href="@{/products/new}" class="floating-btn" aria-label="중고 거래글 작성">거래글쓰기</a>
 </nav>
 
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
+<script th:src="@{/js/pages/trade.js}"></script>
 </body>
-<script src="/js/common/header.js"></script>
-<script src="/js/common/footer.js"></script>
-<script src="/js/common/product-card.js"></script>
-
-<script src="/js/pages/trade.js"></script>
 </html>
