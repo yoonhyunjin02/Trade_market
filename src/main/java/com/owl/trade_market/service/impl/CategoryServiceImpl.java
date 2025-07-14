@@ -4,6 +4,7 @@ import com.owl.trade_market.entity.Category;
 import com.owl.trade_market.repository.CategoryRepository;
 import com.owl.trade_market.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +28,30 @@ public class CategoryServiceImpl implements CategoryService {
         // 공백 제거 및 정규화
         String normalizedName = categoryName.trim();
 
-        // 기존 카테고리 찾기 (대소문자 구분 없음)
+        // ✅ 첫 번째 시도: 기존 카테고리 찾기
         Optional<Category> existingCategory = categoryRepository.findByNameIgnoreCase(normalizedName);
-
         if (existingCategory.isPresent()) {
             return existingCategory.get();
         }
 
-        // 새 카테고리 생성
-        Category newCategory = new Category();
-        newCategory.setName(normalizedName);
-        newCategory.setCount(0); // 초기값 0
+        // ✅ 새 카테고리 생성 시도 (중복 키 예외 처리)
+        try {
+            Category newCategory = new Category();
+            newCategory.setName(normalizedName);
+            newCategory.setCount(0); // 초기값 0
+            return categoryRepository.save(newCategory);
 
-        return categoryRepository.save(newCategory);
+        } catch (DataIntegrityViolationException e) {
+            // ✅ 중복 키 예외 발생 시: 다시 조회 시도
+            // 다른 트랜잭션에서 같은 이름의 카테고리를 생성했을 가능성
+            Optional<Category> retryCategory = categoryRepository.findByNameIgnoreCase(normalizedName);
+            if (retryCategory.isPresent()) {
+                return retryCategory.get();
+            }
+
+            // 여전히 찾을 수 없으면 예외 재발생
+            throw new RuntimeException("카테고리 생성 중 예상치 못한 오류가 발생했습니다: " + normalizedName, e);
+        }
     }
 
     @Override
