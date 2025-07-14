@@ -31,7 +31,7 @@
     <nav class="pagination"
          th:if="${page != null && page.totalPages > 1}">
 
-        <!-- 이전 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
+        <!-- 이전 버튼 -->
         <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number - 1})}"
            th:class="'page-btn prev' + (${page.hasPrevious()} ? ' active' : ' disabled')">
             <img src="/images/icons/arrow.svg" alt="이전" class="flip-horizontal">
@@ -48,7 +48,7 @@
             / <span th:text="${page.totalPages}">1</span>
         </form>
 
-        <!-- 다음 버튼 (항상 표시하되 이동 가능 여부에 따라 스타일 변경) -->
+        <!-- 다음 버튼 -->
         <a th:href="@{'/products/search'(keyword=${keyword}, categoryId=${categoryId}, page=${page.number + 1})}"
            th:class="'page-btn next' + (${page.hasNext()} ? ' active' : ' disabled')">
             <img src="/images/icons/arrow.svg" alt="다음">
@@ -59,10 +59,6 @@
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
-<script src="/js/common/header.js"></script>
-<script src="/js/common/footer.js"></script>
-<script src="/js/common/product-card.js"></script>
-
-<script src="/js/pages/search.js"></script>
+<script th:src="@{/js/pages/search.js}"></script>
 </body>
 </html>

@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Footer</title>
+</head>
+<body>
 <article th:if="${product != null}" th:fragment="productCard(product)">
     <a th:href="@{'/products/' + ${product.id}}" class="item-link">
         <div class="item">
@@ -26,9 +33,10 @@
     </a>
 </article>
 
-<!-- 🔽 안전하게 여러 카드 렌더링 -->
 <div th:fragment="productCardList">
     <div th:each="product : ${products}">
         <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
     </div>
 </div>
+</body>
+</html>
