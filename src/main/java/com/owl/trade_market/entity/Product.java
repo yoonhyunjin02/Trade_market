@@ -57,6 +57,7 @@ public class Product {
 
     // 상품 등록용
     public Product(User seller, String title, String description, int price, String location, Category category) {
+        this();
         this.seller = seller;
         this.title = title;
         this.description = description;
