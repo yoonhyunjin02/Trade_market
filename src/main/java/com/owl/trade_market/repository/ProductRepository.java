@@ -42,4 +42,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 판매자별 조회 (마이페이지용)
     List<Product> findBySeller(User seller, Sort sort);
+    
+    // 위치 조회
+    @Query("SELECT DISTINCT p.location FROM Product p WHERE p.location IS NOT NULL AND p.location <> ''")
+    List<String> findDistinctLocations();
 }

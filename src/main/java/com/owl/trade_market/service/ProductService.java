@@ -33,4 +33,7 @@ public interface ProductService {
     // 카테고리 관련
     Page<Product> findByCategory(Category category, Pageable pageable);
     List<Product> findByCategory(Category category, Sort sort);
+
+    // 중복 없는 위치 전체 조회
+    List<String> getAllDistinctLocations();
 }

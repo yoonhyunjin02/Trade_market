@@ -121,4 +121,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findByCategory(Category category, Sort sort) {
         return productRepository.findByCategory(category, sort);
     }
+
+    @Override
+    public List<String> getAllDistinctLocations() {
+        return productRepository.findDistinctLocations();
+    }
 }

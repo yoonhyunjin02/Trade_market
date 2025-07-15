@@ -37,6 +37,7 @@ public class ProductController {
                               @RequestParam(defaultValue = "16") int size,
                               @RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
+                              @RequestParam(required = false) String location,
                               Model model,
                               HttpSession session,
                               @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -50,7 +51,6 @@ public class ProductController {
 
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-            // 카테고리 필터가 있는 경우
             if (categoryId != null) {
                 Optional<Category> categoryOpt = categoryService.findById(categoryId);
                 if (categoryOpt.isPresent()) {
@@ -72,9 +72,13 @@ public class ProductController {
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
 
-            // 인기 카테고리 목록 추가 (필터용)
-            List<Category> popularCategories = categoryService.getPopularCategories(10);
-            model.addAttribute("popularCategories", popularCategories);
+            //  전체 카테고리
+            List<Category> allCategories = categoryService.findAll();
+            model.addAttribute("categories", allCategories);
+
+            // 전체 위치
+            List<String> allLocations = productService.getAllDistinctLocations();
+            model.addAttribute("locations", allLocations);
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
@@ -112,7 +116,7 @@ public class ProductController {
             }
 
             // 페이징 처리
-            Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
+            Pageable pageable = PageRequest.of(page, 12, Sort.by("createdAt").descending());
 
             // 검색 실행
             Page<Product> searchPage = productService.searchProduct(keyword.trim(), category, pageable);
