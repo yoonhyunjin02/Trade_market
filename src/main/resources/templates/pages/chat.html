@@ -1,10 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>당근 채팅</title>
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/chat.css}">
 </head>
 <body>
 
+<!--* 공통 헤더 /-->
+<div th:replace="~{fragments/header :: common-header}"></div>
+
+<div class="chat-container">
+    <!-- 채팅 영역 -->
+    <div class="chat-area">
+        <!-- 좌측 채팅 리스트 -->
+        <div class="chat-list">
+            <div class="chat-list-header">
+                <h3>내아이디</h3>
+                <div class="ai-badge">
+                    <span class="ai-icon">🤖</span>
+                    <span>AI 쇼핑</span>
+                    <small>쇼핑관련 톡봇을 통해 대화하세요</small>
+                </div>
+            </div>
+
+            <div class="chat-items">
+                <div class="chat-item">
+                    <div class="chat-avatar">
+                        <img src="https://via.placeholder.com/40" alt="프로필">
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">사용자아이디</div>
+                        <div class="chat-preview">네 감사합니다! 잘 쓸게요 감사합니다.</div>
+                    </div>
+                    <div class="chat-meta">
+                        <span class="chat-time">오후 3:16</span>
+                    </div>
+                </div>
+
+                <div class="chat-item">
+                    <div class="chat-avatar">
+                        <img src="https://via.placeholder.com/40" alt="프로필">
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">사용자아이디</div>
+                        <div class="chat-preview">네 감사합니다!</div>
+                    </div>
+                    <div class="chat-meta">
+                        <span class="chat-time">오전 8:50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측 채팅 대화 -->
+        <div class="chat-conversation">
+            <div class="conversation-header">
+                <div class="product-info">
+                    <img src="https://via.placeholder.com/60" alt="상품">
+                    <div class="product-details">
+                        <div class="product-title">LG 얼음통 냉장고 50000L</div>
+                        <div class="product-price">1,500,000원</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="messages-container">
+                <div class="message-date">오늘</div>
+
+                <div class="message received">
+                    <div class="message-content">
+                        안녕하세요~<br>
+                        가격 김치냉장고 구매합니다~ 오늘 어서 각 확인 바랍니다.<br>
+                        좋은 하루 되세요~
+                    </div>
+                    <div class="message-time">오전 8:20</div>
+                </div>
+            </div>
+
+            <div class="message-input-container">
+                <div class="input-wrapper">
+                    <input type="text" class="message-input" placeholder="메시지를 입력하세요...">
+                    <button class="send-btn">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--* 공통 푸터 /-->
+<div th:replace="~{fragments/footer :: common-footer}"></div>
+
+<script src="/js/pages/chat.js"></script>
 </body>
 </html>
