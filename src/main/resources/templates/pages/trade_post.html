@@ -75,13 +75,19 @@
                 <span class="label">희망 거래장소 · </span>
                 <span class="location" th:text="${product.location}">거래장소</span>
             </div>
-
             <!-- 하단 관리 링크 -->
             <div class="bottom-actions">
-                <div class="action-links">
-                    <a href="#" th:if="${isOwner}">삭제하기</a>
-                    <span th:if="${isOwner}"> | </span>
-                    <a href="#" th:if="${isOwner}">수정하기</a>
+                <div class="action-links" th:if="${isOwner}">
+                    <!-- 삭제하기 폼 -->
+                    <form th:action="@{'/products/' + ${product.id} + '/delete'}"
+                          method="post"
+                          style="display: inline;"
+                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit" class="delete-btn">삭제하기</button>
+                    </form>
+                    <span> | </span>
+                    <!-- 수정하기 링크 -->
+                    <a th:href="@{'/products/' + ${product.id} + '/edit'}" class="edit-link">수정하기</a>
                 </div>
             </div>
         </div>

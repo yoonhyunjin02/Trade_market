@@ -1,3 +1,5 @@
+/* trade_post.css - 당근마켓 스타일 */
+
 .product-detail {
     max-width: 1200px;
     margin: 0 auto;
@@ -193,17 +195,34 @@
 
 .action-links {
     display: flex;
+    align-items: center;
     gap: 8px;
     font-size: 14px;
 }
 
-.action-links a {
+.action-links .delete-btn {
+    background: none;
+    border: none;
+    color: #868e96;
+    text-decoration: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.action-links .delete-btn:hover {
+    color: #495057;
+    text-decoration: underline;
+}
+
+.action-links .edit-link {
     color: #868e96;
     text-decoration: none;
     padding: 4px 8px;
 }
 
-.action-links a:hover {
+.action-links .edit-link:hover {
     color: #495057;
     text-decoration: underline;
 }
