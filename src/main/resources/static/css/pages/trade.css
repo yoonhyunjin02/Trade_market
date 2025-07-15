@@ -226,3 +226,7 @@
 .floating-btn:hover {
   background-color: #e65c00;
 }
+
+.item-grid > div {
+  display: contents;
+}

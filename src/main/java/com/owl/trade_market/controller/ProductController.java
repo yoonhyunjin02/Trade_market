@@ -41,6 +41,7 @@ public class ProductController {
     @GetMapping
     public String productList(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "16") int size,
+                              @RequestParam(required = false) String sort,
                               @RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
                               @RequestParam(required = false) String location,
@@ -51,17 +52,38 @@ public class ProductController {
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("user", user);
 
+//        try {
+//            Page<Product> productPage;
+//            Category selectedCategory = null;
+//
+//            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+//
+//            if (categoryId != null) {
+//                Optional<Category> categoryOpt = categoryService.findById(categoryId);
+//                if (categoryOpt.isPresent()) {
+//                    selectedCategory = categoryOpt.get();
+//                }
+//            }
         try {
+            Sort sortOption;
+            // 항상 조회순 정렬 기본값
+            if (sort == null || sort.isEmpty() || "views".equals(sort)) {
+                sortOption = Sort.by("viewCount").descending();
+            } else if ("chats".equals(sort)) {
+                sortOption = Sort.by("chatCount").descending();
+            } else if ("latest".equals(sort)) {
+                sortOption = Sort.by("createdAt").descending();
+            } else {
+                sortOption = Sort.by("viewCount").descending(); // fallback
+            }
+
+            Pageable pageable = PageRequest.of(page, size, sortOption);
+
             Page<Product> productPage;
             Category selectedCategory = null;
 
-            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-
             if (categoryId != null) {
-                Optional<Category> categoryOpt = categoryService.findById(categoryId);
-                if (categoryOpt.isPresent()) {
-                    selectedCategory = categoryOpt.get();
-                }
+                selectedCategory = categoryService.findById(categoryId).orElse(null);
             }
 
             if (keyword != null && !keyword.trim().isEmpty()) {
@@ -86,6 +108,9 @@ public class ProductController {
             List<String> allLocations = productService.getAllDistinctLocations();
             model.addAttribute("locations", allLocations);
 
+            // 조회순 정렬
+            model.addAttribute("currentSort", sort == null ? "views" : sort);
+
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
             model.addAttribute("products", Collections.emptyList());
@@ -99,11 +124,19 @@ public class ProductController {
     public String scrollPage(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "16") int size,
+            @RequestParam(defaultValue = "views") String sort,
             Model model) {
 
-        System.out.println("✅ scrollPage() called with page=" + page); // 디버깅 용
+        Sort sortOption;
+        if ("views".equals(sort)) {
+            sortOption = Sort.by("viewCount").descending();
+        } else if ("chats".equals(sort)) {
+            sortOption = Sort.by("chatCount").descending();
+        } else {
+            sortOption = Sort.by("createdAt").descending();
+        }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, sortOption);
         Page<Product> productPage = productService.findAll(pageable);
 
         if (productPage.isEmpty()) {
