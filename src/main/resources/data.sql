@@ -36,35 +36,35 @@ INSERT INTO products (
 ('테스트 상품 15', '테스트 설명 7입니다.', 7000, '서울 강남구', NOW(), 1, 1),
 ('테스트 상품 16', '테스트 설명 8입니다.', 8000, '서울 강남구', NOW(), 1, 1);
 
--- chatroom 테이블 생성
-CREATE TABLE chatroom (
-                          chatroom_id SERIAL PRIMARY KEY,
-                          product_id INTEGER NOT NULL,
-                          buyer_id INTEGER NOT NULL
-);
-
--- chat 테이블 생성
-CREATE TABLE chat (
-                      chat_id SERIAL PRIMARY KEY,
-                      chatroom_id INTEGER NOT NULL,
-                      user_id VARCHAR(50),
-                      assistant_id VARCHAR(50),
-                      content TEXT NOT NULL,
-                      is_read BOOLEAN NOT NULL,
-                      created_at TIMESTAMP NOT NULL
-);
-
-
--- chatroom 외래 키
-ALTER TABLE chatroom
-    ADD CONSTRAINT fk_chatroom_product
-        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE;
-
-ALTER TABLE chatroom
-    ADD CONSTRAINT fk_chatroom_buyer
-        FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE;
-
--- chat 외래 키
-ALTER TABLE chat
-    ADD CONSTRAINT fk_chatroom_in_chat
-        FOREIGN KEY (chatroom_id) REFERENCES chatroom(chatroom_id) ON DELETE CASCADE;
+---- chatroom 테이블 생성
+--CREATE TABLE chatroom (
+--                          chatroom_id SERIAL PRIMARY KEY,
+--                          product_id INTEGER NOT NULL,
+--                          buyer_id INTEGER NOT NULL
+--);
+--
+---- chat 테이블 생성
+--CREATE TABLE chat (
+--                      chat_id SERIAL PRIMARY KEY,
+--                      chatroom_id INTEGER NOT NULL,
+--                      user_id VARCHAR(50),
+--                      assistant_id VARCHAR(50),
+--                      content TEXT NOT NULL,
+--                      is_read BOOLEAN NOT NULL,
+--                      created_at TIMESTAMP NOT NULL
+--);
+--
+--
+---- chatroom 외래 키
+--ALTER TABLE chatroom
+--    ADD CONSTRAINT fk_chatroom_product
+--        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE;
+--
+--ALTER TABLE chatroom
+--    ADD CONSTRAINT fk_chatroom_buyer
+--        FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE;
+--
+---- chat 외래 키
+--ALTER TABLE chat
+--    ADD CONSTRAINT fk_chatroom_in_chat
+--        FOREIGN KEY (chatroom_id) REFERENCES chatroom(chatroom_id) ON DELETE CASCADE;
