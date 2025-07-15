@@ -1,6 +1,7 @@
 package com.owl.trade_market.service.impl;
 
 import com.owl.trade_market.entity.Category;
+import com.owl.trade_market.entity.Image;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.repository.ProductRepository;
@@ -28,8 +29,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(String title, User seller, String description, int price, String location, Category category) {
+        // 상품 생성
         Product product = new Product(seller, title, description, price, location, category);
-        return productRepository.save(product);
+
+        // 상품을 먼저 저장
+        Product savedProduct = productRepository.save(product);
+
+        // 기본 이미지 엔티티 생성 및 추가
+        Image defaultImage = new Image(savedProduct, "/images/default-product.jpg");
+        savedProduct.getImages().add(defaultImage);
+
+        // 변경사항 저장 (cascade 옵션으로 Image도 함께 저장됨)
+        return productRepository.save(savedProduct);
     }
 
     @Override

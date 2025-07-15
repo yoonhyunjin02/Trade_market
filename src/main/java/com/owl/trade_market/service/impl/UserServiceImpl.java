@@ -63,4 +63,23 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUserName(String userName) {
         return userRepository.existsByUserName(userName);
     }
+
+    @Override
+    @Transactional
+    public void updateLocation(String userId, String address) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 찾을 수 없습니다: " + userId));
+
+        user.setUserLocation(address);
+    }
+
+
+
+    @Override
+    @Transactional
+    public void updateLocationByEmail(String email, String address) {
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+        user.setUserLocation(address);
+    }
 }

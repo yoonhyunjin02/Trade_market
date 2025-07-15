@@ -1,20 +1,35 @@
 package com.owl.trade_market.controller;
 
+import com.owl.trade_market.entity.User;
+import com.owl.trade_market.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/location")
 public class LocationController {
+
+    private final UserService userService;
+
+    public LocationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey; // application.properties에 적어놓은 키를 담는 객체
 
     // 1) 폼 화면 표시 (currentAddress 더미값 세팅)
-    @GetMapping("/location")
+    @GetMapping
     public String showLocationForm(Model model) {
         model.addAttribute("currentAddress", "");  // 더미 주소
         model.addAttribute("googleMapsApiKey", googleMapsApiKey); // Google Map API 키 주입
@@ -22,7 +37,7 @@ public class LocationController {
     }
 
     // 2) 사용자가 입력한 주소를 받아 같은 뷰로 렌더링
-    @PostMapping("/api/location")
+    @PostMapping
     public String submitLocation(
             @RequestParam("address") String address,
             Model model
@@ -32,15 +47,31 @@ public class LocationController {
     }
 
     // 3) 동네 인증 확정 처리
-    @PostMapping("/api/location/confirm")
+    @PostMapping("/confirm")
     public String confirmLocation(
-            @RequestParam("address") String address
+            @RequestParam("address") String address,
+            Authentication authentication
     ) {
-        // address를 DB나 세션에 실제 저장하는 로직 추가
-        // address를 받아서 사용자가 입력한 currentAddress와 비교
-        // 인증이 완료되면 main 페이지로 돌아감 + address를 location에 저장
-        return "pages/main";
+        // principal 타입 검사
+        Object principal = authentication.getPrincipal();
+        String key; // 식별자: 로컬=userId, 소셜=email
+
+        if (principal instanceof UserDetails) {
+            // 폼 로그인
+            key = ((UserDetails) principal).getUsername();
+            userService.updateLocation(key, address);
+        } else if (principal instanceof OAuth2User) {
+            // OAuth2 로그인
+            OAuth2User oauth2 = (OAuth2User) principal;
+            key = oauth2.getAttribute("email");
+            userService.updateLocationByEmail(key, address);
+        } else {
+            throw new IllegalStateException("알 수 없는 로그인 유형: " + principal.getClass());
+        }
+
+        return "redirect:/main";
     }
+
 
 
 }

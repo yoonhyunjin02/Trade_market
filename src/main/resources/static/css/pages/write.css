@@ -1,0 +1,251 @@
+/* 메인 컨텐츠 */
+main {
+    min-height: calc(100vh - 64px);
+    background-color: #f8f9fa;
+    padding: 0;
+}
+
+/* 작성 섹션 */
+.write-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.write-container {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* 폼 스타일 */
+.write-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* 상단 영역: 이미지 + 제목/가격 */
+.top-section {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* 이미지 업로드 섹션 */
+.image-upload-section {
+    flex-shrink: 0;
+}
+
+.image-upload-area {
+    width: 120px;
+    height: 120px;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.image-upload-area:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.upload-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-icon {
+    font-size: 32px;
+    color: #868e96;
+}
+
+/* 제목/가격 섹션 */
+.title-price-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 폼 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 라벨 스타일 */
+.form-group label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 4px;
+}
+
+/* 입력 필드 스타일 */
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 16px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    background-color: #f8f9fa;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    border-color: #ff8f00;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 143, 0, 0.1);
+}
+
+.form-group input[type="text"]::placeholder,
+.form-group textarea::placeholder {
+    color: #adb5bd;
+    font-size: 16px;
+}
+
+/* 텍스트 영역 */
+.form-group textarea {
+    resize: none;
+    min-height: 200px;
+    line-height: 1.6;
+}
+
+/* 에러 스타일 */
+.form-group input.error,
+.form-group textarea.error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-group input.error:focus,
+.form-group textarea.error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.error-message {
+    font-size: 14px;
+    color: #dc3545;
+    margin-top: 4px;
+    padding-left: 4px;
+}
+
+/* 제출 버튼 */
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    background-color: #ff8f00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 16px;
+}
+
+.btn-submit:hover {
+    background-color: #f57c00;
+}
+
+.btn-submit:disabled {
+    background-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .write-section {
+        padding: 16px 12px;
+    }
+
+    .write-container {
+        padding: 24px 20px;
+        border-radius: 12px;
+    }
+
+    .top-section {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .image-upload-area {
+        width: 100px;
+        height: 100px;
+    }
+
+    .camera-icon {
+        font-size: 28px;
+    }
+
+    .title-price-section {
+        gap: 16px;
+    }
+
+    .write-form {
+        gap: 24px;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        font-size: 16px; /* iOS 줌 방지 */
+        padding: 14px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .write-section {
+        padding: 12px 8px;
+    }
+
+    .write-container {
+        padding: 20px 16px;
+    }
+
+    .write-form {
+        gap: 20px;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        padding: 12px 10px;
+    }
+
+    .form-group label {
+        font-size: 15px;
+    }
+}
+
+/* 접근성 */
+.form-group input:focus,
+.form-group textarea:focus,
+.btn-submit:focus,
+.image-upload-area:focus {
+    outline: 2px solid #ff8f00;
+    outline-offset: 2px;
+}
+
+/* 부드러운 애니메이션 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
