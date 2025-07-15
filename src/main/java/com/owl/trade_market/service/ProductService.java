@@ -24,10 +24,16 @@ public interface ProductService {
     // 조회수 증가
     void increaseViewCount(Long id);
 
+    // 카테고리 없이 검색어만 있을 때 검색
+    Page<Product> searchProductByKeyword(String keyword, Pageable pageable);
+
     // 검색 관련
     Page<Product> searchProduct(String keyword, Category category, Pageable pageable);
 
     // 카테고리 관련
     Page<Product> findByCategory(Category category, Pageable pageable);
     List<Product> findByCategory(Category category, Sort sort);
+
+    // 중복 없는 위치 전체 조회
+    List<String> getAllDistinctLocations();
 }

@@ -52,6 +52,141 @@
   object-fit: cover;
 }
 
+/* ===== 필터 & 그리드 레이아웃 정렬 ===== */
+.trade-content-container {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.trade-content-container h4 {
+  font-size: 23px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* ===== 필터 영역 ===== */
+.trade-filter {
+  width: 250px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px 16px;
+  font-size: 14px;
+  color: #111;
+}
+
+.trade-filter aside {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reset-filter {
+  font-size: 12px;
+  color: #ff6f0e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.filter-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #111;
+}
+
+.filter-group input[type="radio"],
+.filter-group input[type="checkbox"] {
+  transform: scale(1.5);
+  accent-color: #ff6f0e;
+}
+
+/* ===== 가격 필터 ===== */
+.quick-price-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quick-price-options button {
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.quick-price-options button:hover {
+  background-color: #f7f7f7;
+}
+
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.price-inputs input {
+  width: 80px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.price-apply-btn {
+  background-color: transparent;
+  color: #444;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  align-self: flex-start;
+}
+
+.price-apply-btn:hover {
+  color: #ff6f0e;
+}
+
 /*상품 그리드*/
 .popular-items h2 {
     font-size: 42px;
@@ -90,4 +225,8 @@
 
 .floating-btn:hover {
   background-color: #e65c00;
+}
+
+.item-grid > div {
+  display: contents;
 }

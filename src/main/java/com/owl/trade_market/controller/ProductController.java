@@ -7,6 +7,9 @@ import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.service.CategoryService;
 import com.owl.trade_market.service.ProductService;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/products")
@@ -34,10 +37,14 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    //상품 목록 페이지 (trade.html)
+    //상품 목록 초기 페이지 (trade.html)
     @GetMapping
-    public String productList(@RequestParam(required = false) String keyword,
+    public String productList(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "16") int size,
+                              @RequestParam(required = false) String sort,
+                              @RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
+                              @RequestParam(required = false) String location,
                               Model model,
                               HttpSession session,
                               @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -45,48 +52,101 @@ public class ProductController {
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("user", user);
 
+//        try {
+//            Page<Product> productPage;
+//            Category selectedCategory = null;
+//
+//            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+//
+//            if (categoryId != null) {
+//                Optional<Category> categoryOpt = categoryService.findById(categoryId);
+//                if (categoryOpt.isPresent()) {
+//                    selectedCategory = categoryOpt.get();
+//                }
+//            }
         try {
-            List<Product> allProducts;
+            Sort sortOption;
+            // 항상 조회순 정렬 기본값
+            if (sort == null || sort.isEmpty() || "views".equals(sort)) {
+                sortOption = Sort.by("viewCount").descending();
+            } else if ("chats".equals(sort)) {
+                sortOption = Sort.by("chatCount").descending();
+            } else if ("latest".equals(sort)) {
+                sortOption = Sort.by("createdAt").descending();
+            } else {
+                sortOption = Sort.by("viewCount").descending(); // fallback
+            }
+
+            Pageable pageable = PageRequest.of(page, size, sortOption);
+
+            Page<Product> productPage;
             Category selectedCategory = null;
 
-            // 카테고리 필터가 있는 경우
             if (categoryId != null) {
-                Optional<Category> categoryOpt = categoryService.findById(categoryId);
-                if (categoryOpt.isPresent()) {
-                    selectedCategory = categoryOpt.get();
-                }
+                selectedCategory = categoryService.findById(categoryId).orElse(null);
             }
 
             if (keyword != null && !keyword.trim().isEmpty()) {
-                // 키워드 + 카테고리 검색
-                Page<Product> searchPage = productService.searchProduct(
-                        keyword.trim(), selectedCategory,
-                        Pageable.unpaged(Sort.by("createdAt").descending())
-                );
-                allProducts = searchPage.getContent();
+                productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
             } else if (selectedCategory != null) {
-                // 카테고리만 필터링
-                allProducts = productService.findByCategory(selectedCategory, Sort.by("createdAt").descending());
+                productPage = productService.findByCategory(selectedCategory, pageable);
             } else {
-                // 전체 상품 조회
-                allProducts = productService.findAll(Sort.by("createdAt").descending());
+                productPage = productService.findAll(pageable);
             }
 
-            model.addAttribute("products", allProducts);
+            model.addAttribute("products", productPage.getContent());
+            model.addAttribute("hasNext", productPage.hasNext());
             model.addAttribute("keyword", keyword);
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
 
-            // 인기 카테고리 목록 추가 (필터용)
-            List<Category> popularCategories = categoryService.getPopularCategories(10);
-            model.addAttribute("popularCategories", popularCategories);
+            //  전체 카테고리
+            List<Category> allCategories = categoryService.findAll();
+            model.addAttribute("categories", allCategories);
+
+            // 전체 위치
+            List<String> allLocations = productService.getAllDistinctLocations();
+            model.addAttribute("locations", allLocations);
+
+            // 조회순 정렬
+            model.addAttribute("currentSort", sort == null ? "views" : sort);
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
-            model.addAttribute("products", java.util.Collections.emptyList());
+            model.addAttribute("products", Collections.emptyList());
+            model.addAttribute("hasNext", false);
         }
 
         return "pages/trade";
+    }
+
+    @GetMapping("/scroll")
+    public String scrollPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "16") int size,
+            @RequestParam(defaultValue = "views") String sort,
+            Model model) {
+
+        Sort sortOption;
+        if ("views".equals(sort)) {
+            sortOption = Sort.by("viewCount").descending();
+        } else if ("chats".equals(sort)) {
+            sortOption = Sort.by("chatCount").descending();
+        } else {
+            sortOption = Sort.by("createdAt").descending();
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sortOption);
+        Page<Product> productPage = productService.findAll(pageable);
+
+        if (productPage.isEmpty()) {
+            return "fragments/empty :: empty";
+        }
+
+        model.addAttribute("products", productPage.getContent());
+
+        // fragment 이름만 반환 (prefix/suffix는 자동)
+        return "fragments/product-card-list :: fragment";
     }
 
     //검색 페이지 (search.html)
@@ -116,7 +176,7 @@ public class ProductController {
             }
 
             // 페이징 처리
-            Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
+            Pageable pageable = PageRequest.of(page, 12, Sort.by("createdAt").descending());
 
             // 검색 실행
             Page<Product> searchPage = productService.searchProduct(keyword.trim(), category, pageable);
@@ -273,7 +333,7 @@ public class ProductController {
     }
 
     //상품상세 페이지 (trade_post.html)
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public String productDetail(@PathVariable Long id,
                                 Model model,
                                 HttpSession session,

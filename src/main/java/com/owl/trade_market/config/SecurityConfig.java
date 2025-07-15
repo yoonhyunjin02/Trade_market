@@ -42,11 +42,13 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**",
                                 "/register", "/users/register",
                                 "/login", "/users/login",
-                                "/login/oauth2/**",   // 콜백 경로 허용
+                                "/login/oauth2/**",
                                 "/products",
-                                "/products/search"
-
+                                "/products/search",
+                                "/products/scroll",
+                                "/products/scroll/**"
                         ).permitAll()
+
                         // 그 외에는 모두 인증 필요
                         .anyRequest().authenticated()
                 )
@@ -62,13 +64,13 @@ public class SecurityConfig {
 
                 // 3) 커스텀 로그인 페이지 설정
                 .formLogin(form -> form
-                                .loginPage("/login")      // 내가 만든 /login 컨트롤러/뷰 사용
-                                .usernameParameter("userId")    // 커스텀 username사용(기본: username)
-                                .passwordParameter("userPassword") // 커스텀 password사용(기본: password)
-                                .loginProcessingUrl("/users/login") // form action URL
-                                .failureUrl("/login?error") //추가
-                                .successHandler(formLoginSuccessHandler) // 커스텀 핸들러 사용
-                                .permitAll()
+                        .loginPage("/login")      // 내가 만든 /login 컨트롤러/뷰 사용
+                        .usernameParameter("userId")    // 커스텀 username사용(기본: username)
+                        .passwordParameter("userPassword") // 커스텀 password사용(기본: password)
+                        .loginProcessingUrl("/users/login") // form action URL
+                        .failureUrl("/login?error") //추가
+                        .successHandler(formLoginSuccessHandler) // 커스텀 핸들러 사용
+                        .permitAll()
                 )
                 // 3) 로그아웃 설정
                 .logout(logout -> logout

@@ -1,6 +1,7 @@
 package com.owl.trade_market.service.impl;
 
 import com.owl.trade_market.entity.Category;
+import com.owl.trade_market.entity.Image;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.repository.ProductRepository;
@@ -28,8 +29,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(String title, User seller, String description, int price, String location, Category category) {
+        // 상품 생성
         Product product = new Product(seller, title, description, price, location, category);
-        return productRepository.save(product);
+
+        // 상품을 먼저 저장
+        Product savedProduct = productRepository.save(product);
+
+        // 기본 이미지 엔티티 생성 및 추가
+        Image defaultImage = new Image(savedProduct, "/images/default-product.jpg");
+        savedProduct.getImages().add(defaultImage);
+
+        // 변경사항 저장 (cascade 옵션으로 Image도 함께 저장됨)
+        return productRepository.save(savedProduct);
     }
 
     @Override
@@ -84,30 +95,46 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
-//        if (category != null) {
-//            return productRepository.findByKeywordAndCategory(keyword, category, pageable);
-//        } else {
-//            return productRepository.findByKeyword(keyword, pageable);
-//        }
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> searchProductByKeyword(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Page.empty(pageable); // 또는 전체 반환도 가능: return productRepository.findAll(pageable);
+        }
+        return productRepository.findByTitleContainingIgnoreCase(keyword.trim(), pageable);
+    }
+
+
+
     @Override
     @Transactional(readOnly = true)
     public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 키워드 없으면 그냥 카테고리 필터만으로 검색
+            return productRepository.findByCategory(category, pageable);
+        }
+
         return productRepository.search(keyword, category, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Product> findByCategory(Category category, Pageable pageable) {
+        if (category == null) {
+            return Page.empty(pageable); // 또는 throw new IllegalArgumentException("category is null");
+        }
         return productRepository.findByCategory(category, pageable);
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public List<Product> findByCategory(Category category, Sort sort) {
         return productRepository.findByCategory(category, sort);
+    }
+
+    @Override
+    public List<String> getAllDistinctLocations() {
+        return productRepository.findDistinctLocations();
     }
 }
