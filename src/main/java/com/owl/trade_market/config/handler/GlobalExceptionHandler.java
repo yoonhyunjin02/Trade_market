@@ -1,6 +1,7 @@
 package com.owl.trade_market.config.handler;
 
 import com.owl.trade_market.config.exception.RegistrationException;
+import com.owl.trade_market.config.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,19 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute("userDto", ex.getUserDto());
 
         return "redirect:/register";
+    }
+
+    /**
+     * 리소스를 찾지 못했을 때의 예외를 처리합니다.
+     * (예: 존재하지 않는 상품, 카테고리 등)
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(ResourceNotFoundException ex, RedirectAttributes redirectAttributes) {
+        log.warn("리소스를 찾을 수 없음: {}", ex.getMessage());
+        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+
+        // 리소스를 못찾는 경우는 메인 상품 목록으로 보냅니다.
+        return "redirect/products";
     }
 
     /**
