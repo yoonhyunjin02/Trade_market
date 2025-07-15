@@ -137,4 +137,24 @@ public class ProductServiceImpl implements ProductService {
     public List<String> getAllDistinctLocations() {
         return productRepository.findDistinctLocations();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findAll(Pageable pageable, Boolean availableOnly) {
+        return Boolean.TRUE.equals(availableOnly)
+            ? productRepository.findBySoldFalse(pageable)
+            : productRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findByCategoryAndAvailable(Category category, Pageable pageable) {
+        return productRepository.findByCategoryAndSoldFalse(category, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable) {
+        return productRepository.searchByKeywordAndSoldFalse(keyword, category, pageable); // ✅ 변경된 메서드명
+    }
 }

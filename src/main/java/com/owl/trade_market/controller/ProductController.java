@@ -45,6 +45,7 @@ public class ProductController {
                               @RequestParam(required = false) String keyword,
                               @RequestParam(required = false) Long categoryId,
                               @RequestParam(required = false) String location,
+                              @RequestParam(required = false) Boolean availableOnly,
                               Model model,
                               HttpSession session,
                               @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -52,18 +53,6 @@ public class ProductController {
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("user", user);
 
-//        try {
-//            Page<Product> productPage;
-//            Category selectedCategory = null;
-//
-//            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-//
-//            if (categoryId != null) {
-//                Optional<Category> categoryOpt = categoryService.findById(categoryId);
-//                if (categoryOpt.isPresent()) {
-//                    selectedCategory = categoryOpt.get();
-//                }
-//            }
         try {
             Sort sortOption;
             // 항상 조회순 정렬 기본값
@@ -74,7 +63,7 @@ public class ProductController {
             } else if ("latest".equals(sort)) {
                 sortOption = Sort.by("createdAt").descending();
             } else {
-                sortOption = Sort.by("viewCount").descending(); // fallback
+                sortOption = Sort.by("viewCount").descending();
             }
 
             Pageable pageable = PageRequest.of(page, size, sortOption);
@@ -86,30 +75,83 @@ public class ProductController {
                 selectedCategory = categoryService.findById(categoryId).orElse(null);
             }
 
+//            if (keyword != null && !keyword.trim().isEmpty()) {
+//                productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
+//            } else if (selectedCategory != null) {
+//                productPage = productService.findByCategory(selectedCategory, pageable);
+//            } else {
+//                productPage = productService.findAll(pageable);
+//            }
+//
+//            model.addAttribute("products", productPage.getContent());
+//            model.addAttribute("hasNext", productPage.hasNext());
+//            model.addAttribute("keyword", keyword);
+//            model.addAttribute("categoryId", categoryId);
+//            model.addAttribute("selectedCategory", selectedCategory);
+//
+//            //  전체 카테고리
+//            List<Category> allCategories = categoryService.findAll();
+//            model.addAttribute("categories", allCategories);
+//
+//            // 전체 위치
+//            List<String> allLocations = productService.getAllDistinctLocations();
+//            model.addAttribute("locations", allLocations);
+//
+//            // 조회순 정렬
+//            model.addAttribute("currentSort", sort == null ? "views" : sort);
+//
+//        } catch (Exception e) {
+//            model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
+//            model.addAttribute("products", Collections.emptyList());
+//            model.addAttribute("hasNext", false);
+//        }
+//
+//        return "pages/trade";
+            // ✅ 1) 키워드 검색이 있는 경우
             if (keyword != null && !keyword.trim().isEmpty()) {
-                productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
-            } else if (selectedCategory != null) {
-                productPage = productService.findByCategory(selectedCategory, pageable);
-            } else {
-                productPage = productService.findAll(pageable);
+                if (Boolean.TRUE.equals(availableOnly)) {
+                    // 검색 + 거래가능만 보기 (soldOrNot=false)
+                    productPage = productService.searchProductAndAvailable(keyword.trim(), selectedCategory, pageable);
+                } else {
+                    // 검색 전체
+                    productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
+                }
+            }
+            // ✅ 2) 카테고리만 선택된 경우
+            else if (selectedCategory != null) {
+                if (Boolean.TRUE.equals(availableOnly)) {
+                    productPage = productService.findByCategoryAndAvailable(selectedCategory, pageable);
+                } else {
+                    productPage = productService.findByCategory(selectedCategory, pageable);
+                }
+            }
+            // ✅ 3) 전체 목록 (검색/카테고리 없음)
+            else {
+                if (Boolean.TRUE.equals(availableOnly)) {
+                    // 거래 가능한 상품만
+                    productPage = productService.findAll(pageable, true);
+                } else {
+                    // 전체 상품
+                    productPage = productService.findAll(pageable);
+                }
             }
 
+            // ✅ 뷰에 넘길 데이터
             model.addAttribute("products", productPage.getContent());
             model.addAttribute("hasNext", productPage.hasNext());
             model.addAttribute("keyword", keyword);
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
 
-            //  전체 카테고리
-            List<Category> allCategories = categoryService.findAll();
-            model.addAttribute("categories", allCategories);
+            // 전체 카테고리/위치
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("locations", productService.getAllDistinctLocations());
 
-            // 전체 위치
-            List<String> allLocations = productService.getAllDistinctLocations();
-            model.addAttribute("locations", allLocations);
-
-            // 조회순 정렬
+            // 정렬 유지
             model.addAttribute("currentSort", sort == null ? "views" : sort);
+
+            // ✅ 체크박스 상태 유지
+            model.addAttribute("availableOnly", availableOnly);
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
