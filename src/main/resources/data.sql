@@ -1,10 +1,13 @@
-TRUNCATE TABLE image RESTART IDENTITY CASCADE;
-TRUNCATE TABLE products RESTART IDENTITY CASCADE;
-TRUNCATE TABLE category RESTART IDENTITY CASCADE;
+-- 중복 삽입 방지를 위한 조건부 삽입
 
--- 카테고리 삽입
+-- 카테고리 삽입 (중복 방지)
 INSERT INTO category (category_id, category_name, product_count)
-VALUES (1, '전자기기', 0);
+SELECT 1, '전자기기', 0
+WHERE NOT EXISTS (SELECT 1 FROM category WHERE category_id = 1);
+
+-- 제품 삽입 (기존 데이터 삭제 후 삽입 - 선택사항)
+-- 기존 테스트 데이터가 있다면 삭제
+DELETE FROM products WHERE product_title LIKE '테스트 상품%';
 
 -- 제품 8개 삽입
 INSERT INTO products (
