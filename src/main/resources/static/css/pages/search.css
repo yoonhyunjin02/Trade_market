@@ -97,3 +97,7 @@ body {
   outline: none;
   appearance: textfield; /* 크롬에서 화살표 제거 */
 }
+
+.flip-horizontal {
+  transform: scaleX(-1);
+}

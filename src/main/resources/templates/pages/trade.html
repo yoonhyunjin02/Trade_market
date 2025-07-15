@@ -7,7 +7,6 @@
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/common/product-card.css}">
-
     <link rel="stylesheet" th:href="@{/css/pages/trade.css}">
 </head>
 <body>
@@ -30,28 +29,83 @@
     </section>
 
     <!-- Product Grid Section -->
-    <section class="popular-items" aria-labelledby="popular-title">
+    <section class="popular-items">
         <h2 id="popular-title">중고거래 인기매물</h2>
 
-        <div class="item-grid">
-            <div th:if="${#lists.isEmpty(products)}"
-                 th:each="product : ${defaultProducts}">
-                <article th:replace="fragments/product-card :: productCard(${product})"></article>
-            </div>
+        <div class="trade-content-container">
+            <!-- 필터 폼 시작 -->
+            <form method="get" th:action="@{/trades}" class="trade-filter">
+                <aside>
+                    <!-- 필터 제목 + 초기화 버튼 -->
+                    <div class="filter-header">
+                        <h4>필터</h4>
+                        <a th:href="@{/products}" class="reset-filter">초기화</a>
+                    </div>
 
-            <div th:unless="${#lists.isEmpty(products)}"
-                 th:each="product : ${products}">
-                <article th:replace="fragments/product-card :: productCard(${product})"></article>
+                    <!-- 거래 가능한 물건 보기 필터 -->
+                    <div class="filter-group">
+                        <label>
+                            <input type="checkbox" name="availableOnly"
+                                   th:checked="${param.availableOnly != null}"
+                                   onchange="this.form.submit()" />
+                            거래 가능한 물건 보기
+                        </label>
+                    </div>
+
+                    <!-- 가격 필터 -->
+                    <h4>가격</h4>
+                    <div class="quick-price-options">
+                        <button type="submit" name="maxPrice" value="0">나눔</button>
+                        <button type="submit" name="maxPrice" value="5000">5,000원 이하</button>
+                        <button type="submit" name="maxPrice" value="10000">10,000원 이하</button>
+                        <button type="submit" name="maxPrice" value="20000">20,000원 이하</button>
+                    </div>
+                    <div class="price-inputs">
+                        <input type="number" name="minPrice"
+                               th:value="${param.minPrice != null ? param.minPrice : minPrice}" />
+                        -
+                        <input type="number" name="maxPrice"
+                               th:value="${param.maxPrice != null ? param.maxPrice : maxPrice}" />
+                    </div>
+                    <button type="submit" class="price-apply-btn">적용하기</button>
+
+                    <!-- 카테고리 필터 -->
+                    <div class="filter-group">
+                        <h4>카테고리</h4>
+                        <div th:each="category : ${categories}">
+                            <label>
+                                <input type="radio" name="category" th:value="${category.id}"
+                                       th:checked="${param.category != null and param.category == category.id}" />
+                                <span th:text="${category.name}">카테고리 이름</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 위치 필터 -->
+                    <div class="filter-group">
+                        <h4>위치</h4>
+                        <div th:each="loc : ${locations}">
+                            <label>
+                                <input type="radio" name="location" th:value="${loc}"
+                                       th:checked="${param.location != null and param.location == loc}"
+                                       onchange="this.form.submit()" />
+                                <span th:text="${loc}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+            </form>
+
+            <!-- 상품 목록 -->
+            <div class="item-grid" id="product-container">
+                <div th:each="product : ${products}">
+                    <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+                </div>
             </div>
         </div>
-    </section>
-<!--    <section class="popular-items" aria-labelledby="popular-title">-->
-<!--        <h2 id="popular-title">중고거래 인기매물</h2>-->
 
-<!--        <div class="item-grid" id="product-container">-->
-<!--            &lt;!&ndash; 상품 카드들이 JS로 여기에 추가될 예정 &ndash;&gt;-->
-<!--        </div>-->
-<!--    </section>-->
+        <div id="scroll-sentinel"></div>
+    </section>
 </main>
 
 <!-- Floating Action Button -->
@@ -62,10 +116,6 @@
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
+<script th:src="@{/js/pages/trade.js}"></script>
 </body>
-<script src="/js/common/header.js"></script>
-<script src="/js/common/footer.js"></script>
-<script src="/js/common/product-card.js"></script>
-
-<script src="/js/pages/trade.js"></script>
 </html>
