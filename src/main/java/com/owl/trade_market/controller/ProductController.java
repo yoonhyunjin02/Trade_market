@@ -7,6 +7,9 @@ import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.service.CategoryService;
 import com.owl.trade_market.service.ProductService;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.*;
 
@@ -87,6 +93,27 @@ public class ProductController {
         }
 
         return "pages/trade";
+    }
+
+    @GetMapping("/scroll")
+    public String scrollPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "16") int size,
+            Model model) {
+
+        System.out.println("✅ scrollPage() called with page=" + page);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Product> productPage = productService.findAll(pageable);
+
+        if (productPage.isEmpty()) {
+            return "fragments/empty :: empty"; // or null; JS에서 .trim() 체크하니까 괜찮음
+        }
+
+        model.addAttribute("products", productPage.getContent());
+
+        // 🔥 fragment 이름만 반환 (prefix/suffix는 자동)
+        return "fragments/product-card-list :: fragment";
     }
 
     //검색 페이지 (search.html)
@@ -273,7 +300,7 @@ public class ProductController {
     }
 
     //상품상세 페이지 (trade_post.html)
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public String productDetail(@PathVariable Long id,
                                 Model model,
                                 HttpSession session,

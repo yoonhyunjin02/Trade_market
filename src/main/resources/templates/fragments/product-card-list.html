@@ -1,0 +1,6 @@
+<div th:fragment="fragment">
+    <!-- grid item처럼 바로 들어가도록 -->
+    <div th:each="product : ${products}">
+        <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+    </div>
+</div>
