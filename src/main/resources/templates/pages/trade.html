@@ -30,28 +30,28 @@
     </section>
 
     <!-- Product Grid Section -->
-<!--    <section class="popular-items" aria-labelledby="popular-title">-->
-<!--        <h2 id="popular-title">중고거래 인기매물</h2>-->
-
-<!--        <div class="item-grid">-->
-<!--            <div th:if="${#lists.isEmpty(products)}"-->
-<!--                 th:each="product : ${defaultProducts}">-->
-<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
-<!--            </div>-->
-
-<!--            <div th:unless="${#lists.isEmpty(products)}"-->
-<!--                 th:each="product : ${products}">-->
-<!--                <article th:replace="fragments/product-card :: productCard(${product})"></article>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
     <section class="popular-items" aria-labelledby="popular-title">
         <h2 id="popular-title">중고거래 인기매물</h2>
 
-        <div class="item-grid" id="product-container">
-            <!-- 상품 카드들이 JS로 여기에 추가될 예정 -->
+        <div class="item-grid">
+            <div th:if="${#lists.isEmpty(products)}"
+                 th:each="product : ${defaultProducts}">
+                <article th:replace="fragments/product-card :: productCard(${product})"></article>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(products)}"
+                 th:each="product : ${products}">
+                <article th:replace="fragments/product-card :: productCard(${product})"></article>
+            </div>
         </div>
     </section>
+<!--    <section class="popular-items" aria-labelledby="popular-title">-->
+<!--        <h2 id="popular-title">중고거래 인기매물</h2>-->
+
+<!--        <div class="item-grid" id="product-container">-->
+<!--            &lt;!&ndash; 상품 카드들이 JS로 여기에 추가될 예정 &ndash;&gt;-->
+<!--        </div>-->
+<!--    </section>-->
 </main>
 
 <!-- Floating Action Button -->
