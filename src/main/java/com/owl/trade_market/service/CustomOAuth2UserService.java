@@ -53,6 +53,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
         String name = (String) attributes.get("name");
         String email = (String) attributes.get("email");
 
+
+
         if (email == null || email.isEmpty()) {
             throw new OAuth2AuthenticationException("이메일 정보를 가져올 수 없습니다.");
         }
@@ -81,7 +83,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
             user.setUserEmail(email);
             user.setProvider(AuthProvider.valueOf(registrationId.toUpperCase()));
             user.setProviderId(id);
-            user.setUserId(email);
+            // 이메일에서 @ 앞부분만 userId로 추출
+            String[] parts = email.split("@");
+            String localPart = parts.length > 0 ? parts[0] : email;
+            user.setUserId(localPart);
             user = userRepository.save(user);
         }
 
