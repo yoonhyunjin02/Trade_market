@@ -27,7 +27,7 @@ public class Chat {
     private String content;
 
     @Column(name = "is_read", nullable = false)
-    private boolean isRead;
+    private boolean isRead = false; // 기본값은 '읽지 않음'
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
