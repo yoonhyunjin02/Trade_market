@@ -101,18 +101,18 @@ public class ProductController {
             @RequestParam(defaultValue = "16") int size,
             Model model) {
 
-        System.out.println("✅ scrollPage() called with page=" + page);
+        System.out.println("✅ scrollPage() called with page=" + page); // 디버깅 용
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Product> productPage = productService.findAll(pageable);
 
         if (productPage.isEmpty()) {
-            return "fragments/empty :: empty"; // or null; JS에서 .trim() 체크하니까 괜찮음
+            return "fragments/empty :: empty";
         }
 
         model.addAttribute("products", productPage.getContent());
 
-        // 🔥 fragment 이름만 반환 (prefix/suffix는 자동)
+        // fragment 이름만 반환 (prefix/suffix는 자동)
         return "fragments/product-card-list :: fragment";
     }
 

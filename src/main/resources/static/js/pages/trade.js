@@ -1,4 +1,3 @@
-// trade.js
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('product-container');
   const sentinel  = document.getElementById('scroll-sentinel');
@@ -18,21 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
         credentials: 'same-origin'
       });
 
-      // ✅ AJAX 인증 실패 시 401 → alert 띄우고 중단
+      // AJAX 인증 실패 시 401 → alert 띄우고 중단
       if (res.status === 401) {
         alert('로그인이 필요한 요청입니다.');
         observer.unobserve(sentinel);
         return;
       }
 
-      // ✅ 정상 응답 아닌 경우 (500, 404 등)
+      // 정상 응답 아닌 경우 (500, 404 등)
       if (!res.ok) {
         console.error(`서버 응답 오류: ${res.status} ${res.statusText}`);
         observer.unobserve(sentinel);
         return;
       }
 
-      // ✅ 혹시 리다이렉트되면 중단
+      // 혹시 리다이렉트되면 중단
       if (res.redirected) {
         console.warn('리다이렉트 감지됨 → 무한스크롤 중단');
         observer.unobserve(sentinel);
@@ -41,21 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const html = await res.text();
 
-      // ✅ 혹시 메인페이지 HTML이 내려왔으면 중단
+      // 메인페이지 HTML이 내려왔으면 중단
       if (html.includes('<main') && !html.includes('product-card')) {
         console.warn('⚠ 예상치 못한 HTML(main?)이 내려옴, 중단');
         observer.unobserve(sentinel);
         return;
       }
 
-      // ✅ 빈 fragment면 종료
+      // 빈 fragment면 종료
       if (!html.trim()) {
         ended = true;
         observer.unobserve(sentinel);
         return;
       }
 
-      // ✅ 받은 조각 삽입
+      // 받은 조각 삽입
       const temp = document.createElement('div');
       temp.innerHTML = html;
       while (temp.firstChild) {
