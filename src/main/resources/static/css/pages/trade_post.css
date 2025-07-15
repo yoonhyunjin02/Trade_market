@@ -1,0 +1,292 @@
+.product-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    min-height: 100vh;
+}
+
+/* 뒤로가기 버튼 */
+.back-nav {
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #868e96;
+    cursor: pointer;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.back-btn:hover {
+    color: #495057;
+}
+
+/* 메인 컨테이너 */
+.product-container {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+}
+
+/* 이미지 영역 - 상단에 위치 */
+.product-image {
+    width: 100%;
+    height: 400px;
+    background-color: #f1f3f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* 상품 정보 영역 */
+.product-info {
+    padding: 24px;
+    flex: 1;
+}
+
+/* 판매자 정보와 채팅하기 버튼 */
+.seller-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.seller-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.seller-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.seller-location {
+    font-size: 14px;
+    color: #868e96;
+}
+
+/* 채팅하기 버튼 */
+.action-buttons .btn-chat {
+    background-color: #ff6f0f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+}
+
+.action-buttons .btn-chat:hover {
+    background-color: #e55a00;
+}
+
+/* 구분선 */
+.divider {
+    height: 1px;
+    background-color: #e9ecef;
+    margin-bottom: 20px;
+}
+
+/* 제목과 가격, 통계 */
+.title-price-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.title-info {
+    flex: 1;
+}
+
+.product-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.price-stats {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #212529;
+}
+
+.stats {
+    font-size: 14px;
+    color: #868e96;
+    display: flex;
+    gap: 12px;
+}
+
+/* 상품 설명 */
+.product-description {
+    margin-bottom: 24px;
+}
+
+.product-description p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #495057;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* 거래 희망 장소 */
+.trade-location {
+    font-size: 14px;
+    color: #868e96;
+    margin-bottom: 40px;
+    padding: 16px 0;
+    border-top: 1px solid #f1f3f4;
+}
+
+.trade-location .label {
+    color: #868e96;
+}
+
+.trade-location .location {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* 하단 관리 링크 */
+.bottom-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.action-links {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.action-links a {
+    color: #868e96;
+    text-decoration: none;
+    padding: 4px 8px;
+}
+
+.action-links a:hover {
+    color: #495057;
+    text-decoration: underline;
+}
+
+.action-links span {
+    color: #dee2e6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .product-detail {
+        padding: 16px;
+    }
+
+    .product-container {
+        border-radius: 8px;
+    }
+
+    .product-image {
+        height: 300px;
+        padding: 16px;
+    }
+
+    .product-info {
+        padding: 20px;
+    }
+
+    .seller-section {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .action-buttons .btn-chat {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .title-price-section {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .price-stats {
+        text-align: left;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .product-title {
+        font-size: 20px;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+
+    .bottom-actions {
+        justify-content: center;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-detail {
+        padding: 12px;
+    }
+
+    .product-info {
+        padding: 16px;
+    }
+
+    .product-title {
+        font-size: 18px;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+
+    .product-description p {
+        font-size: 15px;
+    }
+}
