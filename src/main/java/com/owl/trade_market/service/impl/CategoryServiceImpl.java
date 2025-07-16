@@ -28,13 +28,13 @@ public class CategoryServiceImpl implements CategoryService {
         // 공백 제거 및 정규화
         String normalizedName = categoryName.trim();
 
-        // ✅ 첫 번째 시도: 기존 카테고리 찾기
+        // 기존 카테고리 찾기
         Optional<Category> existingCategory = categoryRepository.findByNameIgnoreCase(normalizedName);
         if (existingCategory.isPresent()) {
             return existingCategory.get();
         }
 
-        // ✅ 새 카테고리 생성 시도 (중복 키 예외 처리)
+        // 새 카테고리 생성 시도 (중복 키 예외 처리)
         try {
             Category newCategory = new Category();
             newCategory.setName(normalizedName);
@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryRepository.save(newCategory);
 
         } catch (DataIntegrityViolationException e) {
-            // ✅ 중복 키 예외 발생 시: 다시 조회 시도
+            // 중복 키 예외 발생 시: 다시 조회 시도
             // 다른 트랜잭션에서 같은 이름의 카테고리를 생성했을 가능성
             Optional<Category> retryCategory = categoryRepository.findByNameIgnoreCase(normalizedName);
             if (retryCategory.isPresent()) {
