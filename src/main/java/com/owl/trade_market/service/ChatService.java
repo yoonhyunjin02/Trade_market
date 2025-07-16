@@ -51,4 +51,9 @@ public interface ChatService {
      * 특정 채팅방의 상세 정보(상품 정보, 상대방 정보, 과거 메시지 목록)를 조회합니다.
      */
     ChatRoomDetailDto findRoomDetails(Long roomId, User currentUser);
+
+    /**
+     * 특정 상품에 대해 구매자와 판매자 간의 채팅방을 찾거나 새로 생성합니다.
+     */
+    ChatRoom findOrCreateRoom(Long productId, User buyer);
 }
