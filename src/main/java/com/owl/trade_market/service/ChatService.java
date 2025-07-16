@@ -1,6 +1,7 @@
 package com.owl.trade_market.service;
 
 import com.owl.trade_market.dto.ChatMessageDto;
+import com.owl.trade_market.dto.ChatRoomDetailDto;
 import com.owl.trade_market.dto.ChatRoomListDto;
 import com.owl.trade_market.entity.Chat;
 import com.owl.trade_market.entity.ChatRoom;
@@ -45,4 +46,9 @@ public interface ChatService {
      * ID로 특정 사용자 엔티티를 조회합니다.
      */
     User findUserById(String userId);
+
+    /**
+     * 특정 채팅방의 상세 정보(상품 정보, 상대방 정보, 과거 메시지 목록)를 조회합니다.
+     */
+    ChatRoomDetailDto findRoomDetails(Long roomId, User currentUser);
 }
