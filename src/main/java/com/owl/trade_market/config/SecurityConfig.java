@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 "/register", "/users/register",
                                 "/login", "/users/login",
                                 "/login/oauth2/**",
+                                "/ws/**", // WebSocket 엔드포인트
                                 "/products",
                                 "/products/search",
                                 "/products/scroll",
