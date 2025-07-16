@@ -157,4 +157,11 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable) {
         return productRepository.searchByKeywordAndSoldFalse(keyword, category, pageable); // ✅ 변경된 메서드명
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findBySeller(User seller, Sort sort) {
+        return productRepository.findBySeller(seller, sort);
+    }
+
 }

@@ -44,5 +44,6 @@ public interface ProductService {
 
     Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable);
 
-
+    // 판매자별 상품 조회 (프로필 페이지용)
+    List<Product> findBySeller(User seller, Sort sort);
 }
