@@ -1,6 +1,7 @@
 package com.owl.trade_market.service;
 
 import com.owl.trade_market.dto.ChatMessageDto;
+import com.owl.trade_market.dto.ChatRoomDetailDto;
 import com.owl.trade_market.dto.ChatRoomListDto;
 import com.owl.trade_market.entity.Chat;
 import com.owl.trade_market.entity.ChatRoom;
@@ -9,6 +10,7 @@ import com.owl.trade_market.repository.ChatRepository;
 import com.owl.trade_market.repository.ChatRoomRepository;
 import com.owl.trade_market.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,5 +104,26 @@ public class ChatServiceImpl implements ChatService{
         dto.setUnreadCount(unreadCount);
 
         return dto;
+    }
+
+    @Override
+    public ChatRoomDetailDto findRoomDetails(Long roomId, User currentUser) {
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다. ID: " + roomId));
+
+        // 권한 체크: 현재 유저가 채팅방의 참여자인지 확인
+        boolean isParticipant = room.getBuyer().getId().equals(currentUser.getId()) ||
+                room.getProduct().getSeller().getId().equals(currentUser.getId());
+        if (!isParticipant) {
+            throw new AccessDeniedException("채팅방에 접근할 권한이 없습니다.");
+        }
+
+        // 상대방 찾기
+        User opponent = room.getBuyer().getId().equals(currentUser.getId())
+                ? room.getProduct().getSeller()
+                : room.getBuyer();
+
+        return ChatRoomDetailDto.fromEntity(room, opponent, room.getChats());
+
     }
 }
