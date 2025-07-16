@@ -1,4 +1,4 @@
-package com.owl.trade_market.service;
+package com.owl.trade_market.service.impl;
 
 import com.owl.trade_market.dto.ChatMessageDto;
 import com.owl.trade_market.dto.ChatRoomDetailDto;
@@ -9,6 +9,7 @@ import com.owl.trade_market.entity.User;
 import com.owl.trade_market.repository.ChatRepository;
 import com.owl.trade_market.repository.ChatRoomRepository;
 import com.owl.trade_market.repository.UserRepository;
+import com.owl.trade_market.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -72,7 +73,7 @@ public class ChatServiceImpl implements ChatService{
 
         // 연관관계 편의 메서드 사용
         chatRoom.addChat(chat);
-        
+
         return chatRepository.save(chat);
     }
 
