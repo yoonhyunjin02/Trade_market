@@ -88,7 +88,7 @@ main {
   margin-bottom: 4px;
 }
 
-/* ✅ 공통 입력 필드 스타일 (input + select + textarea 전부 동일) */
+/* 공통 입력 필드 스타일 (input + select + textarea 전부 동일) */
 .form-group input[type="text"],
 .form-group select,
 .form-group textarea {
@@ -98,14 +98,13 @@ main {
   border-radius: 8px;
   font-size: 16px;
   font-family: inherit;
-  color: #343a40; /* ✅ 글자색 통일 */
+  color: #343a40;
   outline: none;
   background-color: #f8f9fa;
   transition: all 0.2s;
   box-sizing: border-box;
 }
 
-/* ✅ 포커스 스타일도 동일 */
 .form-group input[type="text"]:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -114,7 +113,7 @@ main {
   box-shadow: 0 0 0 3px rgba(255, 143, 0, 0.1);
 }
 
-/* ✅ placeholder 색상 (disabled 옵션 포함) */
+/* placeholder 색상 (disabled 옵션 포함) */
 .form-group input[type="text"]::placeholder,
 .form-group textarea::placeholder {
   color: #adb5bd;
@@ -124,7 +123,7 @@ main {
   color: #adb5bd;
 }
 
-/* ✅ 드롭다운 화살표 커스텀 */
+/* 드롭다운 화살표 커스텀 */
 .form-group select {
   appearance: none;
   -webkit-appearance: none;
@@ -136,14 +135,14 @@ main {
   cursor: pointer;
 }
 
-/* ✅ textarea 최소 높이 */
+/* textarea 최소 높이 */
 .form-group textarea {
   resize: none;
   min-height: 200px;
   line-height: 1.6;
 }
 
-/* ✅ 에러 스타일 공통 */
+/* 에러 스타일 공통 */
 .form-group input.error,
 .form-group select.error,
 .form-group textarea.error {
