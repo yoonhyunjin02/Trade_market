@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     // 읽지 않은 메시지 수 카운트
-    long countByChatRoomIdAndUserIdNotAndIsReadIsFalse(Long chatRoomId, String currentUserId);
+    int countByChatRoomIdAndUserIdNotAndIsReadIsFalse(Long chatRoomId, String currentUserId);
 
     //상대방이 보낸 모든 메시지를 읽음으로 처리
     @Modifying
