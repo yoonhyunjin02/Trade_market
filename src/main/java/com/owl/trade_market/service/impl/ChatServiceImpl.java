@@ -5,11 +5,14 @@ import com.owl.trade_market.dto.ChatRoomDetailDto;
 import com.owl.trade_market.dto.ChatRoomListDto;
 import com.owl.trade_market.entity.Chat;
 import com.owl.trade_market.entity.ChatRoom;
+import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.repository.ChatRepository;
 import com.owl.trade_market.repository.ChatRoomRepository;
+import com.owl.trade_market.repository.ProductRepository;
 import com.owl.trade_market.repository.UserRepository;
 import com.owl.trade_market.service.ChatService;
+import com.owl.trade_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -26,12 +29,16 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     @Autowired
-    public ChatServiceImpl(ChatRepository chatRepository, ChatRoomRepository chatRoomRepository, UserRepository userRepository) {
+    public ChatServiceImpl(ChatRepository chatRepository, ChatRoomRepository chatRoomRepository, UserRepository userRepository, ProductRepository productRepository, ProductService productService) {
         this.chatRepository = chatRepository;
         this.chatRoomRepository = chatRoomRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -40,7 +47,6 @@ public class ChatServiceImpl implements ChatService {
         return chatRooms.stream()
                 .map(room -> convertToDto(room, currentUser))
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -126,5 +132,25 @@ public class ChatServiceImpl implements ChatService {
 
         return ChatRoomDetailDto.fromEntity(room, opponent, room.getChats());
 
+    }
+
+    @Override
+    public ChatRoom findOrCreateRoom(Long productId, User buyer) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. ID: " + productId));
+
+        if (product.getSeller().getId().equals(buyer.getId())) {
+            throw new IllegalArgumentException("자신의 상품에는 채팅을 할 수 없습니다.");
+        }
+
+        // 기존 채팅방 확인, 없으면 새로 생성
+        return chatRoomRepository.findByProductIdAndBuyerId(productId, buyer.getId())
+                .orElseGet(() -> {
+                    ChatRoom newRoom = new ChatRoom();
+                    newRoom.setProduct(product);
+                    newRoom.setBuyer(buyer);
+                    productService.increaseViewCount(productId); // 상품의 채팅 카운트 증가
+                    return chatRoomRepository.save(newRoom);
+                });
     }
 }
