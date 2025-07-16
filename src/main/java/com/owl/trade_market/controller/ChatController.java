@@ -3,10 +3,14 @@ package com.owl.trade_market.controller;
 import com.owl.trade_market.dto.ChatRoomDetailDto;
 import com.owl.trade_market.dto.ChatRoomListDto;
 import com.owl.trade_market.entity.User;
+import com.owl.trade_market.security.CustomUserDetails;
 import com.owl.trade_market.service.ChatService;
+import com.owl.trade_market.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +22,31 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final UserService userService;
 
     // 생성자 주입
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserService userService) {
         this.chatService = chatService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public String chatPage(Model model, @AuthenticationPrincipal User currentUser) {
+    public String chatPage(Model model, Authentication authentication) {
+
+        String userId = null;
+        Object principal = authentication.getPrincipal();
+
+        // SSO 사용자인지, LOCAL 사용자인지 확인
+        if (principal instanceof CustomUserDetails customUser) {
+            userId = customUser.getUsername(); // LOCAL
+        } else if (principal instanceof OAuth2User oAuth2User) {
+            String email = oAuth2User.getAttribute("user_email");
+            if (email != null && email.contains("@")) {
+                userId = email.substring(0, email.indexOf('@'));
+            }
+        }
+
+        User currentUser = userService.findByUserId(userId).get();
 
         // 전체 채팅방 목록
         List<ChatRoomListDto> allChatRooms = chatService.findRoomsForUser(currentUser);
