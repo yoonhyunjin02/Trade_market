@@ -114,6 +114,7 @@
                            th:field="*{location}"
                            placeholder="거래를 희망하는 장소">
                 </div>
+                <div id="map" class="map-placeholder">지도</div>
 
                 <!-- 제출 버튼 -->
                 <button type="submit" class="btn-submit">
@@ -130,6 +131,16 @@
 
 <!-- JavaScript 파일들 -->
 <script src="/js/pages/write.js"></script>
+
+<script
+        th:attr="src=
+    @{https://maps.googleapis.com/maps/api/js(
+        key=${googleMapsApiKey},
+        libraries='places',
+        callback='initMap'
+    )}"
+        async defer>
+</script>
 
 </body>
 </html>
