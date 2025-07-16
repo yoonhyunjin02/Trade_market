@@ -1,9 +1,14 @@
 package com.owl.trade_market.dto;
 
+import com.owl.trade_market.entity.Chat;
+import com.owl.trade_market.entity.ChatRoom;
+import com.owl.trade_market.entity.User;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
- * 특정 채티방의 상세 정보(상품, 과거 메시지 목록 등)를 담는 DTO
+ * 특정 채팅방의 상세 정보(상품, 과거 메시지 목록 등)를 담는 DTO
  */
 public class ChatRoomDetailDto {
 
@@ -14,11 +19,23 @@ public class ChatRoomDetailDto {
     private String otherUserName;
     private List<ChatMessageDto> messages; // 과거 메시지 목록
 
+    // private 생성자
+    // 외부에서 직접 생성자 호출 불가
+    // fromEntity()를 사용해서 객체 생성 유도
+    private ChatRoomDetailDto() {
+    }
+
     // 기본 생성자
-    public ChatRoomDetailDto() {}
+    public ChatRoomDetailDto(Long chatRoomId, String productTitle, Integer productPrice, String productImageUrl, String otherUserName, List<ChatMessageDto> messages) {
+        this.chatRoomId = chatRoomId;
+        this.productTitle = productTitle;
+        this.productPrice = productPrice;
+        this.productImageUrl = productImageUrl;
+        this.otherUserName = otherUserName;
+        this.messages = messages;
+    }
 
     // Getter and Setter
-
     public Long getChatRoomId() {
         return chatRoomId;
     }
@@ -65,5 +82,39 @@ public class ChatRoomDetailDto {
 
     public void setMessages(List<ChatMessageDto> messages) {
         this.messages = messages;
+    }
+
+    // 엔티티를 DTO로 변환하는 정적 팩토리 메서드
+    public static ChatRoomDetailDto fromEntity(ChatRoom room, User opponent, List<Chat> chats) {
+        ChatRoomDetailDto dto = new ChatRoomDetailDto();
+
+        // 상품 대표 이미지 URL 설정
+        String imageUrl = "/static/images/mascot.png";
+        if (room.getProduct().getImages() != null && !room.getProduct().getImages().isEmpty()) {
+            imageUrl = room.getProduct().getImages().get(0).getImage();
+        }
+
+        dto.setChatRoomId(room.getId());
+        dto.setProductTitle(room.getProduct().getTitle());
+        dto.setProductPrice(room.getProduct().getPrice());
+        dto.setProductImageUrl(imageUrl);
+        dto.setOtherUserName(opponent.getUserName());
+
+        // 채팅 메시지 엔티티 리스트를 DTO 리스트로 변환
+        if (chats != null) {
+            List<ChatMessageDto> messageDtos = chats.stream()
+                    .map(chat -> {
+                        User sender = chat.getUserId().equals(room.getBuyer().getUserId())
+                                ? room.getBuyer()
+                                : room.getProduct().getSeller();
+
+                        return ChatMessageDto.fromEntity(chat, sender);
+                    }).toList();
+            dto.setMessages(messageDtos);
+        } else {
+            dto.setMessages(Collections.emptyList());
+        }
+
+        return dto;
     }
 }
