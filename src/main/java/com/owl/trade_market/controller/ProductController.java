@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -240,6 +241,9 @@ public class ProductController {
         return "pages/trade";
     }
 
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     //상품 등록 폼 페이지 (write.html)
     @GetMapping("/new")
     public String writeForm(Model model,
@@ -255,6 +259,7 @@ public class ProductController {
 
         model.addAttribute("user", user);
         model.addAttribute("productDto", new ProductDto());
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // Google Map API 키 주입
 
         return "pages/write";
     }

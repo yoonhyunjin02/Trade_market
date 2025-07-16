@@ -1,8 +1,8 @@
-let autocomplete, map, geocoder, userSetAddress, currentAddress;
+let autocomplete, map, geocoder, userSetAddress, currentAddress; // 지역변수
 
 function initMap() {
   // 1) 지도 초기화
-  map = new google.maps.Map(document.getElementById("map"), {
+  map = new google.maps.Map(document.getElementById("map"), { // Google Maps API는 html에서 키를 받아서 전역 객체 google.maps로 사용
     center: { lat: 37.5665, lng: 126.9780 },
     zoom: 13,
   });
