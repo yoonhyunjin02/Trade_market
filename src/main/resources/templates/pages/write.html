@@ -51,16 +51,31 @@
                         <!-- 카테고리 -->
                         <div class="form-group">
                             <label for="categoryName">카테고리</label>
-                            <input type="text"
-                                   id="categoryName"
-                                   th:field="*{categoryName}"
-                                   th:classappend="${#fields.hasErrors('categoryName') ? 'error' : ''}"
-                                   placeholder="카테고리"
-                                   maxlength="50">
+
+                            <select id="categoryName"
+                                    name="categoryName"
+                                    th:classappend="${#fields.hasErrors('categoryName') ? 'error' : ''}">
+
+                                <!-- ✅ placeholder (기본 선택됨) -->
+                                <option value=""
+                                        th:selected="${#strings.isEmpty(productDto.categoryName)}"
+                                        disabled>카테고리를 선택해주세요</option>
+
+                                <!-- ✅ DB에서 넘어온 카테고리 목록 -->
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.name}"
+                                        th:text="${category.name}"
+                                        th:selected="${productDto.categoryName != null and category.name == productDto.categoryName}">
+                                </option>
+                            </select>
+
+                            <!-- ✅ 에러 메시지 -->
                             <div class="error-message"
                                  th:if="${#fields.hasErrors('categoryName')}"
                                  th:errors="*{categoryName}"></div>
                         </div>
+
+
 
                         <!-- 가격 -->
                         <div class="form-group">

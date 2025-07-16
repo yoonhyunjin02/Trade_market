@@ -34,7 +34,7 @@
 
         <div class="trade-content-container">
             <!-- 필터 폼 시작 -->
-            <form method="get" th:action="@{/trades}" class="trade-filter">
+            <form method="get" th:action="@{/products}" class="trade-filter">
                 <aside>
                     <!-- 필터 제목 + 초기화 버튼 -->
                     <div class="filter-header">
@@ -46,16 +46,37 @@
                     <div class="filter-group">
                         <label>
                             <input type="checkbox" name="availableOnly"
-                                   th:checked="${param.availableOnly != null}"
+                                   th:checked="${availableOnly}"
                                    onchange="this.form.submit()" />
                             거래 가능한 물건 보기
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>게시물 정보</h4>
+                        <label>
+                            <input type="radio" name="sort" value="views"
+                                   th:checked="${currentSort == 'views'}"
+                                   onchange="this.form.submit()" />
+                            조회순
+                        </label>
+                        <label>
+                            <input type="radio" name="sort" value="chats"
+                                   th:checked="${currentSort == 'chats'}"
+                                   onchange="this.form.submit()" />
+                            채팅순
+                        </label>
+                        <label>
+                            <input type="radio" name="sort" value="latest"
+                                   th:checked="${currentSort == 'latest'}"
+                                   onchange="this.form.submit()" />
+                            최신순
                         </label>
                     </div>
 
                     <!-- 가격 필터 -->
                     <h4>가격</h4>
                     <div class="quick-price-options">
-                        <button type="submit" name="maxPrice" value="0">나눔</button>
                         <button type="submit" name="maxPrice" value="5000">5,000원 이하</button>
                         <button type="submit" name="maxPrice" value="10000">10,000원 이하</button>
                         <button type="submit" name="maxPrice" value="20000">20,000원 이하</button>

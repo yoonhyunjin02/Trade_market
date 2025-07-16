@@ -19,9 +19,11 @@ public class ProductDto {
     @Positive(message = "가격은 0보다 큰 값이어야 합니다.")
     private Integer  price= 0;
 
-    // 카테고리명 추가 (사용자가 직접 입력)
-    @Size(max = 50, message = "카테고리명은 50자를 초과할 수 없습니다.")
+    // 카테고리명
+    @Size
+    @NotBlank(message = "카테고리 선택은 필수입니다.")
     private String categoryName;
+
 
     private String location;
 

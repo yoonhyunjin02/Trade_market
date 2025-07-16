@@ -46,4 +46,28 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 위치 조회
     @Query("SELECT DISTINCT p.location FROM Product p WHERE p.location IS NOT NULL AND p.location <> ''")
     List<String> findDistinctLocations();
+
+    // 판매 중인 상품 조회
+    Page<Product> findBySoldFalse(Pageable pageable);
+
+    // 카테고리별 + 판매중 조회
+    Page<Product> findByCategoryAndSoldFalse(Category category, Pageable pageable);
+
+    // 검색 + 거래가능만 보기 (soldOrNot = false)
+    @Query("""
+    SELECT p FROM Product p
+    WHERE p.sold = false
+      AND (:category IS NULL OR p.category = :category)
+      AND (
+          LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+          LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+          LOWER(p.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
+      )
+    ORDER BY p.createdAt DESC
+    """)
+    Page<Product> searchByKeywordAndSoldFalse(
+            @Param("keyword") String keyword,
+            @Param("category") Category category,
+            Pageable pageable
+    );
 }
