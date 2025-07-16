@@ -16,6 +16,7 @@ public class ChatRoomListDto {
     private String lastMessage;
     private String lastMessageTime;
     private String productImageUrl;
+    private int unreadCount;
 
     // 기본 생성자
     public ChatRoomListDto() {}
@@ -97,5 +98,13 @@ public class ChatRoomListDto {
 
     public void setProductImageUrl(String productImageUrl) {
         this.productImageUrl = productImageUrl;
+    }
+
+    public int getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
     }
 }
