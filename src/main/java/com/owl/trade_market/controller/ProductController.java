@@ -295,11 +295,23 @@ public class ProductController {
             return "redirect:/users/login";
         }
 
+        // ✅ FlashAttribute나 Session에 남은 이전 productDto 제거
+        model.asMap().remove("productDto");
+        session.removeAttribute("productDto");
+
         model.addAttribute("user", user);
-        model.addAttribute("productDto", new ProductDto());
+
+        // ✅ 완전히 비어있는 DTO 생성 (categoryName == null)
+        ProductDto emptyDto = new ProductDto();  // price=0만 초기화, 나머지는 null
+        emptyDto.setCategoryName(null);          // ✅ 명시적으로 null 보장
+        model.addAttribute("productDto", emptyDto);
+
+        // ✅ 카테고리 목록 조회
+        model.addAttribute("categories", categoryService.findAll());
 
         return "pages/write";
     }
+
 
     //상품 등록 처리
     @PostMapping("/new")
@@ -316,19 +328,15 @@ public class ProductController {
             return "redirect:/users/login";
         }
 
-        // 유효성 검사 실패시
+        // 유효성 실패 시에도 categories를 다시 세팅해야 함
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
-
-            // 인기 카테고리 목록 다시 설정
-            List<Category> popularCategories = categoryService.getPopularCategories(20);
-            model.addAttribute("popularCategories", popularCategories);
+            model.addAttribute("categories", categoryService.findAll());
             return "pages/write";
         }
 
         try {
-            // 추가 유효성 검사
             if (productDto.getTitle().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "상품 제목을 입력해주세요.");
                 return "redirect:/products/new";
@@ -344,7 +352,7 @@ public class ProductController {
                 return "redirect:/products/new";
             }
 
-            // 카테고리 처리 (사용자가 입력한 카테고리명으로 찾기/생성)
+            // 선택된 카테고리명으로 Category 엔티티 찾거나 생성
             Category category = null;
             if (productDto.getCategoryName() != null && !productDto.getCategoryName().trim().isEmpty()) {
                 category = categoryService.findOrCreateCategory(productDto.getCategoryName().trim());
@@ -360,7 +368,6 @@ public class ProductController {
                     category
             );
 
-            // 카테고리 상품 수 증가
             if (category != null) {
                 categoryService.increaseCategoryCount(category);
             }
