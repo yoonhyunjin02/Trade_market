@@ -41,6 +41,11 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
+    // UserDetails와 1:1 관계
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserDetails userDetails;
+
+
     // 1. 기본 생성자
     public User() {
     }
@@ -131,6 +136,16 @@ public class User {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    // userDetails
+    public UserDetails getUserDetails() {return userDetails;}
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
+        if (userDetails != null) {
+            userDetails.setUser(this);
+        }
     }
 
     @Override
