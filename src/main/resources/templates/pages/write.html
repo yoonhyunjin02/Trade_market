@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${productId != null ? '상품 수정' : '상품 등록'}">상품 등록</title>
@@ -132,16 +132,6 @@
 <script src="/js/common/header.js"></script>
 <script src="/js/common/footer.js"></script>
 <script src="/js/pages/write.js"></script>
-
-<script
-        th:attr="src=
-    @{https://maps.googleapis.com/maps/api/js(
-        key=${googleMapsApiKey},
-        libraries='places',
-        callback='initMap'
-    )}"
-        async defer>
-</script>
 
 </body>
 </html>
