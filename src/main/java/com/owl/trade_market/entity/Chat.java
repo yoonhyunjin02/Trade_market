@@ -1,6 +1,7 @@
 package com.owl.trade_market.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +30,8 @@ public class Chat {
     @Column(name = "is_read", nullable = false)
     private boolean isRead = false; // 기본값은 '읽지 않음'
 
-    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     // 기본 생성자
