@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let loading  = false;  // 중복 호출 방지
   let ended    = false;  // 더 이상 데이터 없을 때
 
+  const params = new URLSearchParams(window.location.search);
+  const currentSort = params.get('sort') || 'views';
+
   const loadMore = async () => {
     if (loading || ended) return;
     loading = true;

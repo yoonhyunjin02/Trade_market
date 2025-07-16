@@ -38,7 +38,7 @@ public class Product {
     private int chatCount;
 
     @Column(name = "product_sold_or_not")
-    private boolean soldOrNot;
+    private boolean sold;
 
     @Column(name = "product_created_at")
     private LocalDateTime createdAt;
@@ -136,12 +136,12 @@ public class Product {
         this.chatCount = chatCount;
     }
 
-    public boolean isSoldOrNot() {
-        return soldOrNot;
+    public boolean isSold() {
+        return sold;
     }
 
-    public void setSoldOrNot(boolean soldOrNot) {
-        this.soldOrNot = soldOrNot;
+    public void setSold(boolean sold) {
+        this.sold = sold;
     }
 
     public LocalDateTime getCreatedAt() {
