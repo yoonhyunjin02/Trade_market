@@ -38,6 +38,9 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     //상품 목록 초기 페이지 (trade.html)
     @GetMapping
     public String productList(@RequestParam(defaultValue = "0") int page,
@@ -283,9 +286,6 @@ public class ProductController {
         return "pages/trade";
     }
 
-    @Value("${google.maps.api.key}")
-    private String googleMapsApiKey;
-
     //상품 등록 폼 페이지 (write.html)
     @GetMapping("/new")
     public String writeForm(Model model,
@@ -305,7 +305,6 @@ public class ProductController {
 
         model.addAttribute("user", user);
         model.addAttribute("productDto", new ProductDto());
-        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // Google Map API 키 주입
 
         // ✅ 완전히 비어있는 DTO 생성 (categoryName == null)
         ProductDto emptyDto = new ProductDto();  // price=0만 초기화, 나머지는 null
@@ -314,6 +313,10 @@ public class ProductController {
 
         // ✅ 카테고리 목록 조회
         model.addAttribute("categories", categoryService.findAll());
+
+        // Google Map API 키 주입
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+
 
         return "pages/write";
     }
