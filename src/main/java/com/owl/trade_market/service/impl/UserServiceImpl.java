@@ -3,6 +3,8 @@ package com.owl.trade_market.service.impl;
 import com.owl.trade_market.config.exception.RegistrationException;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.dto.UserDto;
+import com.owl.trade_market.entity.UserDetails;
+import com.owl.trade_market.repository.UserDetailsRepository;
 import com.owl.trade_market.repository.UserRepository;
 import com.owl.trade_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
+
     @Override
     @Transactional
     public User register(UserDto userDto) {
@@ -35,8 +40,14 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("이미 존재하는 사용자명입니다.", userDto);
         }
 
+        //user 생성
         User user = new User(userDto.getUserId(), userDto.getUserName(), passwordEncoder.encode(userDto.getUserPassword()));
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // UserDetails 자동 생성 추가
+        createUserDetails(savedUser);
+
+        return savedUser;
     }
 
     //Spring Security Login 사용으로 주석처리
@@ -82,4 +93,42 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
         user.setUserLocation(address);
     }
+
+
+    //UserDetails관련 함수
+    @Override
+    @Transactional
+    public UserDetails createUserDetails(User user) {
+        // 이미 UserDetails가 있는지 확인
+        Optional<UserDetails> existingDetails = userDetailsRepository.findByUser(user);
+        if (existingDetails.isPresent()) {
+            return existingDetails.get();
+        }
+
+        // 새로운 UserDetails 생성
+        UserDetails userDetails = new UserDetails(user);
+
+        // 양방향 관계 설정
+        user.setUserDetails(userDetails);
+
+        return userDetailsRepository.save(userDetails);
+    }
+
+    @Override
+    public Optional<UserDetails> findUserDetailsByUser(User user) {
+        return userDetailsRepository.findByUser(user);
+    }
+
+    @Override
+    public Optional<UserDetails> findUserDetailsByUserId(Long userId) {
+        return userDetailsRepository.findByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public UserDetails updateUserDetails(UserDetails userDetails) {
+        return userDetailsRepository.save(userDetails);
+    }
+
+
 }

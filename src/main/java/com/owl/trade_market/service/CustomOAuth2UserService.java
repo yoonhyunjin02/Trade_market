@@ -3,7 +3,9 @@ package com.owl.trade_market.service;
 
 import com.owl.trade_market.entity.AuthProvider;
 import com.owl.trade_market.entity.User;
+import com.owl.trade_market.repository.UserDetailsRepository;
 import com.owl.trade_market.repository.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -21,9 +23,11 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth2UserRequest -> OAuth2User 변환
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository, @Lazy UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -87,7 +91,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
             String[] parts = email.split("@");
             String localPart = parts.length > 0 ? parts[0] : email;
             user.setUserId(localPart);
+            //User 저장
             user = userRepository.save(user);
+
+            // UserDetails 자동 생성
+            try {
+                userService.createUserDetails(user);
+            } catch (Exception e) {
+                // UserDetails 생성 실패 시 로그 출력하고 계속 진행
+                System.err.println("OAuth2 사용자의 UserDetails 생성 실패: " + e.getMessage());
+            }
         }
 
         // 사용자 정보를 attributes에 추가
