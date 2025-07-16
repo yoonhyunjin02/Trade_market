@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -36,6 +37,9 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
 
     //상품 목록 초기 페이지 (trade.html)
     @GetMapping
@@ -267,6 +271,7 @@ public class ProductController {
         session.removeAttribute("productDto");
 
         model.addAttribute("user", user);
+        model.addAttribute("productDto", new ProductDto());
 
         // 완전히 비어있는 DTO 생성 (categoryName == null)
         ProductDto emptyDto = new ProductDto();  // price=0만 초기화, 나머지는 null
@@ -275,6 +280,10 @@ public class ProductController {
 
         // 카테고리 목록 조회
         model.addAttribute("categories", categoryService.findAll());
+
+        // Google Map API 키 주입
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+
 
         return "pages/write";
     }
