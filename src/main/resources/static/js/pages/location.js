@@ -1,16 +1,20 @@
 let autocomplete, map, geocoder, userSetAddress, currentAddress; // 지역변수
 
-function initMap() {
+async function initMap() {
+
+  const { Map } = await google.maps.importLibrary("maps"); // 지도 라이브러리
+  const { Autocomplete } = await google.maps.importLibrary("places"); // 자동완성 라이브러리
+  const { Geocoder } = await google.maps.importLibrary("geocoding");
   // 1) 지도 초기화
-  map = new google.maps.Map(document.getElementById("map"), { // Google Maps API는 html에서 키를 받아서 전역 객체 google.maps로 사용
+  map = new Map(document.getElementById("map"), { // Google Maps API는 html에서 키를 받아서 전역 객체 google.maps로 사용
     center: { lat: 37.5665, lng: 126.9780 },
     zoom: 13,
   });
-  geocoder = new google.maps.Geocoder();
+  geocoder = new Geocoder();
 
   // 2) 주소 자동완성
   const input = document.getElementById("address");
-  autocomplete = new google.maps.places.Autocomplete(input, {
+  autocomplete = new Autocomplete(input, {
     componentRestrictions: { country: "kr" }, // 국가 대한민국
     fields: ["formatted_address", "geometry"], // 주소 문자열, 좌표정보
     // 예) "formatted_address": "서울특별시 종로구 세종로 1-68",
@@ -139,3 +143,10 @@ function showMessage(text, ok) {
   msgEl.style.display = "block";
   msgEl.style.color = ok ? "green" : "red";
 }
+
+// 동적 bootstrap 로더 삽입
+const script = document.createElement("script");
+script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&v=weekly&callback=initMap`;
+script.async = true;
+script.defer = true;
+document.head.appendChild(script);
