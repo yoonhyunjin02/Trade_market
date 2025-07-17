@@ -21,23 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const res = await fetch(`/products/scroll?${params.toString()}`);
-            if (!res.ok) {
-                console.error("서버 오류 :", res.status);
-                observer.unobserve(sentinel);
-                return;
-            }
-
             const html = await res.text();
-            if (!html.trim()) {
-                // 더 이상 로드할 데이터 없음 → 중단
+            const trimmed = html.trim();
+
+            if (!trimmed) {
                 ended = true;
                 observer.unobserve(sentinel);
                 return;
             }
 
-            // 받아온 HTML을 상품 컨테이너에 추가
             const temp = document.createElement('div');
-            temp.innerHTML = html;
+            temp.innerHTML = trimmed;
             container.append(...temp.childNodes);
 
             page += 1;

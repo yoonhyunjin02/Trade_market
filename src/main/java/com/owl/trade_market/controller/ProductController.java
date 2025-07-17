@@ -193,12 +193,12 @@ public class ProductController {
         }
 
         Pageable pageable = PageRequest.of(page, size, sortOption);
+
         Category selectedCategory = null;
         if (categoryId != null) {
             selectedCategory = categoryService.findById(categoryId).orElse(null);
         }
 
-        // 기본 가격값 보정 (선택사항)
         Integer minBound = productService.findMinPrice();
         Integer maxBound = productService.findMaxPrice();
         if (minPrice == null || minPrice < minBound) minPrice = minBound;
@@ -215,12 +215,14 @@ public class ProductController {
         );
 
         if (productPage.isEmpty()) {
-            return "fragments/empty :: empty";
+            model.addAttribute("products", Collections.emptyList());
+            return "fragments/product-card-list :: fragment";
         }
 
         model.addAttribute("products", productPage.getContent());
         return "fragments/product-card-list :: fragment";
     }
+
 
     // 검색 페이지 (search.html)
     @GetMapping("/search")
