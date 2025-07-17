@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -68,6 +69,98 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> searchByKeywordAndSoldFalse(
             @Param("keyword") String keyword,
             @Param("category") Category category,
+            Pageable pageable
+    );
+
+    // 최솟값/최댓값
+    @Query("SELECT MIN(p.price) FROM Product p")
+    Optional<Integer> findMinPrice();
+
+    @Query("SELECT MAX(p.price) FROM Product p")
+    Optional<Integer> findMaxPrice();
+
+    // 가격 구간 필터링
+    Page<Product> findByPriceBetween(Integer minPrice, Integer maxPrice, Pageable pageable);
+    Page<Product> findBySoldFalseAndPriceBetween(Integer minPrice, Integer maxPrice, Pageable pageable);
+    Page<Product> findByCategoryAndPriceBetween(Category category, Integer minPrice, Integer maxPrice, Pageable pageable);
+    Page<Product> findByCategoryAndSoldFalseAndPriceBetween(Category category, Integer minPrice, Integer maxPrice, Pageable pageable);
+
+    // 검색 + 가격
+    @Query("""
+    SELECT p FROM Product p
+    WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+      AND (:category IS NULL OR p.category = :category)
+      AND p.price BETWEEN :minPrice AND :maxPrice
+    """)
+    Page<Product> searchKeywordCategoryWithPrice(
+            @Param("keyword") String keyword,
+            @Param("category") Category category,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            Pageable pageable
+    );
+
+    @Query("""
+    SELECT p FROM Product p
+    WHERE p.sold = false
+      AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+      AND (:category IS NULL OR p.category = :category)
+      AND p.price BETWEEN :minPrice AND :maxPrice
+    """)
+    Page<Product> searchKeywordCategorySoldFalseWithPrice(
+            @Param("keyword") String keyword,
+            @Param("category") Category category,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            Pageable pageable
+    );
+
+    @Query("""
+    SELECT p FROM Product p
+    WHERE p.price BETWEEN :minPrice AND :maxPrice
+      AND (:location IS NULL OR p.location = :location)
+      AND (:availableOnly IS NULL OR p.sold = false)
+    """)
+    Page<Product> findAllWithPriceAndLocation(
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            @Param("location") String location,
+            @Param("availableOnly") Boolean availableOnly,
+            Pageable pageable
+    );
+
+    @Query("""
+    SELECT p FROM Product p
+    WHERE p.category = :category
+      AND p.price BETWEEN :minPrice AND :maxPrice
+      AND (:location IS NULL OR p.location = :location)
+      AND (:availableOnly IS NULL OR p.sold = false)
+    """)
+    Page<Product> findByCategoryWithPriceAndLocation(
+            @Param("category") Category category,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            @Param("location") String location,
+            @Param("availableOnly") Boolean availableOnly,
+            Pageable pageable
+    );
+
+    @Query("""
+    SELECT p FROM Product p
+    WHERE (LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
+      AND (:category IS NULL OR p.category = :category)
+      AND p.price BETWEEN :minPrice AND :maxPrice
+      AND (:location IS NULL OR p.location = :location)
+      AND (:availableOnly IS NULL OR p.sold = false)
+    """)
+    Page<Product> searchWithPriceAndLocationFilter(
+            @Param("keyword") String keyword,
+            @Param("category") Category category,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            @Param("location") String location,
+            @Param("availableOnly") Boolean availableOnly,
             Pageable pageable
     );
 }

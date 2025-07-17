@@ -52,6 +52,7 @@
                         </label>
                     </div>
 
+                    <!-- 게시물 정보 -->
                     <div class="filter-group">
                         <h4>게시물 정보</h4>
                         <label>
@@ -76,43 +77,75 @@
 
                     <!-- 가격 필터 -->
                     <h4>가격</h4>
-                    <div class="quick-price-options">
-                        <button type="submit" name="maxPrice" value="5000">5,000원 이하</button>
-                        <button type="submit" name="maxPrice" value="10000">10,000원 이하</button>
-                        <button type="submit" name="maxPrice" value="20000">20,000원 이하</button>
-                    </div>
+                    <label>
+                        <input type="radio" name="sort" value="priceAsc"
+                               th:checked="${currentSort == 'priceAsc'}"
+                               onchange="this.form.submit()" />
+                        가격 낮은 순
+                    </label>
+                    <label>
+                        <input type="radio" name="sort" value="priceDesc"
+                               th:checked="${currentSort == 'priceDesc'}"
+                               onchange="this.form.submit()" />
+                        가격 높은 순
+                    </label>
+
                     <div class="price-inputs">
-                        <input type="number" name="minPrice"
-                               th:value="${param.minPrice != null ? param.minPrice : minPrice}" />
+                        <input type="number" name="minPrice" placeholder="최소 가격"
+                               th:value="${param.minPrice}">
                         -
-                        <input type="number" name="maxPrice"
-                               th:value="${param.maxPrice != null ? param.maxPrice : maxPrice}" />
+                        <input type="number" name="maxPrice" placeholder="최대 가격"
+                               th:value="${param.maxPrice}">
                     </div>
                     <button type="submit" class="price-apply-btn">적용하기</button>
 
                     <!-- 카테고리 필터 -->
-                    <div class="filter-group">
+                    <div class="filter-group collapsible-filter">
                         <h4>카테고리</h4>
-                        <div th:each="category : ${categories}">
-                            <label>
-                                <input type="radio" name="category" th:value="${category.id}"
-                                       th:checked="${param.category != null and param.category == category.id}" />
-                                <span th:text="${category.name}">카테고리 이름</span>
-                            </label>
+
+                        <!-- 전체보기 옵션 -->
+                        <label>
+                            <input type="radio" name="category"
+                                   value=""
+                                   th:checked="${categoryId == null}"
+                                   onchange="this.form.submit()" />
+                            전체보기
+                        </label>
+
+                        <!-- 5개만 보이기 -->
+                        <div class="filter-list" id="categoryList">
+                            <div th:each="category, iterStat : ${categories}"
+                                 th:classappend="${iterStat.index >= 5} ? 'hidden-item'">
+                                <label>
+                                    <input type="radio" name="categoryId"
+                                           th:value="${category.id}"
+                                           th:checked="${categoryId != null and categoryId == category.id}"
+                                           onchange="this.form.submit()" />
+
+                                    <span th:text="${category.name}">카테고리 이름</span>
+                                </label>
+                            </div>
                         </div>
+
+                        <!-- 더보기/접기 버튼 -->
+                        <button type="button" class="toggle-btn" data-target="categoryList">더보기</button>
                     </div>
 
                     <!-- 위치 필터 -->
-                    <div class="filter-group">
+                    <div class="filter-group collapsible-filter">
                         <h4>위치</h4>
-                        <div th:each="loc : ${locations}">
-                            <label>
-                                <input type="radio" name="location" th:value="${loc}"
-                                       th:checked="${param.location != null and param.location == loc}"
-                                       onchange="this.form.submit()" />
-                                <span th:text="${loc}"></span>
-                            </label>
+                        <div class="filter-list" id="locationList">
+                            <div th:each="loc, iterStat : ${locations}"
+                                 th:classappend="${iterStat.index >= 3} ? 'hidden-item'">
+                                <label>
+                                    <input type="radio" name="location" th:value="${loc}"
+                                           th:checked="${param.location != null and param.location == loc}"
+                                           onchange="this.form.submit()" />
+                                    <span th:text="${loc}"></span>
+                                </label>
+                            </div>
                         </div>
+                        <button type="button" class="toggle-btn" data-target="locationList">더보기</button>
                     </div>
                 </aside>
             </form>

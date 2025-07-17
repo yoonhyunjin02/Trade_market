@@ -1,4 +1,4 @@
-/* banner */
+/* ===== 배너 ===== */
 .trade-banner {
   width: 100%;
   height: 360px;
@@ -63,12 +63,6 @@
   box-sizing: border-box;
 }
 
-.trade-content-container h4 {
-  font-size: 23px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
 /* ===== 필터 영역 ===== */
 .trade-filter {
   width: 250px;
@@ -87,10 +81,12 @@
   gap: 5px;
 }
 
+/* ===== 필터 헤더 (초기화 포함) ===== */
 .filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
 }
 
 .reset-filter {
@@ -100,69 +96,54 @@
   cursor: pointer;
 }
 
+/* ===== 필터 제목 (h4) ===== */
+.trade-filter h4 {
+  font-size: 25px;            /* ✅ 통일된 제목 크기 */
+  font-weight: 700;
+  color: #111;
+  margin: 20px 0 12px;        /* ✅ 그룹 간 위아래 간격 */
+}
+
+/* ===== 필터 항목 기본 스타일 ===== */
+.trade-filter label {
+  display: flex;
+  align-items: center;
+  gap: 8px;                   /* ✅ 라디오/체크박스와 글자 간격 */
+  font-size: 20px;            /* ✅ 항목 글자 크기 */
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 10px;        /* ✅ 항목 간 간격 */
+}
+
+/* 라디오/체크박스 크기 통일 */
+.trade-filter input[type="radio"],
+.trade-filter input[type="checkbox"] {
+  transform: scale(1.3);      /* ✅ 버튼 크기 키움 */
+  accent-color: #ff6f0e;      /* ✅ 오렌지 포인트 색상 */
+  cursor: pointer;
+}
+
+/* ===== 필터 그룹 전체 간격 ===== */
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 8px;                   /* ✅ 같은 그룹 내 항목 간격 */
+  margin-bottom: 20px;        /* ✅ 그룹과 그룹 사이 간격 */
 }
 
-.filter-group input[type="checkbox"] {
-  transform: scale(1.2);
-  margin-right: 6px;
-  cursor: pointer;
-}
-
-.filter-group label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-size: 20px;
-  color: #111;
-}
-
-.filter-group input[type="radio"],
-.filter-group input[type="checkbox"] {
-  transform: scale(1.5);
-  accent-color: #ff6f0e;
-}
-
-/* ===== 가격 필터 ===== */
-.quick-price-options {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.quick-price-options button {
-  padding: 6px 12px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 50px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  width: 100%;
-  text-align: center;
-}
-
-.quick-price-options button:hover {
-  background-color: #f7f7f7;
-}
-
+/* ===== 가격 입력창 영역 ===== */
 .price-inputs {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 12px;                  /* ✅ "-"와의 간격 */
+  margin: 12px 0;             /* ✅ 위/아래 여백 */
 }
 
+/* 가격 입력창 통일 */
 .price-inputs input {
-  width: 80px;
-  padding: 6px 8px;
-  font-size: 14px;
+  width: 120px;               /* ✅ 넓이 통일 */
+  padding: 8px 10px;
+  font-size: 15px;            /* ✅ 글자 크기 */
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fff;
@@ -171,34 +152,56 @@
   box-sizing: border-box;
 }
 
+/* ===== 적용하기 버튼 ===== */
 .price-apply-btn {
-  background-color: transparent;
+  background: none;
   color: #444;
   border: none;
-  padding: 0;
-  font-size: 13px;
+  font-size: 15px;            /* ✅ 버튼 글자 크기 */
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.2s ease;
-  align-self: flex-start;
+  margin-bottom: 20px;        /* ✅ 필터 그룹과의 간격 */
 }
 
 .price-apply-btn:hover {
   color: #ff6f0e;
 }
 
-/*상품 그리드*/
+/* ===== 상품 그리드 제목 ===== */
 .popular-items h2 {
-    font-size: 42px;
-    font-weight: 700;
-    line-height: 54px;
-    letter-spacing: 0.03em;
-    color: #111111;
-    text-align: center;
-    margin-bottom: 32px;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 54px;
+  letter-spacing: 0.03em;
+  color: #111111;
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-/* 플로팅 버튼 */
+.hidden-item {
+  display: none;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #ff6f0e;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+  text-decoration: underline;
+}
+
+.toggle-btn:hover {
+  color: #e65c00;
+}
+
+.item-grid > div {
+  display: contents;
+}
+
+/* ===== 플로팅 버튼 ===== */
 .floating-btn {
   position: fixed;
   bottom: 40px;
@@ -210,7 +213,7 @@
   font-size: 16px;
   font-weight: 700;
   line-height: 100%;
-  letter-spacing: 0.05em; /* 5% */
+  letter-spacing: 0.05em;
   text-align: center;
   border-radius: 50%;
   display: flex;
@@ -225,8 +228,4 @@
 
 .floating-btn:hover {
   background-color: #e65c00;
-}
-
-.item-grid > div {
-  display: contents;
 }

@@ -46,6 +46,8 @@ public class ProductController {
                               @RequestParam(required = false) Long categoryId,
                               @RequestParam(required = false) String location,
                               @RequestParam(required = false) Boolean availableOnly,
+                              @RequestParam(required = false) Integer minPrice,
+                              @RequestParam(required = false) Integer maxPrice,
                               Model model,
                               HttpSession session,
                               @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -55,54 +57,76 @@ public class ProductController {
 
         try {
             Sort sortOption;
-            // 항상 조회순 정렬 기본값
             if (sort == null || sort.isEmpty() || "views".equals(sort)) {
                 sortOption = Sort.by("viewCount").descending();
             } else if ("chats".equals(sort)) {
                 sortOption = Sort.by("chatCount").descending();
             } else if ("latest".equals(sort)) {
                 sortOption = Sort.by("createdAt").descending();
+            } else if ("priceAsc".equals(sort)) {
+                sortOption = Sort.by("price").ascending();
+            } else if ("priceDesc".equals(sort)) {
+                sortOption = Sort.by("price").descending();
             } else {
                 sortOption = Sort.by("viewCount").descending();
             }
 
             Pageable pageable = PageRequest.of(page, size, sortOption);
-
-            Page<Product> productPage;
             Category selectedCategory = null;
 
             if (categoryId != null) {
                 selectedCategory = categoryService.findById(categoryId).orElse(null);
             }
 
-            // 키워드 검색이 있는 경우
+            Integer minBound = productService.findMinPrice();
+            Integer maxBound = productService.findMaxPrice();
+
+            if (minPrice == null || minPrice < minBound) {
+                minPrice = minBound;
+            }
+            if (maxPrice == null || maxPrice > maxBound) {
+                maxPrice = maxBound;
+            }
+            if (minPrice > maxPrice) { // 사용자가 거꾸로 넣은 경우 swap
+                int tmp = minPrice;
+                minPrice = maxPrice;
+                maxPrice = tmp;
+            }
+
+            // ===== 3. 상품 조회 =====
+            Page<Product> productPage;
+
             if (keyword != null && !keyword.trim().isEmpty()) {
-                if (Boolean.TRUE.equals(availableOnly)) {
-                    // 검색 + 거래가능만 보기 (soldOrNot=false)
-                    productPage = productService.searchProductAndAvailable(keyword.trim(), selectedCategory, pageable);
-                } else {
-                    // 검색 전체
-                    productPage = productService.searchProduct(keyword.trim(), selectedCategory, pageable);
-                }
+                // 🔹 키워드 + 카테고리 + 가격 + 위치
+                productPage = productService.searchWithPriceAndLocationFilter(
+                        keyword.trim(),
+                        selectedCategory,
+                        minPrice, maxPrice,
+                        location,
+                        availableOnly,
+                        pageable
+                );
+
+            } else if (selectedCategory != null) {
+                // 🔹 카테고리 + 가격 + 위치
+                productPage = productService.findByCategoryWithPriceAndLocation(
+                        selectedCategory,
+                        minPrice, maxPrice,
+                        location,
+                        availableOnly,
+                        pageable
+                );
+
+            } else {
+                // 🔹 전체 + 가격 + 위치
+                productPage = productService.findAllWithPriceAndLocation(
+                        minPrice, maxPrice,
+                        location,
+                        availableOnly,
+                        pageable
+                );
             }
-            // 카테고리만 선택된 경우
-            else if (selectedCategory != null) {
-                if (Boolean.TRUE.equals(availableOnly)) {
-                    productPage = productService.findByCategoryAndAvailable(selectedCategory, pageable);
-                } else {
-                    productPage = productService.findByCategory(selectedCategory, pageable);
-                }
-            }
-            // 전체 목록 (검색/카테고리 없음)
-            else {
-                if (Boolean.TRUE.equals(availableOnly)) {
-                    // 거래 가능한 상품만
-                    productPage = productService.findAll(pageable, true);
-                } else {
-                    // 전체 상품
-                    productPage = productService.findAll(pageable);
-                }
-            }
+
 
             model.addAttribute("products", productPage.getContent());
             model.addAttribute("hasNext", productPage.hasNext());
@@ -110,14 +134,17 @@ public class ProductController {
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
 
-            // 전체 카테고리/위치
+            // 가격 필터 값 유지
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+
+            model.addAttribute("currentLocation", location);
+
+            // 카테고리/위치
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("locations", productService.getAllDistinctLocations());
 
-            // 정렬 유지
             model.addAttribute("currentSort", sort == null ? "views" : sort);
-
-            // 체크박스 상태 유지
             model.addAttribute("availableOnly", availableOnly);
 
         } catch (Exception e) {

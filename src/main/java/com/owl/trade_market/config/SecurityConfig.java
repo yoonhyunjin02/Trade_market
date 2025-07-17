@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 "/login", "/users/login",
                                 "/login/oauth2/**",
                                 "/products",
+                                "/products/**",
                                 "/products/search",
                                 "/products/scroll",
                                 "/products/scroll/**"

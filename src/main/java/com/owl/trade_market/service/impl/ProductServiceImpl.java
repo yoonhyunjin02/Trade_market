@@ -155,6 +155,86 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable) {
-        return productRepository.searchByKeywordAndSoldFalse(keyword, category, pageable); // ✅ 변경된 메서드명
+        return productRepository.searchByKeywordAndSoldFalse(keyword, category, pageable);
     }
+
+    @Override
+    public Integer findMinPrice() {
+        return productRepository.findMinPrice().orElse(0);
+    }
+
+    @Override
+    public Integer findMaxPrice() {
+        return productRepository.findMaxPrice().orElse(1000000); // 없으면 기본 큰값
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findAllWithPriceFilter(Integer minPrice, Integer maxPrice,
+                                                Boolean availableOnly, Pageable pageable) {
+        if (Boolean.TRUE.equals(availableOnly)) {
+            return productRepository.findBySoldFalseAndPriceBetween(minPrice, maxPrice, pageable);
+        }
+        return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> searchWithPriceFilter(String keyword, Category category,
+                                               Integer minPrice, Integer maxPrice,
+                                               Boolean availableOnly, Pageable pageable) {
+        if (Boolean.TRUE.equals(availableOnly)) {
+            return productRepository.searchKeywordCategorySoldFalseWithPrice(
+                    keyword, category, minPrice, maxPrice, pageable);
+        }
+        return productRepository.searchKeywordCategoryWithPrice(
+                keyword, category, minPrice, maxPrice, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findByCategoryWithPriceFilter(Category category,
+                                                       Integer minPrice, Integer maxPrice,
+                                                       Boolean availableOnly, Pageable pageable) {
+        if (Boolean.TRUE.equals(availableOnly)) {
+            return productRepository.findByCategoryAndSoldFalseAndPriceBetween(
+                    category, minPrice, maxPrice, pageable);
+        }
+        return productRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findAllWithPriceAndLocation(Integer minPrice,
+                                                     Integer maxPrice,
+                                                     String location,
+                                                     Boolean availableOnly,
+                                                     Pageable pageable) {
+        return productRepository.findAllWithPriceAndLocation(minPrice, maxPrice, location, availableOnly, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> findByCategoryWithPriceAndLocation(Category category,
+                                                            Integer minPrice,
+                                                            Integer maxPrice,
+                                                            String location,
+                                                            Boolean availableOnly,
+                                                            Pageable pageable) {
+        return productRepository.findByCategoryWithPriceAndLocation(category, minPrice, maxPrice, location, availableOnly, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Product> searchWithPriceAndLocationFilter(String keyword,
+                                                          Category category,
+                                                          Integer minPrice,
+                                                          Integer maxPrice,
+                                                          String location,
+                                                          Boolean availableOnly,
+                                                          Pageable pageable) {
+        return productRepository.searchWithPriceAndLocationFilter(keyword, category, minPrice, maxPrice, location, availableOnly, pageable);
+    }
+
+
 }

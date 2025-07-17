@@ -44,5 +44,40 @@ public interface ProductService {
 
     Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable);
 
+    /** ✅ 전체 상품 중 최솟값 / 최댓값 구하기 */
+    Integer findMinPrice();
+    Integer findMaxPrice();
 
+    /** ✅ 가격 필터만 적용해서 전체 조회 */
+    Page<Product> findAllWithPriceFilter(Integer minPrice, Integer maxPrice,
+                                         Boolean availableOnly, Pageable pageable);
+
+    /** ✅ 키워드 + 카테고리 + 가격 필터 */
+    Page<Product> searchWithPriceFilter(String keyword, Category category,
+                                        Integer minPrice, Integer maxPrice,
+                                        Boolean availableOnly, Pageable pageable);
+
+    /** ✅ 카테고리 + 가격 필터 */
+    Page<Product> findByCategoryWithPriceFilter(Category category,
+                                                Integer minPrice, Integer maxPrice,
+                                                Boolean availableOnly, Pageable pageable);
+
+    Page<Product> findAllWithPriceAndLocation(Integer minPrice, Integer maxPrice,
+                                              String location,
+                                              Boolean availableOnly,
+                                              Pageable pageable);
+
+    Page<Product> findByCategoryWithPriceAndLocation(Category category,
+                                                     Integer minPrice, Integer maxPrice,
+                                                     String location,
+                                                     Boolean availableOnly,
+                                                     Pageable pageable);
+
+    Page<Product> searchWithPriceAndLocationFilter(String keyword,
+                                                   Category category,
+                                                   Integer minPrice,
+                                                   Integer maxPrice,
+                                                   String location,
+                                                   Boolean availableOnly,
+                                                   Pageable pageable);
 }
