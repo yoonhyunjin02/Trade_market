@@ -1,7 +1,7 @@
 package com.owl.trade_market.config;
 
 import com.owl.trade_market.config.handler.FormLoginSuccessHandler;
-import com.owl.trade_market.service.CustomOAuth2UserService;
+import com.owl.trade_market.config.auth.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web
@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 "/login", "/users/login",
                                 "/login/oauth2/**",
                                 "/products",
+                                "/products/**",
                                 "/products/search",
                                 "/products/scroll",
                                 "/products/scroll/**"

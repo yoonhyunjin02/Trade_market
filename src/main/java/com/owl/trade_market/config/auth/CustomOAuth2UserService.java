@@ -1,4 +1,4 @@
-package com.owl.trade_market.service;
+package com.owl.trade_market.config.auth;
 
 
 import com.owl.trade_market.entity.AuthProvider;
