@@ -27,7 +27,7 @@ async function initMap() {
         const geocoder = new Geocoder();
 
         geocoder.geocode({ location:latLng },(result, status) => {
-            if (status ==="OK" && result[0]) {
+            if (status === "OK" && result[0]) {
                 const address = result[0].formatted_address;
                 input.value = address;
 
