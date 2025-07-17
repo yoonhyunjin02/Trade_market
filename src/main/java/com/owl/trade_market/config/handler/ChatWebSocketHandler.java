@@ -147,15 +147,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
      * 특정 채팅방의 모든 참여자에게 메시지를 브로드캐스트
      */
     private void broadcastToRoom(ChatRoom chatRoom, ChatMessageDto message) {
-        // 채팅방 참여자들의 ID 리스트
-        String buyerId = chatRoom.getBuyer().getUserId();
-        String sellerId = chatRoom.getProduct().getSeller().getUserId();
+        try {
+            // ChatService를 통해 안전하게 사용자 정보 조회 (트랜잭션 내에서)
+            String buyerId = chatService.getBuyerIdFromChatRoom(chatRoom.getId());
+            String sellerId = chatService.getSellerIdFromChatRoom(chatRoom.getId());
 
-        // 구매자에게 전송
-        sendMessageToUser(buyerId, message);
+            // 구매자에게 전송
+            sendMessageToUser(buyerId, message);
 
-        // 판매자에게 전송
-        sendMessageToUser(sellerId, message);
+            // 판매자에게 전송
+            sendMessageToUser(sellerId, message);
+
+        } catch (Exception e) {
+            log.error("브로드캐스트 중 오류 발생: {}", e.getMessage(), e);
+        }
     }
 
     /**

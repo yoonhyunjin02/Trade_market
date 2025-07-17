@@ -56,4 +56,19 @@ public interface ChatService {
      * 특정 상품에 대해 구매자와 판매자 간의 채팅방을 찾거나 새로 생성합니다.
      */
     ChatRoom findOrCreateRoom(Long productId, User buyer);
+
+    /**
+     * 채팅방 ID로 구매자 ID를 조회합니다.
+     */
+    String getBuyerIdFromChatRoom(Long chatRoomId);
+
+    /**
+     * 채팅방 ID로 판매자 ID를 조회합니다.
+     */
+    String getSellerIdFromChatRoom(Long chatRoomId);
+
+    /**
+     * 채팅방 나가기 및 완전 삭제
+     */
+    void leaveAndDeleteRoom(Long chatRoomId, User currentUser);
 }
