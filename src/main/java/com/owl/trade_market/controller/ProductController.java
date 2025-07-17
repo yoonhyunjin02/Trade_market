@@ -72,12 +72,14 @@ public class ProductController {
             }
 
             Pageable pageable = PageRequest.of(page, size, sortOption);
-            Category selectedCategory = null;
 
+            // 카테고리 조회
+            Category selectedCategory = null;
             if (categoryId != null) {
                 selectedCategory = categoryService.findById(categoryId).orElse(null);
             }
 
+            // 가격 필터 기본값 보정
             Integer minBound = productService.findMinPrice();
             Integer maxBound = productService.findMaxPrice();
 
@@ -93,40 +95,15 @@ public class ProductController {
                 maxPrice = tmp;
             }
 
-            // ===== 3. 상품 조회 =====
-            Page<Product> productPage;
-
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                // 🔹 키워드 + 카테고리 + 가격 + 위치
-                productPage = productService.searchWithPriceAndLocationFilter(
-                        keyword.trim(),
-                        selectedCategory,
-                        minPrice, maxPrice,
-                        location,
-                        availableOnly,
-                        pageable
-                );
-
-            } else if (selectedCategory != null) {
-                // 🔹 카테고리 + 가격 + 위치
-                productPage = productService.findByCategoryWithPriceAndLocation(
-                        selectedCategory,
-                        minPrice, maxPrice,
-                        location,
-                        availableOnly,
-                        pageable
-                );
-
-            } else {
-                // 🔹 전체 + 가격 + 위치
-                productPage = productService.findAllWithPriceAndLocation(
-                        minPrice, maxPrice,
-                        location,
-                        availableOnly,
-                        pageable
-                );
-            }
-
+            Page<Product> productPage = productService.filterProducts(
+                    keyword,
+                    selectedCategory,
+                    minPrice,
+                    maxPrice,
+                    location,
+                    availableOnly,
+                    pageable
+            );
 
             model.addAttribute("products", productPage.getContent());
             model.addAttribute("hasNext", productPage.hasNext());
@@ -134,18 +111,43 @@ public class ProductController {
             model.addAttribute("categoryId", categoryId);
             model.addAttribute("selectedCategory", selectedCategory);
 
-            // 가격 필터 값 유지
             model.addAttribute("minPrice", minPrice);
             model.addAttribute("maxPrice", maxPrice);
 
             model.addAttribute("currentLocation", location);
-
-            // 카테고리/위치
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("locations", productService.getAllDistinctLocations());
 
             model.addAttribute("currentSort", sort == null ? "views" : sort);
             model.addAttribute("availableOnly", availableOnly);
+
+            // trade 페이지 필터에 맞게 제목 수정
+            String pageTitle;
+            
+            if (sort == null || sort.equals("views")) {
+                pageTitle = "중고거래 인기매물";
+            } else if ("chats".equals(sort)) {
+                pageTitle = "채팅 많은 순 매물";
+            } else if ("latest".equals(sort)) {
+                pageTitle = "최신 순 매물";
+            } else if ("priceAsc".equals(sort)) {
+                pageTitle = "가격 낮은 순 매물";
+            } else if ("priceDesc".equals(sort)) {
+                pageTitle = "가격 높은 순 매물";
+            } else {
+                pageTitle = "중고거래 인기매물";
+            }
+            
+            List<String> conditions = new ArrayList<>();
+            if (selectedCategory != null) conditions.add(selectedCategory.getName());
+            if (location != null && !location.isBlank()) conditions.add(location);
+            if (Boolean.TRUE.equals(availableOnly)) conditions.add("거래 가능");
+
+            if (!conditions.isEmpty()) {
+                pageTitle = String.join(" · ", conditions) + " " + pageTitle;
+            }
+
+            model.addAttribute("pageTitle", pageTitle);
 
         } catch (Exception e) {
             model.addAttribute("error", "상품 목록을 불러오는 중 오류가 발생했습니다.");
@@ -156,77 +158,101 @@ public class ProductController {
         return "pages/trade";
     }
 
+
     // 무한 스크롤
     @GetMapping("/scroll")
     public String scrollPage(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "16") int size,
             @RequestParam(defaultValue = "views") String sort,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Boolean availableOnly,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
             Model model) {
 
         Sort sortOption;
-        if ("views".equals(sort)) {
+        if (sort == null || sort.isEmpty() || "views".equals(sort)) {
             sortOption = Sort.by("viewCount").descending();
         } else if ("chats".equals(sort)) {
             sortOption = Sort.by("chatCount").descending();
-        } else {
+        } else if ("latest".equals(sort)) {
             sortOption = Sort.by("createdAt").descending();
+        } else if ("priceAsc".equals(sort)) {
+            sortOption = Sort.by("price").ascending();
+        } else if ("priceDesc".equals(sort)) {
+            sortOption = Sort.by("price").descending();
+        } else {
+            sortOption = Sort.by("viewCount").descending();
         }
 
         Pageable pageable = PageRequest.of(page, size, sortOption);
-        Page<Product> productPage = productService.findAll(pageable);
+        Category selectedCategory = null;
+        if (categoryId != null) {
+            selectedCategory = categoryService.findById(categoryId).orElse(null);
+        }
+
+        // 기본 가격값 보정 (선택사항)
+        Integer minBound = productService.findMinPrice();
+        Integer maxBound = productService.findMaxPrice();
+        if (minPrice == null || minPrice < minBound) minPrice = minBound;
+        if (maxPrice == null || maxPrice > maxBound) maxPrice = maxBound;
+
+        Page<Product> productPage = productService.filterProducts(
+                keyword,
+                selectedCategory,
+                minPrice,
+                maxPrice,
+                location,
+                availableOnly,
+                pageable
+        );
 
         if (productPage.isEmpty()) {
             return "fragments/empty :: empty";
         }
 
         model.addAttribute("products", productPage.getContent());
-
         return "fragments/product-card-list :: fragment";
     }
 
-    //검색 페이지 (search.html)
+    // 검색 페이지 (search.html)
     @GetMapping("/search")
     public String searchProducts(@RequestParam String keyword,
-                                 @RequestParam(required = false) Long categoryId,
                                  @RequestParam(defaultValue = "0") int page,
                                  Model model,
                                  HttpSession session,
                                  @AuthenticationPrincipal OAuth2User oauth2User) {
 
+        // 로그인 사용자 세팅
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("user", user);
 
+        // 키워드 유효성 검사
+        if (keyword == null || keyword.trim().isEmpty()) {
+            model.addAttribute("error", "검색어를 입력해주세요.");
+            model.addAttribute("products", java.util.Collections.emptyList());
+            return "pages/search";
+        }
+
         try {
-            // 검색어 유효성 검사
-            if (keyword == null || keyword.trim().isEmpty()) {
-                model.addAttribute("error", "검색어를 입력해주세요.");
-                model.addAttribute("products", java.util.Collections.emptyList());
-                return "pages/search";
-            }
-
-            // 카테고리 조회
-            Category category = null;
-            if (categoryId != null) {
-                category = categoryService.findById(categoryId).orElse(null);
-            }
-
-            // 페이징 처리
             Pageable pageable = PageRequest.of(page, 12, Sort.by("createdAt").descending());
 
-            // 검색 실행
-            Page<Product> searchPage = productService.searchProduct(keyword.trim(), category, pageable);
+            Page<Product> searchPage = productService.searchProduct(keyword.trim(), pageable);
 
-            // 모델 속성 등록
             model.addAttribute("page", searchPage);
             model.addAttribute("products", searchPage.getContent());
             model.addAttribute("keyword", keyword);
-            model.addAttribute("categoryId", categoryId);
-            model.addAttribute("selectedCategory", category);
 
-            // 인기 카테고리 추가
-            List<Category> popularCategories = categoryService.getPopularCategories(10);
-            model.addAttribute("popularCategories", popularCategories);
+            String pageTitle;
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                pageTitle = "'" + keyword.trim() + "' 에 대한 검색 결과 매물";
+            } else {
+                pageTitle = "검색 결과 매물";
+            }
+            model.addAttribute("pageTitle", pageTitle);
 
         } catch (Exception e) {
             model.addAttribute("error", "검색 중 오류가 발생했습니다.");
@@ -234,46 +260,6 @@ public class ProductController {
         }
 
         return "pages/search";
-    }
-
-    //카테고리별 상품 조회
-    @GetMapping("/category/{categoryId}")
-    public String productsByCategory(@PathVariable Long categoryId,
-                                     Model model,
-                                     HttpSession session,
-                                     @AuthenticationPrincipal OAuth2User oauth2User) {
-
-        User user = getCurrentUser(session, oauth2User);
-        model.addAttribute("user", user);
-
-        try {
-            // 카테고리 조회
-            Optional<Category> categoryOpt = categoryService.findById(categoryId);
-            if (categoryOpt.isEmpty()) {
-                model.addAttribute("error", "존재하지 않는 카테고리입니다.");
-                model.addAttribute("products", java.util.Collections.emptyList());
-                return "pages/trade";
-            }
-
-            Category category = categoryOpt.get();
-
-            // 해당 카테고리 상품 조회
-            List<Product> categoryProducts = productService.findByCategory(category, Sort.by("createdAt").descending());
-
-            model.addAttribute("products", categoryProducts);
-            model.addAttribute("categoryId", categoryId);
-            model.addAttribute("selectedCategory", category);
-
-            // 인기 카테고리 목록 추가
-            List<Category> popularCategories = categoryService.getPopularCategories(10);
-            model.addAttribute("popularCategories", popularCategories);
-
-        } catch (Exception e) {
-            model.addAttribute("error", "카테고리 상품을 불러오는 중 오류가 발생했습니다.");
-            model.addAttribute("products", java.util.Collections.emptyList());
-        }
-
-        return "pages/trade";
     }
 
     //상품 등록 폼 페이지 (write.html)
@@ -375,7 +361,7 @@ public class ProductController {
         }
     }
 
-    //상품상세 페이지 (trade_post.html)
+    // 상품상세 페이지 (trade_post.html)
     @GetMapping("/{id:[0-9]+}")
     public String productDetail(@PathVariable Long id,
                                 Model model,
@@ -595,9 +581,7 @@ public class ProductController {
         }
     }
 
-    /**
-     * OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드
-     */
+    // OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드
     private User getCurrentUser(HttpSession session, OAuth2User oauth2User) {
         // 1. OAuth2 로그인 사용자 확인
         if (oauth2User != null) {

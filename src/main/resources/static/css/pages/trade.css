@@ -229,3 +229,10 @@
 .floating-btn:hover {
   background-color: #e65c00;
 }
+
+.no-results {
+    text-align: center;
+    color: #888;
+    font-size: 1.2rem;
+    padding: 40px 0;
+}

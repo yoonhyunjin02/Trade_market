@@ -30,7 +30,7 @@
 
     <!-- Product Grid Section -->
     <section class="popular-items">
-        <h2 id="popular-title">중고거래 인기매물</h2>
+        <h2 id="popular-title" th:text="${pageTitle}">중고거래 인기매물</h2>
 
         <div class="trade-content-container">
             <!-- 필터 폼 시작 -->
@@ -152,9 +152,19 @@
 
             <!-- 상품 목록 -->
             <div class="item-grid" id="product-container">
-                <div th:each="product : ${products}">
-                    <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+
+                <!-- 상품이 있는 경우 -->
+                <div th:if="${#lists.size(products) > 0}">
+                    <div th:each="product : ${products}">
+                        <div th:replace="~{fragments/product-card :: productCard(${product})}"></div>
+                    </div>
                 </div>
+
+                <!-- 상품이 없는 경우 -->
+                <div th:if="${#lists.isEmpty(products)}" class="no-results">
+                    <p>검색 결과가 없습니다.</p>
+                </div>
+
             </div>
         </div>
 
