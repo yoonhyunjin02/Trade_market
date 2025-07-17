@@ -1,0 +1,53 @@
+.chat-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* 스위치 wrapper */
+.toggle-switch-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* 스위치 스타일 */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-switch .slider {
+    position: relative;
+    width: 34px;
+    height: 18px;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: 0.3s;
+}
+
+.toggle-switch .slider::before {
+    content: "";
+    position: absolute;
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: #ff9800;
+}
+.toggle-switch input:checked + .slider::before {
+    transform: translateX(16px);
+}

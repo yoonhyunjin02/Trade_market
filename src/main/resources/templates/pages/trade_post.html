@@ -44,7 +44,11 @@
                     <div class="seller-location" th:text="${product.seller.userLocation}">판매자 위치</div>
                 </div>
                 <div class="action-buttons" th:unless="${isOwner}">
-                    <a th:href="@{/chat}" class="btn-chat">채팅하기</a>
+                    <!-- 채팅하기 버튼 -> 채팅방 생성/이동 폼으로 변경 -->
+                    <form th:action="@{/chats/create}" method="post" style="margin: 0;">
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                        <button type="submit" class="btn-chat">채팅하기</button>
+                    </form>
                 </div>
             </div>
 

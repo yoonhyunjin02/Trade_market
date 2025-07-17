@@ -49,7 +49,10 @@ public class SecurityConfig {
                                 "/products/scroll",
                                 "/products/scroll/**"
                         ).permitAll()
-
+                        .requestMatchers(
+                                "/ws/**", // WebSocket 엔드포인트
+                                "/api/chats/**"
+                        ).authenticated()
                         // 그 외에는 모두 인증 필요
                         .anyRequest().authenticated()
                 )
@@ -78,7 +81,8 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/main")
                         .permitAll()
-                );
+                )
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
