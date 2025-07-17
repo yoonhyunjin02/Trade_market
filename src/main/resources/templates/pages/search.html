@@ -16,6 +16,9 @@
 <header th:replace="fragments/header :: header"></header>
 
 <main>
+    <!-- Search Title -->
+    <h2 class="search-title" th:text="${pageTitle}">검색 결과 매물</h2>
+
     <!-- Search Result Section -->
     <section class="search-results">
         <p th:if="${#lists.isEmpty(products)}" class="no-result-message">검색 결과가 없습니다.</p>

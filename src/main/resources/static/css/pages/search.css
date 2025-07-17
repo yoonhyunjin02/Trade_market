@@ -4,6 +4,14 @@ body {
   padding: 0;
 }
 
+.search-title {
+    text-align: center;   /* 가운데 정렬 */
+    font-size: 1.6rem;    /* 글자 크기 */
+    font-weight: bold;    /* 굵게 */
+    margin: 20px 0;       /* 위아래 여백 */
+    color: #333;          /* 글자 색상 */
+}
+
 /* Search Result Section */
 .no-result-message {
   text-align: center;
