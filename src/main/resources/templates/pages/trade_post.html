@@ -78,6 +78,7 @@
             <div class="trade-location">
                 <span class="label">희망 거래장소 · </span>
                 <span class="location" th:text="${product.location}">거래장소</span>
+                <div id="map" class="map-placeholder">지도</div>
             </div>
             <!-- 하단 관리 링크 -->
             <div class="bottom-actions">
@@ -100,6 +101,12 @@
 
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
+
+<script th:inline="javascript">
+    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
+    const productLocation = /*[[${product.location}]]*/ "";
+</script>
+<script src="/js/pages/trade_post.js"></script>
 
 </body>
 </html>

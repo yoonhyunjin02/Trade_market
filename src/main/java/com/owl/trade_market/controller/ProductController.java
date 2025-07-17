@@ -380,6 +380,7 @@ public class ProductController {
 
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("user", user);
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 
         try {
             Optional<Product> productOpt = productService.findById(id);
