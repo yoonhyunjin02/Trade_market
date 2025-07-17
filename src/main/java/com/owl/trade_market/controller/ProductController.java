@@ -312,6 +312,8 @@ public class ProductController {
                                 Model model) {
 
         User user = getCurrentUser(session, oauth2User);
+        // Google Map API 키 주입
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";
