@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let currentAssistantId = '';
     let socket = null;
     let isConnected = false;
-    let isBotChat = false;
+    window.isBotChat = false;
 
     // 초기화
     init();
@@ -630,21 +630,48 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 메시지 전송
     function sendMessage() {
-        const content = messageInput?.value.trim();
+        console.log("📝 sendMessage 실행됨! isBotChat =", window.isBotChat);
 
-        if (!content || !currentRoomId) {
+        const content = messageInput?.value.trim();
+        if (!content) return;
+
+        // ✅ 챗봇 모드
+        if (isBotChat) {
+            console.log("🤖 챗봇 모드에서 전송");
+
+            if (!botSocket || botSocket.readyState !== WebSocket.OPEN) {
+                showErrorMessage("챗봇 연결이 끊겼습니다. 새로고침 후 다시 시도해주세요.");
+                return;
+            }
+
+            // 1) 내 질문을 UI에 먼저 표시
+            addBotMessage(content);
+
+            // 2) 챗봇 WebSocket으로 질문 전송
+            botSocket.send(content);
+
+            // 3) 입력창 초기화
+            messageInput.value = "";
+            if (charCount) charCount.textContent = "0";
+
+            return; // ✅ 챗봇 모드면 일반 채팅 로직 스킵
+        }
+
+        // ✅ 일반 채팅 모드
+        if (!currentRoomId) {
+            console.warn("💬 일반 채팅방이 선택되지 않음 → 전송 불가");
             return;
         }
 
         if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
-            showErrorMessage('연결이 끊어졌습니다. 페이지를 새로고침해주세요.');
+            showErrorMessage("연결이 끊어졌습니다. 페이지를 새로고침해주세요.");
             return;
         }
 
         // 전송 버튼 비활성화
         if (sendBtn) {
             sendBtn.disabled = true;
-            sendBtn.textContent = '전송중...';
+            sendBtn.textContent = "전송중...";
         }
 
         const messageData = {
@@ -659,12 +686,10 @@ document.addEventListener("DOMContentLoaded", function() {
             socket.send(JSON.stringify(messageData));
 
             // 입력창 초기화
-            messageInput.value = '';
-            if (charCount) {
-                charCount.textContent = '0';
-            }
+            messageInput.value = "";
+            if (charCount) charCount.textContent = "0";
 
-            // 내 메시지를 즉시 UI에 추가 (낙관적 업데이트)
+            // 낙관적 UI 업데이트
             const optimisticMessage = {
                 ...messageData,
                 sentAt: formatCurrentTime()
@@ -673,13 +698,12 @@ document.addEventListener("DOMContentLoaded", function() {
             scrollToBottom();
 
         } catch (error) {
-            console.error('Failed to send message:', error);
-            showErrorMessage('메시지 전송에 실패했습니다.');
+            console.error("Failed to send message:", error);
+            showErrorMessage("메시지 전송에 실패했습니다.");
         } finally {
-            // 전송 버튼 복원
             if (sendBtn) {
                 sendBtn.disabled = false;
-                sendBtn.textContent = '전송';
+                sendBtn.textContent = "전송";
             }
         }
     }
