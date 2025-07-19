@@ -13,6 +13,8 @@ import com.owl.trade_market.repository.ProductRepository;
 import com.owl.trade_market.repository.UserRepository;
 import com.owl.trade_market.service.ChatService;
 import com.owl.trade_market.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class ChatServiceImpl implements ChatService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChatServiceImpl.class);
 
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -83,6 +87,9 @@ public class ChatServiceImpl implements ChatService {
         return chatRepository.save(chat);
     }
 
+    /**
+     *  메시지 읽음으로 표시하는 메서드
+     */
     @Override
     @Transactional
     public void markMessagesAsRead(Long chatRoomId, User currentUser) {
@@ -153,5 +160,45 @@ public class ChatServiceImpl implements ChatService {
                     productService.increaseViewCount(productId); // 상품의 채팅 카운트 증가
                     return chatRoomRepository.save(newRoom);
                 });
+    }
+
+    @Override
+    public String getBuyerIdFromChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다. ID: " + chatRoomId));
+        return chatRoom.getBuyer().getUserId();
+    }
+
+    @Override
+    public String getSellerIdFromChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다. ID: " + chatRoomId));
+        return chatRoom.getProduct().getSeller().getUserId();
+    }
+
+    @Override
+    @Transactional
+    public void leaveAndDeleteRoom(Long chatRoomId, User currentUser) {
+        // 채팅방 조회
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+
+        // 사용자가 해당 채팅방의 참여자인지 확인
+        boolean isBuyer = chatRoom.getBuyer().getId().equals(currentUser.getId());
+        boolean isSeller = chatRoom.getProduct().getSeller().getId().equals(currentUser.getId());
+
+        if (!isBuyer && !isSeller) {
+            throw new AccessDeniedException("해당 채팅방에 참여하지 않은 사용자입니다.");
+        }
+
+        try {
+            // CASCADE 설정에 따라 채팅 메시지들도 함께 삭제됨
+            chatRoomRepository.deleteById(chatRoomId);
+
+            log.info("채팅방 및 관련 메시지 삭제 완료 - rooId: {}, userId: {}", chatRoomId, currentUser.getUserId());
+        } catch (Exception e) {
+            log.error("채팅방 삭제 실패 - roomId: {}, userId: {}, error: {}", chatRoomId, currentUser.getUserId(), e.getMessage());
+            throw new RuntimeException("채팅방 삭제 중 오류가 발생했습니다. 다시 시도해주세요.", e);
+        }
     }
 }

@@ -25,6 +25,9 @@ document.addEventListener("DOMContentLoaded", function() {
         // 이벤트 리스너 등록
         setupEventListeners();
 
+        // UI 이벤트 리스너 설정
+        setupUIEventListeners();
+
         // 기존 메시지 읽음 처리
         if (currentRoomId) {
             markAsRead(currentRoomId);
@@ -96,6 +99,302 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // =====================================================
+    // UI 이벤트 리스너 설정
+    // =====================================================
+
+    function setupUIEventListeners() {
+        // 거래완료 버튼 이벤트
+        setupCompleteTradeButton();
+
+        // 채팅방 설정 드롭다운 이벤트
+        setupChatSettingsDropdown();
+
+        // 모달 이벤트 설정
+        setupModalEvents();
+
+        // 외부 클릭 시 드롭다운 닫기
+        setupOutsideClickHandlers();
+    }
+
+    // 거래완료 버튼 기능
+    function setupCompleteTradeButton() {
+        const completeTradeBtn = document.getElementById('completeTradeBtn');
+
+        if (completeTradeBtn) {
+            completeTradeBtn.addEventListener('click', function() {
+                showCompleteTradeModal();
+            });
+        }
+    }
+
+    function showCompleteTradeModal() {
+        const modal = document.getElementById('completeTradeModal');
+        const modalProductImage = document.getElementById('modalProductImage');
+        const modalProductTitle = document.getElementById('modalProductTitle');
+        const modalProductPrice = document.getElementById('modalProductPrice');
+
+        // 현재 상품 정보로 모달 업데이트
+        const productImage = document.getElementById('product-image');
+        const productTitle = document.getElementById('product-title');
+        const productPrice = document.getElementById('product-price');
+
+        if (modalProductImage && productImage) {
+            modalProductImage.src = productImage.src;
+        }
+        if (modalProductTitle && productTitle) {
+            modalProductTitle.textContent = productTitle.textContent;
+        }
+        if (modalProductPrice && productPrice) {
+            modalProductPrice.textContent = productPrice.textContent;
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function hideCompleteTradeModal() {
+        const modal = document.getElementById('completeTradeModal');
+        modal.style.display = 'none';
+    }
+
+    function completeTrade() {
+        if (!currentRoomId) {
+            showErrorMessage('채팅방 정보를 찾을 수 없습니다.');
+            return;
+        }
+
+        // 로딩 표시
+        showLoadingMessage('거래 완료 처리 중...');
+
+        fetch(`/api/chats/${currentRoomId}/complete`, {
+            method: 'POST',
+            headers: createHeaders(),
+            credentials: 'include'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoadingMessage();
+
+                if (data.success) {
+                    hideCompleteTradeModal();
+                    showSuccessMessage('거래가 완료되었습니다!');
+
+                    // UI 업데이트 - 거래완료 버튼 비활성화
+                    updateUIForCompletedTrade();
+
+                } else {
+                    showErrorMessage(data.message || '거래 완료 처리에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                hideLoadingMessage();
+                console.error('거래 완료 처리 실패:', error);
+                showErrorMessage('거래 완료 처리 중 오류가 발생했습니다.');
+            });
+    }
+
+    function updateUIForCompletedTrade() {
+        const completeBtn = document.getElementById('completeTradeBtn');
+        if (completeBtn) {
+            completeBtn.innerHTML = '<span class="btn-icon">✓</span><span class="btn-text">거래완료됨</span>';
+            completeBtn.disabled = true;
+            completeBtn.style.background = '#28a745';
+            completeBtn.style.cursor = 'not-allowed';
+        }
+    }
+
+    // 채팅방 설정 드롭다운 기능
+    function setupChatSettingsDropdown() {
+        const settingsBtn = document.getElementById('chatSettingsBtn');
+        const dropdown = document.getElementById('settingsDropdown');
+
+        if (settingsBtn && dropdown) {
+            settingsBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleSettingsDropdown();
+            });
+
+            // 드롭다운 메뉴 아이템 클릭 이벤트
+            dropdown.addEventListener('click', function(e) {
+                const menuItem = e.target.closest('.settings-menu-item');
+                if (menuItem) {
+                    const action = menuItem.getAttribute('data-action');
+                    handleSettingsAction(action);
+                    hideSettingsDropdown();
+                }
+            });
+        }
+    }
+
+    function toggleSettingsDropdown() {
+        const dropdown = document.getElementById('settingsDropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    }
+
+    function hideSettingsDropdown() {
+        const dropdown = document.getElementById('settingsDropdown');
+        if (dropdown) {
+            dropdown.classList.remove('show');
+        }
+    }
+
+    function handleSettingsAction(action) {
+        switch (action) {
+            case 'block':
+                showToastMessage('차단 기능은 준비 중입니다.', 'info');
+                break;
+            case 'report':
+                showToastMessage('신고 기능은 준비 중입니다.', 'info');
+                break;
+            case 'leave':
+                showLeaveChatModal();
+                break;
+            default:
+                console.warn('Unknown action:', action);
+        }
+    }
+
+    // 채팅방 나가기 기능
+    function showLeaveChatModal() {
+        const modal = document.getElementById('leaveChatModal');
+        modal.style.display = 'flex';
+    }
+
+    function hideLeaveChatModal() {
+        const modal = document.getElementById('leaveChatModal');
+        modal.style.display = 'none';
+    }
+
+    function leaveChatRoom() {
+        if (!currentRoomId) {
+            showErrorMessage('채팅방 정보를 찾을 수 없습니다.');
+            return;
+        }
+
+        // 로딩 표시
+        showLoadingMessage('채팅방에서 나가는 중...');
+
+        fetch(`/api/chats/${currentRoomId}/leave`, {
+            method: 'DELETE',
+            headers: createHeaders(),
+            credentials: 'include'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoadingMessage();
+
+                if (data.success) {
+                    hideLeaveChatModal();
+                    showSuccessMessage(data.message);
+
+                    // WebSocket 연결 해제
+                    if (socket && isConnected) {
+                        socket.close();
+                    }
+
+                    // 페이지 리다이렉트
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || '/chats';
+                    }, 1500);
+
+                } else {
+                    showErrorMessage(data.message || '채팅방 나가기에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                hideLoadingMessage();
+                console.error('채팅방 나가기 실패:', error);
+                showErrorMessage('채팅방 나가기 중 오류가 발생했습니다.');
+            });
+    }
+
+    // 모달 이벤트 설정
+    function setupModalEvents() {
+        // 거래완료 모달 이벤트
+        const cancelCompleteBtn = document.getElementById('cancelCompleteBtn');
+        const confirmCompleteBtn = document.getElementById('confirmCompleteBtn');
+        const completeModal = document.getElementById('completeTradeModal');
+
+        if (cancelCompleteBtn) {
+            cancelCompleteBtn.addEventListener('click', hideCompleteTradeModal);
+        }
+
+        if (confirmCompleteBtn) {
+            confirmCompleteBtn.addEventListener('click', function() {
+                completeTrade();
+            });
+        }
+
+        if (completeModal) {
+            completeModal.addEventListener('click', function(e) {
+                if (e.target === completeModal) {
+                    hideCompleteTradeModal();
+                }
+            });
+        }
+
+        // 채팅방 나가기 모달 이벤트
+        const cancelLeaveBtn = document.getElementById('cancelLeaveBtn');
+        const confirmLeaveBtn = document.getElementById('confirmLeaveBtn');
+        const leaveModal = document.getElementById('leaveChatModal');
+
+        if (cancelLeaveBtn) {
+            cancelLeaveBtn.addEventListener('click', hideLeaveChatModal);
+        }
+
+        if (confirmLeaveBtn) {
+            confirmLeaveBtn.addEventListener('click', function() {
+                leaveChatRoom();
+            });
+        }
+
+        if (leaveModal) {
+            leaveModal.addEventListener('click', function(e) {
+                if (e.target === leaveModal) {
+                    hideLeaveChatModal();
+                }
+            });
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideCompleteTradeModal();
+                hideLeaveChatModal();
+                hideSettingsDropdown();
+            }
+        });
+    }
+
+    // 외부 클릭 핸들러
+    function setupOutsideClickHandlers() {
+        document.addEventListener('click', function(e) {
+            // 설정 드롭다운 외부 클릭 시 닫기
+            const settingsBtn = document.getElementById('chatSettingsBtn');
+            const dropdown = document.getElementById('settingsDropdown');
+
+            if (settingsBtn && dropdown && !settingsBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                hideSettingsDropdown();
+            }
+        });
+    }
+
+    // =====================================================
+    // 기존 채팅 기능들
+    // =====================================================
+
     // WebSocket 연결
     function connectWebSocket() {
         if (!currentUserId) {
@@ -148,6 +447,20 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // 개선된 헤더 생성 함수
+    function createHeaders() {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // CSRF 헤더가 존재하고 유효한 경우에만 추가
+        if (csrfHeader && csrfToken && typeof csrfHeader === 'string' && csrfHeader.trim()) {
+            headers[csrfHeader] = csrfToken;
+        }
+
+        return headers;
+    }
+
     // 채팅방 선택
     function selectChatRoom(roomId, partnerName) {
         if (roomId === currentRoomId) {
@@ -194,6 +507,9 @@ document.addEventListener("DOMContentLoaded", function() {
             placeholder.style.display = "none";
         }
 
+        // UI 이벤트 리스너 재설정
+        setupUIEventListeners();
+
         // 폼 필드 업데이트
         updateFormFields();
     }
@@ -217,10 +533,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         fetch(url, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
-            },
+            headers: createHeaders(),
             credentials: 'include'
         })
             .then(response => {
@@ -242,6 +555,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 채팅방 UI 업데이트
     function updateChatRoomUI(chatRoomData) {
+        console.log('Received chat room data:', chatRoomData);
+
         // 상대방 이름 업데이트
         const partnerNameElement = document.getElementById("partner-name");
         if (partnerNameElement && chatRoomData.otherUserName) {
@@ -256,12 +571,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (productImage && chatRoomData.productImageUrl) {
             productImage.src = chatRoomData.productImageUrl;
+            productImage.onerror = () => { productImage.src = '/images/mascot.png'; };
         }
         if (productTitle && chatRoomData.productTitle) {
             productTitle.textContent = chatRoomData.productTitle;
         }
         if (productPrice && chatRoomData.productPrice) {
-            productPrice.textContent = formatPrice(chatRoomData.productPrice) + '원';
+            productPrice.textContent = formatPrice(chatRoomData.productPrice);
+        }
+
+        // 거래 상태에 따른 UI 업데이트
+        if (chatRoomData.isCompleted) {
+            updateUIForCompletedTrade();
         }
 
         // 폼 필드 업데이트
@@ -272,21 +593,18 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateMessagesUI(messages) {
         if (!messagesContainer) return;
 
-        // 기존 메시지가 있으면 새로운 메시지만 추가하지 않고 전체 다시 렌더링
-        const existingMessages = messagesContainer.querySelectorAll('.message-wrapper');
-        if (existingMessages.length === 0) {
-            messagesContainer.innerHTML = '';
+        // 기존 메시지 제거 (no-messages 플레이스홀더 포함)
+        messagesContainer.innerHTML = '';
 
-            if (!messages || messages.length === 0) {
-                showNoMessagesPlaceholder();
-                return;
-            }
-
-            // 메시지들 추가
-            messages.forEach(message => {
-                appendMessageToUI(message);
-            });
+        if (!messages || messages.length === 0) {
+            showNoMessagesPlaceholder();
+            return;
         }
+
+        // 메시지들 추가
+        messages.forEach(message => {
+            appendMessageToUI(message);
+        });
     }
 
     // 메시지 전송
@@ -348,6 +666,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // 수신된 메시지 처리
     function handleIncomingMessage(messageData) {
         console.log('Handling incoming message:', messageData);
+
+        // 메시지 데이터 유효성 검사
+        if (!messageData.chatRoomId || !messageData.userId || !messageData.content) {
+            console.error('Invalid message data:', messageData);
+            return;
+        }
 
         // 현재 채팅방의 메시지가 아니면 리스트만 업데이트
         if (messageData.chatRoomId != currentRoomId) {
@@ -438,10 +762,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         fetch(`/api/chats/${roomId}/read`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
-            },
+            headers: createHeaders(),
             credentials: 'include'
         })
             .then(response => {
@@ -484,7 +805,111 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // =====================================================
     // 유틸리티 함수들
+    // =====================================================
+
+    function showLoadingMessage(message) {
+        // 기존 로딩 오버레이 제거
+        const existingOverlay = document.getElementById('loading-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
+        const loading = document.createElement('div');
+        loading.id = 'loading-overlay';
+        loading.innerHTML = `
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>${message}</p>
+            </div>
+        `;
+        loading.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        `;
+
+        document.body.appendChild(loading);
+    }
+
+    function hideLoadingMessage() {
+        const loading = document.getElementById('loading-overlay');
+        if (loading) {
+            loading.remove();
+        }
+    }
+
+    function showSuccessMessage(message) {
+        showToastMessage(message, 'success');
+    }
+
+    function showErrorMessage(message) {
+        showToastMessage(message, 'error');
+    }
+
+    function showToastMessage(message, type = 'info') {
+        // 기존 토스트 제거
+        const existingToasts = document.querySelectorAll('.toast-message');
+        existingToasts.forEach(toast => toast.remove());
+
+        const toast = document.createElement('div');
+        toast.className = `toast-message toast-${type}`;
+        toast.textContent = message;
+
+        const backgroundColor = {
+            success: '#28a745',
+            error: '#dc3545',
+            warning: '#ffc107',
+            info: '#17a2b8'
+        };
+
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: ${backgroundColor[type] || backgroundColor.info};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 4000;
+            font-size: 14px;
+            max-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+            cursor: pointer;
+        `;
+
+        document.body.appendChild(toast);
+
+        // 3초 후 자동 제거
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease-out forwards';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        }, 3000);
+
+        // 클릭 시 즉시 제거
+        toast.addEventListener('click', () => {
+            toast.style.animation = 'slideOutRight 0.3s ease-out forwards';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        });
+    }
+
     function scrollToBottom() {
         if (messagesContainer) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -501,7 +926,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function formatPrice(price) {
-        return price.toLocaleString('ko-KR');
+        if (typeof price === 'number') {
+            return price.toLocaleString('ko-KR') + '원';
+        }
+        return price;
     }
 
     function escapeHtml(text) {
@@ -518,30 +946,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 <small>첫 메시지를 보내보세요!</small>
             </div>
         `;
-    }
-
-    function showErrorMessage(message) {
-        // 간단한 토스트 메시지 표시
-        const toast = document.createElement('div');
-        toast.className = 'error-toast';
-        toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #dc3545;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-        `;
-
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
     }
 
     // 페이지 언로드 시 WebSocket 연결 해제

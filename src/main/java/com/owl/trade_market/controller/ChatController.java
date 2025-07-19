@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ChatController {
@@ -166,6 +167,36 @@ public class ChatController {
 
         chatService.markMessagesAsRead(roomId, currentUser);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 채팅방 나가기 및 완전 삭제
+     */
+    @DeleteMapping("/api/chats/{roomId}/leave")
+    @ResponseBody
+    public ResponseEntity<?> leaveChatRoom(@PathVariable Long roomId,
+                                           Authentication authentication) {
+
+        try {
+            User currentUser = getCurrentUserOrThrow(authentication);
+            chatService.leaveAndDeleteRoom(roomId, currentUser);
+
+            return ResponseEntity.ok().body(Map.of(
+                    "success", true,
+                    "message", "채팅방을 나갔습니다.",
+                    "redirectUrl", "/chats"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "message", "채팅방 나가기 중 오류가 발생했습니다."
+            ));
+        }
     }
 
     /**
