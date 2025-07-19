@@ -175,7 +175,7 @@
                              th:text="${selectedChatRoom.productTitle}"></div>
                         <div class="product-price"
                              id="product-price"
-                             th:text="${selectedChatRoom.productPrice != null ? #numbers.formatCurrency(selectedChatRoom.productPrice) : ''}">
+                             th:text="${selectedChatRoom.formattedPrice}">0원
                         </div>
                     </div>
                 </div>
