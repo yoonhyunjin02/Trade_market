@@ -1,7 +1,20 @@
 function openBotChat() {
-    document.getElementById("conversation-placeholder").style.display = "none";
-    document.getElementById("chat-conversation").style.display = "flex";
+    console.log("✅ openBotChat() 실행됨!");
+    isBotChat = true;                 // 챗봇 모드
+    toggleChatRoomButtons(false);     // 오른쪽 버튼 숨기기
 
+    const placeholder = document.getElementById("conversation-placeholder");
+    const conversation = document.getElementById("chat-conversation");
+    const messagesContainer = document.getElementById("messages-container");
+
+    // 기존 일반 채팅방 메시지 초기화 (완전 리셋)
+    messagesContainer.innerHTML = "";
+
+    // UI 전환
+    if (placeholder) placeholder.style.display = "none";
+    if (conversation) conversation.style.display = "flex";
+
+    // 챗봇 전용 헤더 UI 변경
     document.getElementById("partner-info").innerHTML = `
         <div class="bot-header-icon">
             <img src="/images/icons/chat-bot.svg" alt="AI 챗봇">
@@ -9,9 +22,11 @@ function openBotChat() {
         <span class="partner-name">AI 챗봇</span>
     `;
 
+    // 상품 정보 카드 숨기기
     const productInfoCard = document.querySelector(".product-info-card");
     if (productInfoCard) productInfoCard.style.display = "none";
 
+    // 현재 시간
     const now = new Date();
     const timeString = now.toLocaleTimeString("ko-KR", {
         hour: "numeric",
@@ -19,8 +34,10 @@ function openBotChat() {
         hour12: true
     });
 
+    // 사용자 이름
     const userName = currentUserName || "사용자";
-    const messagesContainer = document.getElementById("messages-container");
+
+    // 챗봇 첫 인사 메시지 출력
     messagesContainer.innerHTML = `
         <div class="message-wrapper">
             <div class="message received">
@@ -33,7 +50,7 @@ function openBotChat() {
         </div>
     `;
 
-    // ✅ 첫 로딩 시 FAQ 버튼 추가
+    // FAQ 버튼 추가
     addFaqButtons(messagesContainer);
 }
 
@@ -55,7 +72,7 @@ function addBotMessage(text) {
     msgDiv.innerHTML = `<div class="message-content">${text}</div><div class="message-time">${timeString}</div>`;
     document.getElementById("messages-container").appendChild(msgDiv);
 
-    // ✅ 질문 말풍선 위치로 스크롤 이동
+    // 질문 말풍선 위치로 스크롤 이동
     msgDiv.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -175,20 +192,31 @@ function fetchBotAnswer(question) {
         const container = document.getElementById("messages-container");
         container.appendChild(msgDiv);
 
-        // ✅ 답변 출력 후 다시 FAQ 버튼 추가
+        // 답변 출력 후 다시 FAQ 버튼 추가
         addFaqButtons(container);
 
-        // ✅ 답변 말풍선 위치로 스크롤 이동
+        // 답변 말풍선 위치로 스크롤 이동
         msgDiv.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     function addFaqButtons(container) {
+        // 기존 FAQ 버튼이 있으면 먼저 삭제
+        const oldFaq = container.querySelector(".faq-buttons");
+        if (oldFaq) oldFaq.remove();
+
+        // 새 FAQ 버튼 생성
         const faqDiv = document.createElement("div");
         faqDiv.className = "faq-buttons";
         faqDiv.innerHTML = `
-            <button onclick="sendFaq('법적으로 중고 거래를 금지하는 품목이 있나요?')">법적으로 중고 거래를 금지하는 품목이 있나요?</button>
-            <button onclick="sendFaq('당근 마켓에서의 거래 매너를 알려주세요')">당근 마켓에서의 거래 매너를 알려주세요</button>
-            <button onclick="sendFaq('당근 마켓에서의 운영 정책을 알려주세요')">당근 마켓에서의 운영 정책을 알려주세요</button>
+            <button onclick="sendFaq('법적으로 중고 거래를 금지하는 품목이 있나요?')">
+                법적으로 중고 거래를 금지하는 품목이 있나요?
+            </button>
+            <button onclick="sendFaq('당근 마켓에서의 거래 매너를 알려주세요')">
+                당근 마켓에서의 거래 매너를 알려주세요
+            </button>
+            <button onclick="sendFaq('당근 마켓에서의 운영 정책을 알려주세요')">
+                당근 마켓에서의 운영 정책을 알려주세요
+            </button>
         `;
         container.appendChild(faqDiv);
     }
