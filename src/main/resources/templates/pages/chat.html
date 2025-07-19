@@ -46,6 +46,17 @@
                         <small>상품에 관심을 표시하거나<br>판매글을 올려보세요.</small>
                     </div>
 
+                    <!-- AI 챗봇 고정 채팅 -->
+                    <div class="chat-item bot-chat" onclick="openBotChat()">
+                        <div class="chat-avatar">
+                            <img src="/images/icons/chat-bot.svg" alt="AI 챗봇">
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">AI 챗봇</div>
+                            <div class="chat-preview">궁금한 내용을 물어보세요!</div>
+                        </div>
+                    </div>
+
                     <!-- 채팅방 목록 -->
                     <div th:each="chatRoom : ${allChatRooms}"
                          class="chat-item"
@@ -122,9 +133,11 @@
 
                 <!-- 첫 번째 줄 -->
                 <div class="header-top-row">
-                    <span class="partner-name" id="partner-name"
-                          th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
-                    </span>
+                    <div class="partner-info" id="partner-info">
+                        <span class="partner-name" id="partner-name"
+                              th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
+                        </span>
+                    </div>
 
                     <div class="chat-actions">
                         <button class="btn-complete-trade" id="completeTradeBtn">
@@ -317,6 +330,8 @@
 <!-- 기능 스크립트 -->
 <script th:src="@{/js/pages/chat.js}"></script>
 <script th:src="@{/js/pages/chat-toggle.js}"></script>
+
+<script th:src="@{/js/pages/chat-ai.js}"></script>
 
 <!-- 빠른 ‘채팅방 나가기’ 버튼 핸들러 -->
 <script>
