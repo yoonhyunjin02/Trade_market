@@ -33,21 +33,27 @@ public class ChatController {
     }
 
     /**
-     * 채팅 메인 페이지 - 전체 채팅방 목록 표시
+     * 채팅 메인 페이지 - 자동으로 최근 채팅방으로 리다이렉션
      */
     @GetMapping("/chats")
     public String chatPage(Model model, Authentication authentication) {
-        // 로그인하지 않은 사용자는 로그인 페이지로 리다이렉트
+        // 로그인 체크
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() instanceof String) {
             return "redirect:/login";
         }
 
         User currentUser = getCurrentUserOrThrow(authentication);
 
-        // 전체 채팅방 목록
+        // 사용자의 채팅방 목록 조회
         List<ChatRoomListDto> allChatRooms = chatService.findRoomsForUser(currentUser);
 
-        // 읽지 않은 메시지가 있는 채팅방 목록
+        // 채팅방이 있으면 가장 최근 채팅방으로 리다이렉션
+        if (!allChatRooms.isEmpty()) {
+            Long latestRoomId = allChatRooms.get(0).getChatRoomId();
+            return "redirect:/chats/" + latestRoomId;
+        }
+
+        // 채팅방이 없으면 빈 채팅 페이지 표시
         List<ChatRoomListDto> unreadChatRooms = chatService.findUnreadRoomsForUser(currentUser);
 
         model.addAttribute("currentUser", currentUser);
