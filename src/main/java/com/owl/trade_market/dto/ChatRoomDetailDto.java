@@ -4,8 +4,10 @@ import com.owl.trade_market.entity.Chat;
 import com.owl.trade_market.entity.ChatRoom;
 import com.owl.trade_market.entity.User;
 
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 특정 채팅방의 상세 정보(상품, 과거 메시지 목록 등)를 담는 DTO
@@ -15,6 +17,7 @@ public class ChatRoomDetailDto {
     private Long chatRoomId;
     private String productTitle;
     private Integer productPrice;
+    private String formattedPrice; // 화면 표시용 포맷된 가격(12,000)
     private String productImageUrl;
     private String otherUserName;
     private List<ChatMessageDto> messages; // 과거 메시지 목록
@@ -26,10 +29,11 @@ public class ChatRoomDetailDto {
     }
 
     // 기본 생성자
-    public ChatRoomDetailDto(Long chatRoomId, String productTitle, Integer productPrice, String productImageUrl, String otherUserName, List<ChatMessageDto> messages) {
+    public ChatRoomDetailDto(Long chatRoomId, String productTitle, Integer productPrice, String formattedPrice, String productImageUrl, String otherUserName, List<ChatMessageDto> messages) {
         this.chatRoomId = chatRoomId;
         this.productTitle = productTitle;
         this.productPrice = productPrice;
+        this.formattedPrice = formattedPrice;
         this.productImageUrl = productImageUrl;
         this.otherUserName = otherUserName;
         this.messages = messages;
@@ -58,6 +62,14 @@ public class ChatRoomDetailDto {
 
     public void setProductPrice(Integer productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getFormattedPrice() {
+        return formattedPrice;
+    }
+
+    public void setFormattedPrice(String formattedPrice) {
+        this.formattedPrice = formattedPrice;
     }
 
     public String getProductImageUrl() {
@@ -94,9 +106,14 @@ public class ChatRoomDetailDto {
             imageUrl = room.getProduct().getImages().get(0).getImage();
         }
 
+        // 가격 포맷팅
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.KOREA);
+        String formatted = numberFormat.format(room.getProduct().getPrice()) + "원";
+
         dto.setChatRoomId(room.getId());
         dto.setProductTitle(room.getProduct().getTitle());
         dto.setProductPrice(room.getProduct().getPrice());
+        dto.setFormattedPrice(formatted);
         dto.setProductImageUrl(imageUrl);
         dto.setOtherUserName(opponent.getUserName());
 
