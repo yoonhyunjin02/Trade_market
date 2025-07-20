@@ -1,11 +1,16 @@
 package com.owl.trade_market.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UserDto {
     @NotBlank(message = "아이디는 필수입니다")
-    @Size(min = 4, max = 20, message = "아이디는 영어와 숫자 조합으로 4-20자여야 합니다")
+    @Size(min = 4, max = 20, message = "아이디는 4~20자여야 합니다")
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,20}$",
+            message = "아이디는 영문과 숫자 조합으로 4~20자여야합니다."
+    )
     private String userId;
 
     @NotBlank(message = "닉네임은 필수입니다")

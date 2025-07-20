@@ -59,11 +59,6 @@ function onPlaceSelected() {
     });
 }
 
-function mapClick() {
-
-
-}
-
 // 동적 bootstrap 로더 삽입
 const script = document.createElement("script");
 script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&v=weekly&callback=initMap`;
