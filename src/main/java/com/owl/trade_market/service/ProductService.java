@@ -24,15 +24,8 @@ public interface ProductService {
     // 조회수 증가
     void increaseViewCount(Long id);
 
-    // 카테고리 없이 검색어만 있을 때 검색
-    Page<Product> searchProductByKeyword(String keyword, Pageable pageable);
-
-    // 검색 관련
-    Page<Product> searchProduct(String keyword, Category category, Pageable pageable);
-
-    // 카테고리 관련
-    Page<Product> findByCategory(Category category, Pageable pageable);
-    List<Product> findByCategory(Category category, Sort sort);
+    // 검색(키워드)
+    Page<Product> searchProduct(String keyword, Pageable pageable);
 
     // 중복 없는 위치 전체 조회
     List<String> getAllDistinctLocations();
@@ -46,4 +39,17 @@ public interface ProductService {
 
     // 판매자별 상품 조회 (프로필 페이지용)
     List<Product> findBySeller(User seller, Sort sort);
+
+    // 전체 상품 중 최솟값 / 최댓값 구하기
+    Integer findMinPrice();
+    Integer findMaxPrice();
+    
+    // 필터
+    Page<Product> filterProducts(String keyword,
+                                 Category category,
+                                 Integer minPrice,
+                                 Integer maxPrice,
+                                 String location,
+                                 Boolean availableOnly,
+                                 Pageable pageable);
 }

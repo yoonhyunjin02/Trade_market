@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 채팅방 아이템 조각 -->
+<div th:fragment="chat-item-fragment(room)"
+     class="chat-item"
+     th:data-room-id="${room.chatRoomId}">
+	<div class="chat-avatar">
+		<img th:src="${room.productImageUrl}" alt="상품 이미지">
+	</div>
+	<div class="chat-info">
+		<div class="chat-name" th:text="${room.otherUserName}">상대아이디</div>
+		<div class="chat-preview" th:text="${room.lastMessage}">네 감사합니다!</div>
+	</div>
+	<div class="chat-meta">
+		<span class="chat-time" th:text="${room.lastMessageTime}">오전 8시:50</span>
+		<span th:if="${room.unreadCount > 0}"
+		      class="unread-badge"
+		      th:text="${room.unreadCount}"></span>
+	</div>
+</div>
+</body>
+</html>

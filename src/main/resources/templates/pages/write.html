@@ -129,18 +129,10 @@
 <!--* 공통 푸터 *-->
 <div th:replace="~{fragments/footer :: common-footer}"></div>
 
-<!-- JavaScript 파일들 -->
-<script src="/js/pages/write.js"></script>
-
-<script
-        th:attr="src=
-    @{https://maps.googleapis.com/maps/api/js(
-        key=${googleMapsApiKey},
-        libraries='places',
-        callback='initMap'
-    )}"
-        async defer>
+<script th:inline="javascript">
+    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
 </script>
+<script src="/js/pages/write.js"></script>
 
 </body>
 </html>

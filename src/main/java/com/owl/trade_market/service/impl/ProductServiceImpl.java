@@ -5,7 +5,6 @@ import com.owl.trade_market.entity.Image;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.repository.ProductRepository;
-import com.owl.trade_market.repository.UserRepository;
 import com.owl.trade_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +19,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -97,40 +93,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> searchProductByKeyword(String keyword, Pageable pageable) {
+    public Page<Product> searchProduct(String keyword, Pageable pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return Page.empty(pageable); // 또는 전체 반환도 가능: return productRepository.findAll(pageable);
+            return Page.empty(pageable);
         }
-        return productRepository.findByTitleContainingIgnoreCase(keyword.trim(), pageable);
-    }
-
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Product> searchProduct(String keyword, Category category, Pageable pageable) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            // 키워드 없으면 그냥 카테고리 필터만으로 검색
-            return productRepository.findByCategory(category, pageable);
-        }
-
-        return productRepository.search(keyword, category, pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Product> findByCategory(Category category, Pageable pageable) {
-        if (category == null) {
-            return Page.empty(pageable); // 또는 throw new IllegalArgumentException("category is null");
-        }
-        return productRepository.findByCategory(category, pageable);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Product> findByCategory(Category category, Sort sort) {
-        return productRepository.findByCategory(category, sort);
+        return productRepository.search(keyword.trim(), pageable);
     }
 
     @Override
@@ -139,23 +106,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Product> findAll(Pageable pageable, Boolean availableOnly) {
-        return Boolean.TRUE.equals(availableOnly)
-            ? productRepository.findBySoldFalse(pageable)
-            : productRepository.findAll(pageable);
+    public Integer findMinPrice() {
+        return productRepository.findMinPrice().orElse(0);
+    }
+
+    @Override
+    public Integer findMaxPrice() {
+        return productRepository.findMaxPrice().orElse(1000000); // 없으면 기본 큰값
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> findByCategoryAndAvailable(Category category, Pageable pageable) {
-        return productRepository.findByCategoryAndSoldFalse(category, pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable) {
-        return productRepository.searchByKeywordAndSoldFalse(keyword, category, pageable); // ✅ 변경된 메서드명
+    public Page<Product> filterProducts(String keyword,
+                                        Category category,
+                                        Integer minPrice,
+                                        Integer maxPrice,
+                                        String location,
+                                        Boolean availableOnly,
+                                        Pageable pageable) {
+        String kw = (keyword == null || keyword.isBlank()) ? null : keyword.trim();
+        return productRepository.filterProducts(
+                kw, category, minPrice, maxPrice, location, availableOnly, pageable
+        );
     }
 
     @Override

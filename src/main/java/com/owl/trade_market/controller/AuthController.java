@@ -3,11 +3,13 @@ package com.owl.trade_market.controller;
 import com.owl.trade_market.dto.UserDto;
 import com.owl.trade_market.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,34 +84,26 @@ public class AuthController {
 
     //회원가입
     @PostMapping("/users/register")
-    public String register(@ModelAttribute UserDto userDto,
-                           RedirectAttributes redirectAttributes) {
+        public String register(@Valid @ModelAttribute("userDto") UserDto userDto,
+                BindingResult bindingResult,
+                RedirectAttributes redirectAttributes) {
 
             // try-catch 블록 삭제 / 모든 예외는 GlobalExceptionHandler가 처리
             if (!userDto.isPasswordMatching()) {
+                bindingResult.rejectValue("confirmPassword", "password.mismatch", "비밀번호가 일치하지 않습니다.");
+            }
+
+            if (bindingResult.hasErrors()) {
+                // PRG 패턴 사용 시 (redirect)
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDto", bindingResult);
                 redirectAttributes.addFlashAttribute("userDto", userDto);
-                redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
                 return "redirect:/register";
             }
 
-            if (userDto.getUserId().length() < 3) {
-                redirectAttributes.addFlashAttribute("userDto", userDto);
-                redirectAttributes.addFlashAttribute("error", "사용자명은 3자 이상이어야 합니다.");
-                return "redirect:/register";
-            }
-
-            if (userDto.getUserPassword().length() < 6) {
-                redirectAttributes.addFlashAttribute("userDto", userDto);
-                redirectAttributes.addFlashAttribute("error", "비밀번호는 6자 이상이어야 합니다.");
-                return "redirect:/register";
-            }
-            
-            // 서비스 호출: 여기서 발생하는 예외는 GlobalExceptionHandler가 가로채서 처리
             userService.register(userDto);
             redirectAttributes.addFlashAttribute("success", "회원가입이 완료되었습니다. 로그인해주세요.");
             return "redirect:/login";
-
-    }
+        }
 
     // spring security 사용으로 잠시 주석처리
 //    @GetMapping("/logout")

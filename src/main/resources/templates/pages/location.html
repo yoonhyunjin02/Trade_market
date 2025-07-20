@@ -27,7 +27,7 @@
                 <input type="text"
                        id="address"
                        name="address"
-                       placeholder="예) 서울 강서구 화곡동"
+                       placeholder="구 단위까지만 입력하세요. 예) 서울 강서구"
                        class="address-input"/>
                 <button type="submit" class="btn btn-set">내 동네 설정</button>
             </div>
@@ -61,18 +61,11 @@
 <!-- 공통 푸터 -->
 <div th:replace="fragments/footer :: common-footer"></div>
 
-<script th:src="@{/js/pages/location.js}"></script>
 
-<script
-        th:attr="src=
-    @{https://maps.googleapis.com/maps/api/js(
-        key=${googleMapsApiKey},
-        libraries='places',
-        callback='initMap'
-    )}"
-        async defer>
+<script th:inline="javascript">
+    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
 </script>
-
+<script th:src="@{/js/pages/location.js}"></script>
 
 </body>
 </html>
