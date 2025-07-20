@@ -31,10 +31,9 @@ public class ProfileController {
     @Autowired
     private ProductService productService;
 
-
     /**
      * 프로필 페이지
-     * URL: /profile/edit
+     * URL: /profile?userIdString=...
      */
     @GetMapping
     public String viewProfile(@RequestParam(required = false) String userIdString,
@@ -67,9 +66,8 @@ public class ProfileController {
             isOwnProfile = currentUser.getId().equals(targetUser.getId());
         }
 
-        // 3. UserDetails 조회 (없으면 자동 생성)
-        UserDetails userDetails = userService.findUserDetailsByUser(targetUser)
-                .orElse(userService.createUserDetails(targetUser));
+        // 3. UserDetails 조회 (없으면 자동 생성) - 개선된 로직
+        UserDetails userDetails = getUserDetailsWithFallback(targetUser);
 
         // 4. 해당 사용자의 상품 목록 조회
         List<Product> userProducts = productService.findBySeller(targetUser,
@@ -85,35 +83,58 @@ public class ProfileController {
     }
 
     /**
-     * 프로필 수정 페이지
-     * URL: /profile/edit
+     * UserDetails를 가져오고, 없으면 생성하는 간단한 메서드
      */
+    private UserDetails getUserDetailsWithFallback(User user) {
+        try {
+            // 기존 UserDetails 조회
+            Optional<UserDetails> existingDetails = userService.findUserDetailsByUserId(user.getId());
+            if (existingDetails.isPresent()) {
+                return existingDetails.get();
+            }
 
-    /**
-     * 프로필 수정 처리
-     * URL: /profile/edit (POST)
-     */
+            // UserDetails가 없으면 생성
+            System.out.println("UserDetails 없음, 생성 중: User ID " + user.getId());
+            return userService.createUserDetails(user);
+
+        } catch (Exception e) {
+            System.err.println("UserDetails 처리 중 오류: " + e.getMessage());
+            // 예외 발생 시 기본 UserDetails 반환 (메모리상에서만)
+            return new UserDetails(user);
+        }
+    }
 
 
-
-
-
+     //현재 로그인한 사용자를 가져오기
     private User getCurrentUser(HttpSession session, OAuth2User oauth2User) {
         // 1. OAuth2 로그인 사용자 확인 (Google 로그인)
         if (oauth2User != null) {
             Map<String, Object> attributes = oauth2User.getAttributes();
             Object userObj = attributes.get("user");
-            if (userObj instanceof User) {
-                return (User) userObj;
+            if (userObj instanceof User user) {
+                System.out.println("OAuth2 사용자 확인: " + user.getUserEmail());
+                return user;
+            }
+
+            // attributes에서 user 객체를 찾을 수 없는 경우, 이메일로 조회 시도
+            String email = oauth2User.getAttribute("email");
+            if (email != null) {
+                System.out.println("OAuth2 attributes에서 user 없음, 이메일로 조회: " + email);
+                Optional<User> userByEmail = userService.findByUserId(email.substring(0, email.indexOf('@')));
+                if (userByEmail.isPresent()) {
+                    return userByEmail.get();
+                }
             }
         }
 
         // 2. 기존 세션 로그인 사용자 확인 (일반 로그인)
         Object sessionUser = session.getAttribute("user");
-        if (sessionUser instanceof User) {
-            return (User) sessionUser;
+        if (sessionUser instanceof User user) {
+            System.out.println("세션 사용자 확인: " + user.getUserId());
+            return user;
         }
 
+        System.out.println("로그인한 사용자를 찾을 수 없음");
         return null; // 로그인하지 않은 사용자
     }
 }

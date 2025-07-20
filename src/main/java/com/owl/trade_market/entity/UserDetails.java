@@ -45,7 +45,7 @@ public class UserDetails {
     // User와 함께 생성하는 생성자
     public UserDetails(User user) {
         this.user = user;
-//        this.userId = user.getId();
+        this.userId = user.getId();
         this.mannerTemperature = new BigDecimal("36.5");
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -78,7 +78,7 @@ public class UserDetails {
 
     public void setUser(User user) {
         this.user = user;
-//        this.userId = user != null ? user.getId() : null;
+        this.userId = user != null ? user.getId() : null;
     }
 
     public String getIntroduction() {
