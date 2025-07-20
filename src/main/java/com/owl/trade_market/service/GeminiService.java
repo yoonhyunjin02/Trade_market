@@ -15,4 +15,7 @@ public interface GeminiService {
      * @return Gemini AI 응답 텍스트
      */
     String ask(List<GeminiMessageDto> history, String question);
+
+    // ✅ 새로운 메서드 추가
+    String askWithPrompt(String promptTemplate, String userQuestion);
 }

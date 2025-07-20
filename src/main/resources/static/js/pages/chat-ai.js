@@ -168,6 +168,9 @@ function addFaqButtons(container) {
         <button onclick="sendFaq('당근 마켓에서의 운영 정책을 알려주세요')">
             당근 마켓에서의 운영 정책을 알려주세요
         </button>
+        <button onclick="sendFaq('중고거래 게시판 거래 및 환불 정책을 알려주세요')">
+            중고거래 게시판 거래 및 환불 정책을 알려주세요
+        </button>
     `;
     container.appendChild(faqDiv);
 }
