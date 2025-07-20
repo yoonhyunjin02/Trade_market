@@ -31,8 +31,10 @@ public class ProfileController {
     @Autowired
     private ProductService productService;
 
+
     /**
-     * 프로필 조회 - 자신의 프로필 또는 다른 사용자 프로필
+     * 프로필 페이지
+     * URL: /profile/edit
      */
     @GetMapping
     public String viewProfile(@RequestParam(required = false) String userIdString,
@@ -53,11 +55,9 @@ public class ProfileController {
         boolean isOwnProfile;
 
         if (userIdString == null || userIdString.trim().isEmpty()) {
-            // 파라미터가 없으면 자신의 프로필 조회
             targetUser = currentUser;
             isOwnProfile = true;
         } else {
-            // 특정 사용자 프로필 조회 (다른 사람 프로필 보기)
             Optional<User> userOptional = userService.findByUserId(userIdString);
             if (userOptional.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "존재하지 않는 사용자입니다.");
@@ -71,7 +71,7 @@ public class ProfileController {
         UserDetails userDetails = userService.findUserDetailsByUser(targetUser)
                 .orElse(userService.createUserDetails(targetUser));
 
-        // 4. 해당 사용자의 상품 목록 조회 (최신순 정렬)
+        // 4. 해당 사용자의 상품 목록 조회
         List<Product> userProducts = productService.findBySeller(targetUser,
                 Sort.by("createdAt").descending());
 
