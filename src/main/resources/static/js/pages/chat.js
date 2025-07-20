@@ -1,5 +1,5 @@
 // 순수 WebSocket을 이용한 실시간 채팅 기능
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // DOM 요소들
     const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function setupEventListeners() {
         // 채팅방 선택
         document.querySelectorAll(".chat-item").forEach(item => {
-            item.addEventListener("click", function() {
+            item.addEventListener("click", function () {
                 const roomId = this.getAttribute("data-room-id");
                 const partnerName = this.getAttribute("data-partner-name");
 
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 메시지 전송 (폼 제출)
         if (messageForm) {
-            messageForm.addEventListener("submit", function(e) {
+            messageForm.addEventListener("submit", function (e) {
                 e.preventDefault();
                 sendMessage();
             });
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 엔터키로 메시지 전송
         if (messageInput) {
-            messageInput.addEventListener("keydown", function(e) {
+            messageInput.addEventListener("keydown", function (e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             // 문자수 카운터
-            messageInput.addEventListener("input", function() {
+            messageInput.addEventListener("input", function () {
                 const currentLength = this.value.length;
                 if (charCount) {
                     charCount.textContent = currentLength;
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // 읽지 않은 토글 스위치
         const toggleSwitch = document.getElementById("toggleUnreadSwitch");
         if (toggleSwitch) {
-            toggleSwitch.addEventListener("change", function() {
+            toggleSwitch.addEventListener("change", function () {
                 toggleUnreadChats(this.checked);
             });
         }
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const completeTradeBtn = document.getElementById('completeTradeBtn');
 
         if (completeTradeBtn) {
-            completeTradeBtn.addEventListener('click', function() {
+            completeTradeBtn.addEventListener('click', function () {
                 showCompleteTradeModal();
             });
         }
@@ -214,13 +214,13 @@ document.addEventListener("DOMContentLoaded", function() {
         const dropdown = document.getElementById('settingsDropdown');
 
         if (settingsBtn && dropdown) {
-            settingsBtn.addEventListener('click', function(e) {
+            settingsBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 toggleSettingsDropdown();
             });
 
             // 드롭다운 메뉴 아이템 클릭 이벤트
-            dropdown.addEventListener('click', function(e) {
+            dropdown.addEventListener('click', function (e) {
                 const menuItem = e.target.closest('.settings-menu-item');
                 if (menuItem) {
                     const action = menuItem.getAttribute('data-action');
@@ -332,13 +332,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         if (confirmCompleteBtn) {
-            confirmCompleteBtn.addEventListener('click', function() {
+            confirmCompleteBtn.addEventListener('click', function () {
                 completeTrade();
             });
         }
 
         if (completeModal) {
-            completeModal.addEventListener('click', function(e) {
+            completeModal.addEventListener('click', function (e) {
                 if (e.target === completeModal) {
                     hideCompleteTradeModal();
                 }
@@ -355,13 +355,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         if (confirmLeaveBtn) {
-            confirmLeaveBtn.addEventListener('click', function() {
+            confirmLeaveBtn.addEventListener('click', function () {
                 leaveChatRoom();
             });
         }
 
         if (leaveModal) {
-            leaveModal.addEventListener('click', function(e) {
+            leaveModal.addEventListener('click', function (e) {
                 if (e.target === leaveModal) {
                     hideLeaveChatModal();
                 }
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // ESC 키로 모달 닫기
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 hideCompleteTradeModal();
                 hideLeaveChatModal();
@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 외부 클릭 핸들러
     function setupOutsideClickHandlers() {
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             // 설정 드롭다운 외부 클릭 시 닫기
             const settingsBtn = document.getElementById('chatSettingsBtn');
             const dropdown = document.getElementById('settingsDropdown');
@@ -409,13 +409,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
             socket = new WebSocket(wsUrl);
 
-            socket.onopen = function(event) {
+            socket.onopen = function (event) {
                 console.log('WebSocket Connected:', event);
                 isConnected = true;
                 updateOnlineStatus(true);
             };
 
-            socket.onmessage = function(event) {
+            socket.onmessage = function (event) {
                 try {
                     const messageData = JSON.parse(event.data);
                     console.log('Received message:', messageData);
@@ -425,19 +425,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             };
 
-            socket.onclose = function(event) {
+            socket.onclose = function (event) {
                 console.log('WebSocket Disconnected:', event);
                 isConnected = false;
                 updateOnlineStatus(false);
 
                 // 재연결 시도 (5초 후)
-                setTimeout(function() {
+                setTimeout(function () {
                     console.log('Attempting to reconnect WebSocket...');
                     connectWebSocket();
                 }, 5000);
             };
 
-            socket.onerror = function(error) {
+            socket.onerror = function (error) {
                 console.error('WebSocket Error:', error);
                 isConnected = false;
             };
@@ -571,7 +571,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (productImage && chatRoomData.productImageUrl) {
             productImage.src = chatRoomData.productImageUrl;
-            productImage.onerror = () => { productImage.src = '/images/mascot.png'; };
+            productImage.onerror = () => {
+                productImage.src = '/images/mascot.png';
+            };
         }
         if (productTitle && chatRoomData.productTitle) {
             productTitle.textContent = chatRoomData.productTitle;
@@ -620,6 +622,9 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        // 메시지 전송 전에 즉시 플레이스홀더 제거
+        removeNoMessagesPlaceholder();
+
         // 전송 버튼 비활성화
         if (sendBtn) {
             sendBtn.disabled = true;
@@ -654,6 +659,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (error) {
             console.error('Failed to send message:', error);
             showErrorMessage('메시지 전송에 실패했습니다.');
+
         } finally {
             // 전송 버튼 복원
             if (sendBtn) {
@@ -948,8 +954,18 @@ document.addEventListener("DOMContentLoaded", function() {
         `;
     }
 
+    function removeNoMessagesPlaceholder() {
+        if (!messagesContainer) return;
+
+        const placeholder = messagesContainer.querySelector('.no-messages');
+        if (placeholder) {
+            placeholder.remove();
+            console.log('No messages placeholder removed');
+        }
+    }
+
     // 페이지 언로드 시 WebSocket 연결 해제
-    window.addEventListener('beforeunload', function() {
+    window.addEventListener('beforeunload', function () {
         if (socket && isConnected) {
             updateOnlineStatus(false);
             socket.close();
@@ -957,7 +973,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // 페이지 포커스 시 읽음 처리
-    window.addEventListener('focus', function() {
+    window.addEventListener('focus', function () {
         if (currentRoomId) {
             markAsRead(currentRoomId);
         }
