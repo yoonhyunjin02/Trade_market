@@ -39,6 +39,20 @@
 
                 <!-- 전체 채팅 리스트 -->
                 <div id="all-chats-list" class="chat-items">
+
+                    <!-- 챗봇 채팅방 상단 고정 -->
+                    <div class="chat-item bot-chat"
+                         data-room-id="BOT_CHAT"
+                         data-partner-name="AI 챗봇">
+                        <div class="chat-avatar">
+                            <img src="/images/icons/chat-bot.svg" alt="AI 챗봇">
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">AI 챗봇</div>
+                            <div class="chat-preview">궁금한 내용을 물어보세요!</div>
+                        </div>
+                    </div>
+
                     <!-- 채팅방이 없을 때 -->
                     <div th:if="${allChatRooms == null or #lists.isEmpty(allChatRooms)}" class="no-chats">
                         <div class="no-chats-icon"></div>
@@ -122,9 +136,11 @@
 
                 <!-- 첫 번째 줄 -->
                 <div class="header-top-row">
-                    <span class="partner-name" id="partner-name"
-                          th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
-                    </span>
+                    <div class="partner-info" id="partner-info">
+                        <span class="partner-name" id="partner-name"
+                              th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
+                        </span>
+                    </div>
 
                     <div class="chat-actions">
                         <button class="btn-complete-trade" id="completeTradeBtn">
@@ -317,6 +333,8 @@
 <!-- 기능 스크립트 -->
 <script th:src="@{/js/pages/chat.js}"></script>
 <script th:src="@{/js/pages/chat-toggle.js}"></script>
+
+<script th:src="@{/js/pages/chat-ai.js}"></script>
 
 <!-- 빠른 ‘채팅방 나가기’ 버튼 핸들러 -->
 <script>
