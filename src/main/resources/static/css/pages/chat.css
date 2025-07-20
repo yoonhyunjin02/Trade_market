@@ -995,3 +995,22 @@
 .hidden {
     display: none !important;
 }
+
+.reset-chat-btn button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #ff4d4f;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.reset-chat-btn {
+  text-align: center;
+  margin-top: 10px;
+}
+.reset-chat-btn button:hover {
+  background: #ff7875;
+}
