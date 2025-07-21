@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>채팅</title>
 
     <!-- 공통 스타일 -->
@@ -126,9 +128,13 @@
                           th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
                     </span>
 
-                    <div class="chat-actions">
-                        <button class="btn-complete-trade" id="completeTradeBtn">
-                            <span class="btn-text">거래완료</span>
+                    <div class="chat-actions" th:if="${selectedChatRoom != null and isSeller}">
+                        <button id="completeTradeBtn"
+                                class="btn-complete-trade"
+                                th:disabled="${selectedChatRoom.completed}"
+                                th:classappend="${selectedChatRoom.completed} ? 'completed' : ''">
+                            <span class="btn-icon" th:text="${selectedChatRoom.completed} ? '✓' : '🤝'"></span>
+                            <span class="btn-text" th:text="${selectedChatRoom.completed} ? '거래완료됨' : '거래완료'"></span>
                         </button>
 
                         <!-- 빠른 채팅방 나가기 -->
@@ -307,8 +313,9 @@
     const currentUserId  = /*[[${currentUser != null ? currentUser.userId  : ''}]]*/ '';
     const currentUserName= /*[[${currentUser != null ? currentUser.userName: ''}]]*/ '';
     const selectedRoomId = /*[[${selectedChatRoom != null ? selectedChatRoom.chatRoomId : ''}]]*/ '';
-    const csrfToken      = /*[[${_csrf != null ? _csrf.token       : ''}]]*/ '';
-    const csrfHeader     = /*[[${_csrf != null ? _csrf.headerName  : ''}]]*/ '';
+    // CSRF 토큰 설정
+    const csrfToken  = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
     const chatRooms = /*[[${allChatRooms}]]*/ [];
     /*]]>*/
