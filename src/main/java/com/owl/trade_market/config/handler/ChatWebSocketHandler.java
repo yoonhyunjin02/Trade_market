@@ -229,19 +229,4 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Object userId = attributes.get("userId");
         return userId != null ? userId.toString() : null;
     }
-
-    /**
-     * 현재 연결된 세션 수 반환 (모니터링용)
-     */
-    public int getConnectedSessionCount() {
-        return sessions.size();
-    }
-
-    /**
-     * 특정 사용자가 온라인인지 확인
-     */
-    public boolean isUserOnline(String userId) {
-        WebSocketSession session = sessions.get(userId);
-        return session != null && session.isOpen();
-    }
 }

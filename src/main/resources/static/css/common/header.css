@@ -86,14 +86,6 @@ nav a:hover {
     border-color: #ff6f0f;
 }
 
-/* 로그아웃 form을 인라인으로 */
-.header-actions .logout-form,
-.header-actions form[action="/logout"] {
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
-
 /* 버튼 공통 */
 .btn-main {
     padding: 8px 16px;
@@ -109,7 +101,7 @@ nav a:hover {
     justify-content: center;
 }
 
-/* 버튼별 컬러 */
+/* 로그인 버튼 */
 .btn-login {
     background-color: #ff6f0f;
     color: #fff;
@@ -118,20 +110,154 @@ nav a:hover {
     background-color: #e55a00;
 }
 
-.btn-logout {
-    background-color: #6c757d;
-    color: #fff;
-}
-.btn-logout:hover {
-    background-color: #5a6268;
+/* ===== 새로 추가: 사용자 드롭다운 스타일 ===== */
+
+/* 사용자 드롭다운 전체 컨테이너 */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-.btn-chat {
-    background-color: #28a745;
-    color: #fff;
+/* 사용자 환영 메시지 영역 */
+.user-welcome {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: #495057;
 }
-.btn-chat:hover {
-    background-color: #218838;
+
+.user-welcome:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.welcome-text {
+    color: #6c757d;
+    font-weight: 400;
+}
+
+.user-name {
+    color: #ff6f0f;
+    font-weight: 600;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 드롭다운 토글 화살표 */
+.dropdown-arrow {
+    margin-left: 4px;
+    transition: transform 0.2s;
+    color: #6c757d;
+}
+
+.user-dropdown.active .dropdown-arrow {
+    transform: rotate(180deg);
+    color: #ff6f0f;
+}
+
+/* 드롭다운 메뉴 */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    padding: 8px 0;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    overflow: hidden; /* 추가: 내용이 박스 밖으로 나가지 않도록 */
+}
+
+.user-dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 드롭다운 화살표 */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-bottom: none;
+    border-right: none;
+    transform: rotate(45deg);
+}
+
+/* 드롭다운 메뉴 아이템 */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    color: #495057;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 0; /* 추가: 모서리 둥글게 하지 않음 */
+    margin: 0; /* 추가: 마진 제거 */
+    box-sizing: border-box; /* 추가: 패딩이 너비에 포함되도록 */
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #ff6f0f;
+}
+
+.dropdown-item svg {
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+/* 로그아웃 아이템 특별 스타일 */
+.logout-item {
+    color: #dc3545;
+}
+
+.logout-item:hover {
+    background-color: #f8f9fa;
+    color: #c82333;
+}
+
+/* 드롭다운 구분선 */
+.dropdown-divider {
+    height: 1px;
+    margin: 8px 16px;
+    background-color: #e9ecef;
+    border: none;
+}
+
+/* 드롭다운 내 폼 스타일 */
+.dropdown-logout-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 /* 반응형 디자인 */
@@ -148,6 +274,7 @@ nav a:hover {
     .header-actions {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
     }
     .header-actions form[role="search"] {
         flex: 1;
@@ -158,6 +285,21 @@ nav a:hover {
     }
     nav ul {
         gap: 20px;
+    }
+
+    /* 모바일에서 드롭다운 조정 */
+    .user-welcome {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    .user-name {
+        max-width: 80px;
+    }
+
+    .dropdown-menu {
+        min-width: 160px;
+        right: -10px;
     }
 }
 
@@ -177,5 +319,26 @@ nav a:hover {
     .header-actions {
         flex-direction: column;
         gap: 12px;
+    }
+
+    /* 작은 화면에서 드롭다운 더 컴팩트하게 */
+    .user-welcome {
+        font-size: 12px;
+        padding: 6px 8px;
+        gap: 2px;
+    }
+
+    .welcome-text {
+        display: none; /* "어서오세요"와 "님" 숨기기 */
+    }
+
+    .dropdown-menu {
+        right: 0;
+        min-width: 140px;
+    }
+
+    .dropdown-item {
+        padding: 8px 12px;
+        font-size: 13px;
     }
 }

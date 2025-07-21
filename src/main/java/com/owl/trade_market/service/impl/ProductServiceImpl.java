@@ -129,4 +129,20 @@ public class ProductServiceImpl implements ProductService {
                 kw, category, minPrice, maxPrice, location, availableOnly, pageable
         );
     }
+
+    @Override
+
+    @Transactional
+    public void markAsSold(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. ID: " + productId));
+
+        product.setSold(true);
+        productRepository.save(product);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> findBySeller(User seller, Sort sort) {
+        return productRepository.findBySeller(seller, sort);
+    }
 }

@@ -71,4 +71,9 @@ public interface ChatService {
      * 채팅방 나가기 및 완전 삭제
      */
     void leaveAndDeleteRoom(Long chatRoomId, User currentUser);
+
+    /**
+     * 채팅방의 거래를 완료 처리
+     */
+    void completeTrade(Long chatRoomId, User currentUser);
 }
