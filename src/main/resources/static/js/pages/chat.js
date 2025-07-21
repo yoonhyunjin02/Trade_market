@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // 채팅방 선택
         document.querySelectorAll(".chat-item").forEach(item => {
             item.addEventListener("click", function () {
-                const roomId = this.getAttribute("data-room-id");
-                const partnerName = this.getAttribute("data-partner-name");
+                const roomId = this.dataset.roomId;
+                const partnerName = this.dataset.partnername;
 
                 console.log("✅ chat-item 클릭됨!", roomId, partnerName);
 
@@ -53,10 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (roomId === "BOT_CHAT") {
                     console.log("🤖 챗봇 클릭 → openBotChat 실행");
                     openBotChat();
-                } else {
-                    console.log("💬 일반 채팅 클릭 → selectChatRoom 실행");
-                    selectChatRoom(roomId, partnerName);
+                    return;
                 }
+
+                window.location.href = `/chats/${roomId}`;
             });
         });
 
@@ -473,10 +473,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 채팅방 선택
     function selectChatRoom(roomId, partnerName) {
-        isBotChat = false; // 일반 채팅 모드
-        toggleChatRoomButtons(true); // 오른쪽 버튼 표시
+        isBotChat = false;
+        window.isBotChat = false;
 
-        showFaqButtons(false); // FAQ 버튼 숨기기
+        // 챗봇 전용 FAQ 버튼 숨기기
+        showFaqButtons(false);
+        // 챗봇 대화가 남아 있으면 즉시 비우기
+        if (messagesContainer) {
+            messagesContainer.innerHTML = '';
+        }
+
+        // 챗봇에서 돌아올 때 숨겨 둔 상품 카드, 상대방 이름 영역 복구
+        document.querySelector('.product-info-card')?.classList.remove('d-none');
+        const partnerInfo = document.getElementById('partner-info');
+        if (partnerInfo) {
+            partnerInfo.innerHTML =
+                `<span class="partner-name" id="partner-name">${partnerName}</span>`;
+        }
+
+        toggleChatRoomButtons(true); // 오른쪽 버튼 표시
 
         if (roomId === currentRoomId) {
             return; // 이미 선택된 채팅방
@@ -519,8 +534,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // 일반 채팅이면 partner-info UI 복구 (AI 챗봇일 땐 유지)
-        if (roomId !== "BOT_CHAT") {
-            document.getElementById("partner-info").innerHTML = `
+        const partnerInfoElement = document.getElementById("partner-info");
+        if (partnerInfoElement && roomId !== "BOT_CHAT") {
+            partnerInfoElement.innerHTML = `
                 <span class="partner-name" id="partner-name"></span>
             `;
         }
@@ -569,6 +585,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
+                if (messagesContainer) {
+                    messagesContainer.innerHTML = ''; // 기존 메시지 초기화
+                }
                 updateChatRoomUI(data);
                 updateMessagesUI(data.messages || []);
                 scrollToBottom();
@@ -582,6 +601,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // 채팅방 UI 업데이트
     function updateChatRoomUI(chatRoomData) {
         console.log('Received chat room data:', chatRoomData);
+
+        // 카드가 가려져 있으면 다시 보여주기
+        document.querySelector('.product-info-card')?.classList.remove('d-none');
 
         // 상대방 이름 업데이트
         const partnerNameElement = document.getElementById("partner-name");
@@ -708,7 +730,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollToBottom();
 
         } catch (error) {
-          
+
             console.error('Failed to send message:', error);
             showErrorMessage('메시지 전송에 실패했습니다.');
         } finally {
@@ -1004,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    window.showFaqButtons = function(show) {
+    window.showFaqButtons = function (show) {
         const faqContainer = document.getElementById("bot-faq-buttons");
         if (faqContainer) {
             faqContainer.style.display = show ? "flex" : "none";
@@ -1023,12 +1045,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 채팅방 상단 헤더 챗봇 버튼 숨기기
-    window.toggleChatRoomButtons = function(show) {
+    window.toggleChatRoomButtons = function (show) {
+
+        if (window.isBotChat) {
+            show = false; // 챗봇 모드에서는 항상 숨김
+        }
+
         // 거래완료 버튼
         const completeTradeBtn = document.getElementById('completeTradeBtn');
         if (completeTradeBtn) {
             completeTradeBtn.style.display = show ? 'inline-flex' : 'none';
         }
+
+        // 구매자에게 보이는 ‘거래완료됨’ 뱃지도 함께 토글
+        document.querySelectorAll('.btn-complete-trade.completed')
+            .forEach(el => el.style.display = show ? 'inline-flex' : 'none');
 
         // 기존 설정 버튼
         const settingsBtn = document.getElementById('chatSettingsBtn');
