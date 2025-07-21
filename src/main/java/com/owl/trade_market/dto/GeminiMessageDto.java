@@ -1,11 +1,5 @@
 package com.owl.trade_market.dto;
 
-/**
- * Gemini API 호출용 최소 메시지 구조
- * - userId == 0  → 챗봇
- * - userId > 0   → 사용자
- */
-
 public class GeminiMessageDto {
     private Long userId;
     private String content;
