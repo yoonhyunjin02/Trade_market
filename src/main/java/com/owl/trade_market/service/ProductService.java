@@ -30,6 +30,16 @@ public interface ProductService {
     // 중복 없는 위치 전체 조회
     List<String> getAllDistinctLocations();
 
+//    // 판매중인 상품 조회
+//    Page<Product> findAll(Pageable pageable, Boolean availableOnly);
+//
+//    Page<Product> findByCategoryAndAvailable(Category category, Pageable pageable);
+//
+//    Page<Product> searchProductAndAvailable(String keyword, Category category, Pageable pageable);
+
+    // 판매자별 상품 조회 (프로필 페이지용)
+    List<Product> findBySeller(User seller, Sort sort);
+
     // 전체 상품 중 최솟값 / 최댓값 구하기
     Integer findMinPrice();
     Integer findMaxPrice();
@@ -42,4 +52,7 @@ public interface ProductService {
                                  String location,
                                  Boolean availableOnly,
                                  Pageable pageable);
+
+    // 상품을 판매완료 상태로 변경
+    void markAsSold(Long productId);
 }

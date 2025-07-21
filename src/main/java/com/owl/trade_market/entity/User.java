@@ -31,7 +31,7 @@ public class User {
     private String providerId;
 
     @Column(name = "user_email", length = 50)
-    private  String userEmail;
+    private String userEmail;
 
     // Product과 1:N 관계
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -41,27 +41,50 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
+    // UserDetails와 1:1 관계 - cascade 수정
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private UserDetails userDetails;
+
     // 1. 기본 생성자
     public User() {
     }
 
     // 2. 일반 회원가입용 생성자
     public User(String userId, String userName, String userPassword) {
-        this.userId = userId;               // 아이디
-        this.userName = userName;           // 닉네임
-        this.userPassword = userPassword;   // 비밀번호
+        this.userId = userId;
+        this.userName = userName;
+        this.userPassword = userPassword;
         this.provider = AuthProvider.LOCAL;
     }
 
-    // 3. 소셜 로그인용 생성자
-    public User(String userEmail, String userName, AuthProvider provider, String providerId) {
-        this.userEmail = userEmail;       // 이메일을 아이디로 사용
-        this.userName = userName;   // 소셜에서 지정한 이름
-        this.provider = provider;   // 소셜 종류
+    // 3. OAuth2 회원가입용 생성자
+    public User(String userName, String userEmail, AuthProvider provider, String providerId) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.provider = provider;
         this.providerId = providerId;
     }
 
-    // Getter & Setter
+    // 연관관계 편의 메서드 - UserDetails
+    public void setUserDetails(UserDetails userDetails) {
+        if (this.userDetails != null) {
+            this.userDetails.setUser(null);
+        }
+        this.userDetails = userDetails;
+        if (userDetails != null) {
+            userDetails.setUser(this);
+        }
+    }
+
+    // UserDetails 생성 및 설정 편의 메서드
+    public UserDetails createUserDetails() {
+        if (this.userDetails == null) {
+            this.userDetails = new UserDetails(this);
+        }
+        return this.userDetails;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -118,6 +141,14 @@ public class User {
         this.providerId = providerId;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public List<Product> getProducts() {
         return products;
     }
@@ -125,12 +156,17 @@ public class User {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
-    public String getUserEmail() {
-        return userEmail;
+
+    public List<ChatRoom> getChatRooms() {
+        return chatRooms;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setChatRooms(List<ChatRoom> chatRooms) {
+        this.chatRooms = chatRooms;
+    }
+
+    public UserDetails getUserDetails() {
+        return userDetails;
     }
 
     @Override
@@ -141,6 +177,20 @@ public class User {
                 ", userName='" + userName + '\'' +
                 ", userLocation='" + userLocation + '\'' +
                 ", provider=" + provider +
+                ", userEmail='" + userEmail + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

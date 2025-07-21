@@ -1,5 +1,6 @@
 package com.owl.trade_market.config;
 
+import com.owl.trade_market.config.handler.ChatBotWebSocketHandler;
 import com.owl.trade_market.config.handler.ChatWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,17 +13,24 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ChatWebSocketHandler chatWebSocketHandler;
+    private final ChatBotWebSocketHandler chatBotWebSocketHandler;
 
     // 생성자 주입
     @Autowired
-    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler) {
+    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler,
+                           ChatBotWebSocketHandler chatBotWebSocketHandler) {
         this.chatWebSocketHandler = chatWebSocketHandler;
+        this.chatBotWebSocketHandler = chatBotWebSocketHandler;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // "/ws/chat" 엔드포인트로 들어오는 WebSocket 연결을 chatWebSocketHandler가 처리하도록 등록
-        // 모든 도메인에서의 접속을 허용하고, SockJS를 사용하여 브라우저 호환성을 높입니다.
-        registry.addHandler(chatWebSocketHandler, "/ws/chat").setAllowedOrigins("*");
+        registry.addHandler(chatWebSocketHandler, "/ws/chat")
+                .addInterceptors(new WsHandshakeInterceptor())
+                .setAllowedOrigins("*");
+
+        registry.addHandler(chatBotWebSocketHandler, "/ws/chatbot")
+                .addInterceptors(new WsHandshakeInterceptor())
+                .setAllowedOrigins("*");
     }
 }
