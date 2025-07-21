@@ -73,13 +73,12 @@ public class ProfileController {
             // 4. 해당 사용자의 상품 목록 (ProductService 없으면 빈 리스트)
             List<Product> userProducts = Collections.emptyList(); // 임시로 빈 리스트
 
-            // ProductService가 있는 경우 아래 주석 해제
-            // try {
-            //     userProducts = productService.findBySeller(targetUser, Sort.by("createdAt").descending());
-            // } catch (Exception e) {
-            //     System.err.println("상품 목록 조회 중 오류: " + e.getMessage());
-            //     userProducts = Collections.emptyList();
-            // }
+             try {
+                 userProducts = productService.findBySeller(targetUser, Sort.by("createdAt").descending());
+             } catch (Exception e) {
+                 System.err.println("상품 목록 조회 중 오류: " + e.getMessage());
+                 userProducts = Collections.emptyList();
+             }
 
             // 5. 모델에 데이터 추가
             model.addAttribute("user", targetUser);
