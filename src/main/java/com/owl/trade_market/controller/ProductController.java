@@ -384,7 +384,7 @@ public class ProductController {
         }
     }
 
-    // 상품상세 페이지 (trade_post.html)
+    // 상품상세 페이지 (trade-post.html)
     @GetMapping("/{id:[0-9]+}")
     public String productDetail(@PathVariable Long id,
                                 Model model,
