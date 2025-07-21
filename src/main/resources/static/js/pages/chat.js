@@ -157,45 +157,44 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = 'none';
     }
 
-    function completeTrade() {
+    async function completeTrade() {
         if (!currentRoomId) {
             showErrorMessage('채팅방 정보를 찾을 수 없습니다.');
             return;
         }
 
-        // 로딩 표시
         showLoadingMessage('거래 완료 처리 중...');
 
-        fetch(`/api/chats/${currentRoomId}/complete`, {
-            method: 'POST',
-            headers: createHeaders(),
-            credentials: 'include'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                hideLoadingMessage();
-
-                if (data.success) {
-                    hideCompleteTradeModal();
-                    showSuccessMessage('거래가 완료되었습니다!');
-
-                    // UI 업데이트 - 거래완료 버튼 비활성화
-                    updateUIForCompletedTrade();
-
-                } else {
-                    showErrorMessage(data.message || '거래 완료 처리에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                hideLoadingMessage();
-                console.error('거래 완료 처리 실패:', error);
-                showErrorMessage('거래 완료 처리 중 오류가 발생했습니다.');
+        try {
+            const res = await fetch(`/api/chats/${currentRoomId}/complete`, {
+                method: 'POST',
+                headers: createHeaders(),
+                credentials: 'include'
             });
+
+            if (res.status === 403) {
+                throw new Error('권한이 없습니다. 로그인 상태 또는 참가자 여부를 확인하세요.');
+            }
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            hideLoadingMessage();
+
+            if (data.success) {
+                hideCompleteTradeModal();
+                showSuccessMessage('거래가 완료되었습니다!');
+                updateUIForCompletedTrade();
+            } else {
+                showErrorMessage(data.message || '거래 완료 처리에 실패했습니다.');
+            }
+
+        } catch (e) {
+            hideLoadingMessage();
+            console.error('거래 완료 처리 실패:', e);
+            showErrorMessage(e.message || '거래 완료 처리 중 오류가 발생했습니다.');
+        }
     }
 
     function updateUIForCompletedTrade() {
