@@ -21,6 +21,8 @@ public class ChatRoomDetailDto {
     private String productImageUrl;
     private String otherUserName;
     private List<ChatMessageDto> messages; // 과거 메시지 목록
+    private boolean completed; // 채팅방이 완료된 상태인지 여부
+    private String sellerId; // 판매자(상품 등록자)의 userId
 
     // private 생성자
     // 외부에서 직접 생성자 호출 불가
@@ -96,6 +98,22 @@ public class ChatRoomDetailDto {
         this.messages = messages;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
     // 엔티티를 DTO로 변환하는 정적 팩토리 메서드
     public static ChatRoomDetailDto fromEntity(ChatRoom room, User opponent, List<Chat> chats) {
         ChatRoomDetailDto dto = new ChatRoomDetailDto();
@@ -116,6 +134,8 @@ public class ChatRoomDetailDto {
         dto.setFormattedPrice(formatted);
         dto.setProductImageUrl(imageUrl);
         dto.setOtherUserName(opponent.getUserName());
+        dto.setCompleted(room.getProduct().isSold());
+        dto.setSellerId(room.getProduct().getSeller().getUserId());
 
         // 채팅 메시지 엔티티 리스트를 DTO 리스트로 변환
         if (chats != null) {
