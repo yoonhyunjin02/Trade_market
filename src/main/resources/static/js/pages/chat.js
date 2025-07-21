@@ -485,6 +485,10 @@ document.addEventListener("DOMContentLoaded", function () {
         currentRoomId = roomId;
         currentAssistantId = partnerName; // 임시로 partnerName을 assistantId로 사용
 
+        // 📌 2. 브라우저 URL 변경 (페이지 새로고침 없이)
+        const newUrl = `/chats/${roomId}`;
+        window.history.pushState({roomId: roomId}, '', newUrl);
+
         // UI 업데이트
         updateChatRoomSelection(roomId);
 
