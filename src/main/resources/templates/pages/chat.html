@@ -142,76 +142,66 @@
                         <span class="partner-name" id="partner-name"
                               th:text="${selectedChatRoom != null ? selectedChatRoom.otherUserName : ''}">
                         </span>
+                    </div>
 
-					</div>
+                    <div class="chat-actions" th:if="${selectedChatRoom != null and isSeller}">
+                        <button id="completeTradeBtn"
+                                class="btn-complete-trade"
+                                th:disabled="${selectedChatRoom.completed}"
+                                th:classappend="${selectedChatRoom.completed} ? 'completed' : ''">
+                            <span class="btn-icon" th:text="${selectedChatRoom.completed} ? '✓' : '🤝'"></span>
+                            <span class="btn-text" th:text="${selectedChatRoom.completed} ? '거래완료됨' : '거래완료'"></span>
+                        </button>
 
-					<div class="chat-actions">
-						<button id="completeTradeBtn"
-						        class="btn-complete-trade"
-						        th:if="${selectedChatRoom != null and isSeller}"
-						        th:disabled="${selectedChatRoom.completed}"
-						        th:classappend="${selectedChatRoom.completed} ? 'completed' : ''">
-							<span class="btn-icon" th:text="${selectedChatRoom.completed} ? '✓' : '🤝'"></span>
-							<span class="btn-text" th:text="${selectedChatRoom.completed} ? '거래완료됨' : '거래완료'"></span>
-						</button>
+                        <!-- 빠른 채팅방 나가기 -->
+                        <button class="btn-leave-chat" id="quickLeaveBtn">
+                            <span class="btn-text">채팅방 나가기</span>
+                        </button>
 
-						<!-- ② 구매자에게만 보여주는 완료 표시용 버튼 (항상 disabled) -->
-						<button class="btn-complete-trade completed"
-						        th:if="${selectedChatRoom != null and !isSeller and selectedChatRoom.completed}"
-						        disabled>
-							<span class="btn-icon">✓</span>
-							<span class="btn-text">거래완료됨</span>
-						</button>
+                        <!-- 설정 드롭다운 -->
+                        <div class="chat-settings-dropdown">
+                            <button class="btn-chat-settings" id="chatSettingsBtn">
+                                <span class="settings-icon">⋮</span>
+                            </button>
 
-						<!-- 빠른 채팅방 나가기 -->
-						<button class="btn-leave-chat" id="quickLeaveBtn">
-							<span class="btn-text">채팅방 나가기</span>
-						</button>
+                            <div class="settings-dropdown-menu" id="settingsDropdown">
+                                <div class="settings-menu-item" data-action="block">
+                                    <span class="menu-icon"></span>
+                                    <span class="menu-text">차단하기</span>
+                                </div>
+                                <div class="settings-menu-item" data-action="report">
+                                    <span class="menu-icon"></span>
+                                    <span class="menu-text">신고하기</span>
+                                </div>
+                                <div class="settings-menu-item danger" data-action="leave">
+                                    <span class="menu-icon"></span>
+                                    <span class="menu-text">채팅방 나가기</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-						<!-- 설정 드롭다운 -->
-						<div class="chat-settings-dropdown">
-							<button class="btn-chat-settings" id="chatSettingsBtn">
-								<span class="settings-icon">⋮</span>
-							</button>
-
-							<div class="settings-dropdown-menu" id="settingsDropdown">
-								<div class="settings-menu-item" data-action="block">
-									<span class="menu-icon"></span>
-									<span class="menu-text">차단하기</span>
-								</div>
-								<div class="settings-menu-item" data-action="report">
-									<span class="menu-icon"></span>
-									<span class="menu-text">신고하기</span>
-								</div>
-								<div class="settings-menu-item danger" data-action="leave">
-									<span class="menu-icon"></span>
-									<span class="menu-text">채팅방 나가기</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- 두 번째 줄 -->
-				<div class="product-info-card" th:if="${selectedChatRoom != null}">
-					<div class="product-image-wrapper">
-						<img th:src="${selectedChatRoom.productImageUrl != null ? selectedChatRoom.productImageUrl : '/images/mascot.png'}"
-						     alt="상품 이미지"
-						     id="product-image"
-						     class="product-image"
-						     onerror="this.src='/images/mascot.png'">
-					</div>
-					<div class="product-details">
-						<div class="product-title"
-						     id="product-title"
-						     th:text="${selectedChatRoom.productTitle}"></div>
-						<div class="product-price"
-						     id="product-price"
-						     th:text="${selectedChatRoom.formattedPrice}">0원
-						</div>
-					</div>
-				</div>
-			</div>
+                <!-- 두 번째 줄 -->
+                <div class="product-info-card" th:if="${selectedChatRoom != null}">
+                    <div class="product-image-wrapper">
+                        <img th:src="${selectedChatRoom.productImageUrl != null ? selectedChatRoom.productImageUrl : '/images/mascot.png'}"
+                             alt="상품 이미지"
+                             id="product-image"
+                             class="product-image"
+                             onerror="this.src='/images/mascot.png'">
+                    </div>
+                    <div class="product-details">
+                        <div class="product-title"
+                             id="product-title"
+                             th:text="${selectedChatRoom.productTitle}"></div>
+                        <div class="product-price"
+                             id="product-price"
+                             th:text="${selectedChatRoom.formattedPrice}">0원
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- FAQ + 종료 버튼 고정 바 -->
             <div id="bot-faq-buttons" class="faq-buttons" style="display: none;">
@@ -230,37 +220,38 @@
                              th:classappend="${message.userId == currentUser.userId ? 'sent' : 'received'}"
                              th:data-message-id="${message.chatRoomId + '_' + message.sentAt}">
 
-							<!-- 받은 메시지 -->
-							<div th:if="${message.userId != currentUser.userId}" class="message received">
-								<div class="message-content" th:text="${message.content}"></div>
-								<div class="message-time" th:text="${message.sentAt}"></div>
-							</div>
+                            <!-- 받은 메시지 -->
+                            <div th:if="${message.userId != currentUser.userId}" class="message received">
+                                <div class="message-content" th:text="${message.content}"></div>
+                                <div class="message-time" th:text="${message.sentAt}"></div>
+                            </div>
 
-							<!-- 보낸 메시지 -->
-							<div th:if="${message.userId == currentUser.userId}" class="message sent">
-								<div class="message-time" th:text="${message.sentAt}"></div>
-								<div class="message-content" th:text="${message.content}"></div>
-							</div>
-						</div>
-					</div>
-				</div>
+                            <!-- 보낸 메시지 -->
+                            <div th:if="${message.userId == currentUser.userId}" class="message sent">
+                                <div class="message-time" th:text="${message.sentAt}"></div>
+                                <div class="message-content" th:text="${message.content}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<!-- 메시지가 없을 때 -->
-				<div th:if="${selectedChatRoom == null or selectedChatRoom.messages == null or #lists.isEmpty(selectedChatRoom.messages)}"
-				     class="no-messages">
-					<div class="no-messages-icon"></div>
-					<p>아직 메시지가 없습니다.</p>
-					<small>첫 메시지를 보내보세요.</small>
-				</div>
-			</div>
+                <!-- 메시지가 없을 때 -->
+                <div th:if="${selectedChatRoom == null or selectedChatRoom.messages == null or #lists.isEmpty(selectedChatRoom.messages)}"
+                     class="no-messages">
+                    <div class="no-messages-icon"></div>
+                    <p>아직 메시지가 없습니다.</p>
+                    <small>첫 메시지를 보내보세요.</small>
+                </div>
+            </div>
 
-			<!-- 메시지 입력 -->
-			<div class="message-input-container">
-				<form id="message-form">
-					<input type="hidden" id="roomId" name="roomId">
-					<input type="hidden" id="assistantId" name="assistantId">
+            <!-- 메시지 입력 -->
+            <div class="message-input-container">
+                <form id="message-form">
+                    <input type="hidden" id="roomId" name="roomId">
+                    <input type="hidden" id="assistantId" name="assistantId">
 
-					<div class="input-wrapper">
+                    <div class="input-wrapper">
+
                         <textarea class="message-input"
                                   id="messageInput"
                                   name="content"
