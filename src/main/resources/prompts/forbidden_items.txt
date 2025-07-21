@@ -82,7 +82,7 @@ Here is the full policy & FAQ you must strictly follow when answering:
 
 ---
 
-{{common_answer_prompt}}
+{{response_rules}}
 
 ---
 

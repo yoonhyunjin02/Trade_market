@@ -54,7 +54,7 @@ Here is the full policy & FAQ you must strictly follow:
 
 ---
 
-{{common_answer_prompt}}
+{{response_rules}}
 
 ---
 

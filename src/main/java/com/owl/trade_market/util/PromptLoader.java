@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 public class PromptLoader {
 
-    private static final String COMMON_ANSWER_PROMPT= """
+    private static final String ANSWER_RESPONSE_RULES= """
             📌 **답변 시 규칙**
             - 반드시 친절하고 간결하게 설명
             - 필요한 경우 **구체적 예시 포함**
@@ -26,7 +26,7 @@ public class PromptLoader {
 
     public static String buildPrompt(String fileName, String userInput) {
         String template = loadPrompt(fileName);
-        template = template.replace("{{common_answer_prompt}}", COMMON_ANSWER_PROMPT);
+        template = template.replace("{{response_rules}}", ANSWER_RESPONSE_RULES);
         template = template.replace("{{user_input}}", userInput);
         return template;
     }
