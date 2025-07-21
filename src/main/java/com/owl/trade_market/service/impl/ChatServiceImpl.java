@@ -201,4 +201,26 @@ public class ChatServiceImpl implements ChatService {
             throw new RuntimeException("채팅방 삭제 중 오류가 발생했습니다. 다시 시도해주세요.", e);
         }
     }
+
+    @Override
+    @Transactional
+    public void completeTrade(Long chatRoomId, User currentUser) {
+
+        ChatRoom chatRoom = findRoomById(chatRoomId);
+
+        // 거래 완료는 판매자만 할 수 있음
+        if (!chatRoom.getProduct().getSeller().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("거래 완료 권한이 없습니다.");
+        }
+
+        // 이미 판매완료된 상품인지 확인
+        if (chatRoom.getProduct().isSold()) {
+            throw new IllegalArgumentException("이미 판매 완료된 상품입니다.");
+        }
+
+        // 상품 상태를 판매 완료로 변경
+        productService.markAsSold(chatRoom.getProduct().getId());
+
+        log.info("거래 완료 처리됨 - chatRoomId: {}, productId: {}, sellerId: {}", chatRoomId, chatRoom.getProduct().getId(), currentUser.getUserId());
+    }
 }

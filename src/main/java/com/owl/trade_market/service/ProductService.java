@@ -52,4 +52,7 @@ public interface ProductService {
                                  String location,
                                  Boolean availableOnly,
                                  Pageable pageable);
+
+    // 상품을 판매완료 상태로 변경
+    void markAsSold(Long productId);
 }
