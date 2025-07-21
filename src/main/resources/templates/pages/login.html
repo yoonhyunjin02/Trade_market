@@ -38,10 +38,17 @@
         <p class="signup-text">
             당근마켓 회원이 아니신가요? <a th:href="@{/register}">회원가입</a>
         </p>
+
     </section>
 </main>
 
 <!--* 공통 푸터 /-->
 <div th:replace="~{fragments/footer :: common-footer}"></div>
+
+<p>error 속성 값: <span th:text="${error}">[none]</span></p>
+<script th:if="${error}" th:inline="javascript">
+    alert([[${error}]]);
+</script>
+
 </body>
 </html>
