@@ -129,4 +129,11 @@ public class ProductServiceImpl implements ProductService {
                 kw, category, minPrice, maxPrice, location, availableOnly, pageable
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findBySeller(User seller, Sort sort) {
+        return productRepository.findBySeller(seller, sort);
+    }
+
 }

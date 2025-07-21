@@ -2,8 +2,10 @@ package com.owl.trade_market.repository;
 
 import com.owl.trade_market.entity.Category;
 import com.owl.trade_market.entity.Product;
+import com.owl.trade_market.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -58,4 +60,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("availableOnly") Boolean availableOnly,
             Pageable pageable
     );
+    // 판매자별 상품 조회 (프로필 페이지용)
+    List<Product> findBySeller(User seller, Sort sort);
+    List<Product> findBySeller(User seller);
 }
