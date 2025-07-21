@@ -480,6 +480,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return; // 이미 선택된 채팅방
         }
 
+        // 챗봇 모드가 아닐 때만 채팅방 URL 변경
+        window.location.href = `/chats/${roomId}`;
+
         currentRoomId = roomId;
         currentAssistantId = partnerName; // 임시로 partnerName을 assistantId로 사용
 
