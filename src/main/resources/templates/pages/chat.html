@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="_csrf" th:content="${_csrf.token}"/>
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-	<title>채팅</title>
-
-	<!-- 공통 스타일 -->
-	<link rel="stylesheet" th:href="@{/css/common/common.css}">
-	<link rel="stylesheet" th:href="@{/css/common/header.css}">
-	<link rel="stylesheet" th:href="@{/css/common/footer.css}">
-
-	<!-- 페이지 전용 스타일 -->
-	<link rel="stylesheet" th:href="@{/css/pages/chat.css}">
-	<link rel="stylesheet" th:href="@{/css/pages/chat-toggle.css}">
+    <th:block th:replace="fragments/head :: common-head('채팅')"></th:block>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" th:href="@{/css/pages/chat.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/chat-toggle.css}">
 </head>
 <body>
 <!-- 공통 헤더 -->

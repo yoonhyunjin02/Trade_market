@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>프로필 수정</title>
-    <link rel="stylesheet" th:href="@{/css/common/common.css}">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <th:block th:replace="fragments/head :: common-head('프로필 수정')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/profile.css}">
     <link rel="stylesheet" th:href="@{/css/pages/profile-edit.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
 <!--* 공통 헤더 *-->

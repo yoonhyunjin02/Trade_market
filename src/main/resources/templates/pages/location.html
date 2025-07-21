@@ -2,17 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>동네인증</title>
-
-    <!-- 공통 CSS -->
-    <link rel="stylesheet" href="/css/common/common.css">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
-
-    <!-- 페이지 전용 CSS -->
+    <th:block th:replace="fragments/head :: common-head('동네인증')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/location.css}">
 </head>
+
 <body>
 <!-- 공통 헤더 -->
 <div th:replace="fragments/header :: common-header"></div>
