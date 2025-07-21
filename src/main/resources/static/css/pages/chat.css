@@ -933,7 +933,6 @@
     overflow: hidden;
 }
 
-
 .bot-chat .chat-avatar img {
     width: 38px;
     height: 38px;
@@ -962,39 +961,42 @@
     filter: brightness(0) invert(1);
 }
 
-/* FAQ 버튼 컨테이너 */
 .faq-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
-    align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
 }
 
 .faq-buttons button {
-    display: inline-block;
-    background: #FFFAE0;
-    border: 1px solid #f1e3a0;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-    white-space: normal;
+  background: #fffbea;
+  border: 1px solid #f1e3a0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .faq-buttons button:hover {
-    background: #FFF4B8;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: #FFF4B8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
+
 
 .reset-chat-btn button {
     margin-top: 10px;
@@ -1014,4 +1016,42 @@
 
 .reset-chat-btn button:hover {
     background: #ff7875;
+}
+
+.faq-buttons button.reset-btn {
+  background: #ff5c5c;
+  color: white;
+  border: none;
+  box-shadow: none;
+}
+
+.faq-buttons button.reset-btn:hover {
+  background: #ff7875;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-fixed-bar {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-bottom: 1px solid #eee;
+  z-index: 10;
+}
+
+.faq-fixed-bar button {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.faq-fixed-bar button:hover {
+  background: #eee;
 }
