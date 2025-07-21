@@ -1004,6 +1004,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const faqContainer = document.getElementById("bot-faq-buttons");
         if (faqContainer) {
             faqContainer.style.display = show ? "flex" : "none";
+        }
+    };
 
     function removeNoMessagesPlaceholder() {
         if (!messagesContainer) return;
