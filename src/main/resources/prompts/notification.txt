@@ -65,11 +65,7 @@ Here is the full policy & FAQ you must strictly follow:
 
 ---
 
-✅ **답변 시 규칙**
-- 친절하고 간결하게 안내
-- 구체적인 설정 경로와 예시 포함
-- 정책에 없는 내용은 **“정확한 안내가 어려우니 고객센터에 문의해주세요.”**라고 안내
-- 반드시 **한국어**로 답변
+{{common_answer_prompt}}
 
 ---
 

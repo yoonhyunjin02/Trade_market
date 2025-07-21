@@ -22,14 +22,14 @@ public class ChatBotWebSocketHandler extends TextWebSocketHandler {
 
     // 카테고리 → 프롬프트 파일 매핑
     private static final Map<String, String> CATEGORY_PROMPT_MAP = Map.of(
-            "거래 문제", "transaction_issue_prompt.txt",
-            "운영정책", "operation_policy_prompt.txt",
-            "동네설정/거래범위", "location_scope_prompt.txt",
-            "물건 구매하기", "buy_item_prompt.txt",
-            "내 물건 팔기", "sell_item_prompt.txt",
-            "알림", "notification_prompt.txt",
-            "거래 매너", "manner_prompt.txt",
-            "거래 금지 물품", "forbidden_items_prompt.txt"
+            "거래 문제", "transaction_issue.txt",
+            "운영정책", "operation_policy.txt",
+            "동네설정/거래범위", "location_scope.txt",
+            "물건 구매하기", "buy_item.txt",
+            "내 물건 팔기", "sell_item.txt",
+            "알림", "notification.txt",
+            "거래 매너", "manner.txt",
+            "거래 금지 물품", "forbidden_items.txt"
     );
 
     private final GeminiService geminiService;
@@ -43,7 +43,7 @@ public class ChatBotWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("챗봇 WebSocket 연결됨: {}", session.getId()); // 유저아이디 확인
+        log.info("챗봇 WebSocket 연결됨: {}", session.getId()); // 유저 아이디 확인
         session.sendMessage(new TextMessage("챗봇 연결 완료! 질문을 입력해주세요.")); // 연결 안내 메시지
     }
 
@@ -126,9 +126,6 @@ public class ChatBotWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /**
-     * WebSocketSession.isOpen()을 체크하고 안전하게 메시지 전송
-     */
     private void safeSend(WebSocketSession session, String msg) {
         try {
             if (session.isOpen()) {
@@ -154,11 +151,10 @@ public class ChatBotWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /**
-     * 로컬 FAQ 응답 (키워드 필터링)
-     * - 금지 / 매너 / 운영 정책 키워드가 포함되면 고정 답변 반환
-     * - 해당 키워드가 없으면 null → Gemini API 호출
-     */
+
+//    로컬 FAQ 응답 (키워드 필터링)
+//    금지 / 매너 / 운영 정책 키워드가 포함되면 고정 답변 반환
+//    해당 키워드가 없으면 null → Gemini API 호출
     private boolean containsAny(String text, String... keywords) {
         return Arrays.stream(keywords).anyMatch(text::contains);
     }
