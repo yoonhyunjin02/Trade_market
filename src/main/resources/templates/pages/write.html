@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${productId != null ? '상품 수정' : '상품 등록'}">상품 등록</title>
-    <link rel="stylesheet" th:href="@{/css/common/common.css}">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <th:block th:replace="fragments/head :: common-head(${productId != null ? '상품 수정' : '상품 등록'})"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/write.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
 <!--* 공통 헤더 *-->

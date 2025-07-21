@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>상품 상세</title>
-    <link rel="stylesheet" href="/css/common/common.css">
-    <link rel="stylesheet" href="/css/common/header.css">
-    <link rel="stylesheet" href="/css/common/footer.css">
-    <link rel="stylesheet" href="/css/pages/trade_post.css">
+    <th:block th:replace="fragments/head :: common-head('상품 상세')"></th:block>
+    <link rel="stylesheet" th:href="@{/css/pages/trade-post.css}">
 </head>
 <body>
 

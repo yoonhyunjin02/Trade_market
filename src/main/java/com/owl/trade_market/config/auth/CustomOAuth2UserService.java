@@ -3,7 +3,6 @@ package com.owl.trade_market.config.auth;
 
 import com.owl.trade_market.entity.AuthProvider;
 import com.owl.trade_market.entity.User;
-import com.owl.trade_market.repository.UserDetailsRepository;
 import com.owl.trade_market.repository.UserRepository;
 import com.owl.trade_market.service.UserService;
 import org.springframework.context.annotation.Lazy;

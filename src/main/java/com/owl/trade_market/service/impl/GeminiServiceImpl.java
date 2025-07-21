@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.owl.trade_market.dto.GeminiMessageDto;
 import com.owl.trade_market.service.GeminiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
