@@ -4,6 +4,7 @@ import com.owl.trade_market.config.handler.FormLoginSuccessHandler;
 import com.owl.trade_market.config.auth.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web
         .builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +38,7 @@ public class SecurityConfig {
         http
                 // 1) URL별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/chats/create").permitAll()
                         // 정적 리소스와 인증 없이 열어 줄 엔드포인트
                         .requestMatchers(
                                 "/", "/main",
