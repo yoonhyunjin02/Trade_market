@@ -13,7 +13,7 @@ public class UserDetails {
     private Long userId;
 
     @OneToOne
-    @MapsId
+    @MapsId // 중요: User의 ID를 UserDetails의 ID로 사용
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -42,10 +42,13 @@ public class UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // User와 함께 생성하는 생성자
+    // User와 함께 생성하는 생성자 - 수정됨
     public UserDetails(User user) {
+        if (user == null || user.getId() == null) {
+            throw new IllegalArgumentException("User 또는 User ID가 null입니다.");
+        }
         this.user = user;
-        this.userId = user.getId();
+        // @MapsId를 사용하므로 userId는 자동으로 설정됨
         this.mannerTemperature = new BigDecimal("36.5");
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -68,9 +71,9 @@ public class UserDetails {
         return userId;
     }
 
-//    public void setUserId(Long userId) {
-//        this.userId = userId;
-//    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public User getUser() {
         return user;
@@ -78,7 +81,7 @@ public class UserDetails {
 
     public void setUser(User user) {
         this.user = user;
-        this.userId = user != null ? user.getId() : null;
+        // @MapsId를 사용하므로 수동으로 userId 설정할 필요 없음
     }
 
     public String getIntroduction() {
@@ -137,6 +140,8 @@ public class UserDetails {
                 ", age=" + age +
                 ", gender=" + gender +
                 ", mannerTemperature=" + mannerTemperature +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

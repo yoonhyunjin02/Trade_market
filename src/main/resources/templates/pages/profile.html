@@ -55,7 +55,7 @@
             </div>
             <div class="info-item">
               <span class="info-label">성별</span>
-              <span class="info-value" th:text="${userDetails.gender != null ? userDetails.gender : '미공개'}">미공개</span>
+              <span class="info-value" th:text="${userDetails.gender != null ? userDetails.gender.description : '미공개'}">미공개</span>
             </div>
           </div>
         </div>
