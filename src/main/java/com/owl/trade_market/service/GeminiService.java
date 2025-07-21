@@ -7,7 +7,5 @@ import java.util.List;
  * Gemini AI 호출 서비스 인터페이스
  */
 public interface GeminiService {
-    String ask(List<GeminiMessageDto> history, String question);
-
     String askWithPrompt(String promptTemplate, String userQuestion);
 }

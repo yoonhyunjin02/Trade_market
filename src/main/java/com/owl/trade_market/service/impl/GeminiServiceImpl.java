@@ -30,13 +30,6 @@ public class GeminiServiceImpl implements GeminiService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String ask(List<GeminiMessageDto> history, String question) {
-        // 히스토리를 붙일 수 있지만 지금은 그냥 질문만 전달
-        String prompt = question;
-        return safeCallGeminiAPI(prompt);
-    }
-
-    @Override
     public String askWithPrompt(String promptTemplate, String userQuestion) {
         String fullPrompt = promptTemplate.replace("{{user_input}}", userQuestion);
 

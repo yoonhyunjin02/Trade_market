@@ -477,6 +477,8 @@ document.addEventListener("DOMContentLoaded", function() {
         isBotChat = false; // 일반 채팅 모드
         toggleChatRoomButtons(true); // 오른쪽 버튼 표시
 
+        showFaqButtons(false); // FAQ 버튼 숨기기
+
         if (roomId === currentRoomId) {
             return; // 이미 선택된 채팅방
         }
@@ -991,6 +993,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 <small>첫 메시지를 보내보세요!</small>
             </div>
         `;
+    }
+
+    window.showFaqButtons = function(show) {
+        const faqContainer = document.getElementById("bot-faq-buttons");
+        if (faqContainer) {
+            faqContainer.style.display = show ? "flex" : "none";
+        }
     }
 
     // 채팅방 상단 헤더 챗봇 버튼 숨기기
