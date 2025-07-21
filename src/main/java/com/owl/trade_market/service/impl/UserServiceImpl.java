@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -201,6 +202,53 @@ public class UserServiceImpl implements UserService {
             System.err.println("UserDetails 조회/생성 중 오류: " + e.getMessage());
             // 최후의 수단: 메모리상 객체 반환
             return new UserDetails(user);
+        }
+    }
+    @Override
+    @Transactional
+    public void increaseMannerTemperatureForSale(User user) {
+        try {
+            // UserDetails 조회 또는 생성
+            UserDetails userDetails = userDetailsRepository.findByUser(user)
+                    .orElseGet(() -> {
+                        UserDetails newDetails = new UserDetails();
+                        newDetails.setUser(user);
+                        newDetails.setMannerTemperature(BigDecimal.valueOf(36.5)); // 기본값
+                        return userDetailsRepository.save(newDetails);
+                    });
+
+            // 현재 매너온도에서 5도 증가 (최대 99도 제한)
+            BigDecimal currentTemp = userDetails.getMannerTemperature();
+            BigDecimal newTemp = currentTemp.add(BigDecimal.valueOf(5.0));
+
+            // 최대 99도 제한
+            if (newTemp.compareTo(BigDecimal.valueOf(99.0)) > 0) {
+                newTemp = BigDecimal.valueOf(99.0);
+            }
+
+            userDetails.setMannerTemperature(newTemp);
+            userDetailsRepository.save(userDetails);
+
+            System.out.println("매너온도 증가: " + user.getUserId() + " (" + currentTemp + "도 → " + newTemp + "도)");
+        } catch (Exception e) {
+            System.err.println("매너온도 증가 실패: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void increaseMannerTemperatureForSale(String userId) {
+        try {
+            Optional<User> userOpt = userRepository.findByUserId(userId);
+            if (userOpt.isPresent()) {
+                increaseMannerTemperatureForSale(userOpt.get());
+            } else {
+                System.err.println("사용자를 찾을 수 없습니다: " + userId);
+            }
+        } catch (Exception e) {
+            System.err.println("매너온도 증가 실패 (userId: " + userId + "): " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

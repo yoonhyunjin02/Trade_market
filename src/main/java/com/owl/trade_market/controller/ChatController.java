@@ -244,6 +244,8 @@ public class ChatController {
             User currentUser = getCurrentUserOrThrow(authentication);
             chatService.completeTrade(roomId, currentUser);
 
+            userService.increaseMannerTemperatureForSale(currentUser);
+
             return ResponseEntity.ok().body(Map.of(
                     "success", true,
                     "message", "거래가 완료되었습니다."
