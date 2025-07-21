@@ -3,7 +3,10 @@ package com.owl.trade_market.config.auth;
 
 import com.owl.trade_market.entity.AuthProvider;
 import com.owl.trade_market.entity.User;
+import com.owl.trade_market.repository.UserDetailsRepository;
 import com.owl.trade_market.repository.UserRepository;
+import com.owl.trade_market.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -21,9 +24,11 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth2UserRequest -> OAuth2User 변환
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository, @Lazy UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -75,7 +80,33 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
             }
             // 기존 사용자 정보 업데이트
             user.setUserName(name); // 같은 공급자라면, 사용자 이름만 업데이트
-            user = userRepository.save(user); // 변경된 User 엔티티를 DB에 저장
+            user = userRepository.save(user); // 변경된 User 엔티티를 DB에
+
+            // User를 새로 조회한 후 UserDetails 생성
+            System.out.println("기존 OAuth2 사용자 UserDetails 확인 시작: " + user.getUserEmail());
+
+            // User ID를 이용해 새로 조회 (detached 문제 해결)
+            User freshUser = userRepository.findById(user.getId()).orElse(user);
+
+            // 기존 OAuth2 사용자의 UserDetails를 확인하는 로그
+            try {
+                System.out.println("기존 OAuth2 사용자 UserDetails 확인 시작: " + user.getUserEmail());
+                Optional<com.owl.trade_market.entity.UserDetails> existingDetails =
+                        userService.findUserDetailsByUser(user);
+                if (existingDetails.isEmpty()) {
+                    System.out.println("기존 OAuth2 사용자 UserDetails 없음, 생성 시도");
+                    userService.createUserDetails(user);
+                    System.out.println("기존 OAuth2 사용자 UserDetails 생성 완료");
+                } else {
+                    System.out.println("기존 OAuth2 사용자 UserDetails 이미 존재");
+                }
+            } catch (Exception e) {
+                System.err.println("기존 OAuth2 사용자 UserDetails 생성 실패: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+
+
         } else {
             // 새 사용자 생성
             user = new User();
@@ -87,8 +118,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
             String[] parts = email.split("@");
             String localPart = parts.length > 0 ? parts[0] : email;
             user.setUserId(localPart);
+            //User 저장
             user = userRepository.save(user);
+
         }
+
+        // 모든 OAuth2 사용자에 대해 UserDetails 확인 및 생성
+        ensureUserDetailsExists(user);
 
         // 사용자 정보를 attributes에 추가
         Map<String, Object> modifiedAttributes = new HashMap<>(attributes); // 사용자 정보 복사
@@ -102,4 +138,34 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService { // OAuth
                 "sub" // nameAttributeKey
         );
     }
+
+
+    /**
+     * OAuth2 사용자의 UserDetails 존재 여부 확인 및 생성
+     */
+    private void ensureUserDetailsExists(User user) {
+        try {
+            // UserDetails가 이미 있는지 확인
+            Optional<com.owl.trade_market.entity.UserDetails> existingDetails =
+                    userService.findUserDetailsByUser(user);
+
+            if (existingDetails.isPresent()) {
+                System.out.println("OAuth2 사용자의 UserDetails 이미 존재: User ID " + user.getId());
+                return;
+            }
+
+            // UserDetails가 없으면 생성
+            com.owl.trade_market.entity.UserDetails userDetails = userService.createUserDetails(user);
+            if (userDetails != null) {
+                System.out.println("OAuth2 사용자의 UserDetails 생성 성공: User ID " + user.getId());
+            } else {
+                System.err.println("OAuth2 사용자의 UserDetails 생성 실패: User ID " + user.getId());
+            }
+
+        } catch (Exception e) {
+            System.err.println("OAuth2 사용자의 UserDetails 생성 중 오류: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }

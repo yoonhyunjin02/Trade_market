@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로필 수정</title>
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/profile-edit.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+</head>
+<body>
+<!--* 공통 헤더 *-->
+<div th:replace="~{fragments/header :: common-header}"></div>
+
+<main>
+    <section class="profile-edit-section">
+        <div class="profile-edit-container">
+            <!-- 헤더 -->
+            <div class="edit-header">
+                <h1>프로필 수정</h1>
+                <p>당신의 정보를 업데이트하세요</p>
+            </div>
+
+            <!-- 성공/실패 메시지 -->
+            <div th:if="${success}" class="alert alert-success">
+                <span th:text="${success}"></span>
+            </div>
+
+            <div th:if="${error}" class="alert alert-error">
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- 프로필 수정 폼 -->
+            <form th:action="@{/profile/edit}" method="post" th:object="${profileEditDto}" class="edit-form">
+
+                <!-- 기본 정보 섹션 -->
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+
+                    <div class="form-group">
+                        <label for="userName">이름 *</label>
+                        <input type="text"
+                               id="userName"
+                               th:field="*{userName}"
+                               class="form-control"
+                               placeholder="이름을 입력하세요"
+                               required>
+                        <div th:if="${#fields.hasErrors('userName')}" class="error-message">
+                            <span th:errors="*{userName}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userLocation">거주 지역</label>
+                        <input type="text"
+                               id="userLocation"
+                               th:field="*{userLocation}"
+                               class="form-control"
+                               placeholder="예: 서울시 강남구">
+                        <div th:if="${#fields.hasErrors('userLocation')}" class="error-message">
+                            <span th:errors="*{userLocation}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 개인 정보 섹션 -->
+                <div class="form-section">
+                    <h3>개인 정보</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">나이</label>
+                            <input type="number"
+                                   id="age"
+                                   th:field="*{age}"
+                                   class="form-control"
+                                   placeholder="나이"
+                                   min="1"
+                                   max="150">
+                            <div th:if="${#fields.hasErrors('age')}" class="error-message">
+                                <span th:errors="*{age}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">성별</label>
+                            <select id="gender" th:field="*{gender}" class="form-control">
+                                <option value="">선택안함</option>
+                                <option value="MALE">남</option>
+                                <option value="FEMALE">여</option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('gender')}" class="error-message">
+                                <span th:errors="*{gender}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 자기소개 섹션 -->
+                <div class="form-section">
+                    <h3>자기소개</h3>
+
+                    <div class="form-group">
+                        <label for="introduction">소개글</label>
+                        <textarea id="introduction"
+                                  th:field="*{introduction}"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="자신을 소개해보세요. 거래 상대방이 더 쉽게 신뢰할 수 있도록 도와줍니다."
+                                  maxlength="500"></textarea>
+                        <div class="char-count">
+                            <span id="charCount">0</span> / 500자
+                        </div>
+                        <div th:if="${#fields.hasErrors('introduction')}" class="error-message">
+                            <span th:errors="*{introduction}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 현재 매너온도 표시 -->
+                <div class="form-section">
+                    <h3>매너온도</h3>
+                    <div class="manner-temp-display">
+                        <div class="temp-info">
+                            <span class="temp-label">현재 매너온도</span>
+                            <span class="temp-value" th:text="${userDetails.mannerTemperature} + '°C'">36.5°C</span>
+                        </div>
+                        <div class="temp-bar">
+                            <div class="temp-fill" th:style="'width: ' + ${(userDetails.mannerTemperature - 0) / 100 * 100} + '%'"></div>
+                        </div>
+                        <p class="temp-description">매너온도는 다른 사용자들의 평가에 따라 자동으로 조정됩니다.</p>
+                    </div>
+                </div>
+
+                <!-- 버튼 -->
+                <div class="form-actions">
+                    <a th:href="@{/profile}" class="btn btn-cancel">취소</a>
+                    <button type="submit" class="btn btn-primary">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!--* 공통 푸터 *-->
+<div th:replace="~{fragments/footer :: common-footer}"></div>
+
+<script>
+    // 자기소개 글자수 카운터
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('introduction');
+        const charCount = document.getElementById('charCount');
+
+        function updateCharCount() {
+            const length = textarea.value.length;
+            charCount.textContent = length;
+
+            // 글자수가 많아질수록 색상 변경
+            if (length > 400) {
+                charCount.style.color = '#dc3545';
+            } else if (length > 300) {
+                charCount.style.color = '#ffc107';
+            } else {
+                charCount.style.color = '#6c757d';
+            }
+        }
+
+        // 초기 카운트 설정
+        updateCharCount();
+
+        // 입력할 때마다 카운트 업데이트
+        textarea.addEventListener('input', updateCharCount);
+    });
+</script>
+</body>
+</html>

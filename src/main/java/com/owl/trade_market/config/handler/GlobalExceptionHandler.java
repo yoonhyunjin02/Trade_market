@@ -2,9 +2,12 @@ package com.owl.trade_market.config.handler;
 
 import com.owl.trade_market.config.exception.RegistrationException;
 import com.owl.trade_market.config.exception.ResourceNotFoundException;
+import com.owl.trade_market.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,15 +22,28 @@ public class GlobalExceptionHandler {
      * 회원가입 예외를 처리
      */
     @ExceptionHandler(RegistrationException.class)
-    public String handleRegistrationException(RegistrationException ex, RedirectAttributes redirectAttributes) {
-        log.warn("회원가입 실패: {}", ex.getMessage());
-        
-        // 예외 객체에서 에러 메세지, userDto 꺼내서 Form으로 보내기
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-        redirectAttributes.addFlashAttribute("userDto", ex.getUserDto());
+    public String handleRegistrationException(RegistrationException ex,
+                                              RedirectAttributes redirectAttributes) {
 
+        UserDto dto = ex.getUserDto();
+        redirectAttributes.addFlashAttribute("userDto", dto);
+
+        // BindingResult 생성 (모델명 'userDto' 와 일치)
+        BindingResult br = new BeanPropertyBindingResult(dto, "userDto");
+
+        String msg = ex.getMessage();
+        if (msg.contains("아이디")) {
+            br.rejectValue("userId", "userId.duplicate", msg);
+        } else if (msg.contains("사용자명")) {
+            br.rejectValue("userName", "userName.duplicate", msg);
+        } else {
+            br.reject("registration.error", msg); // 글로벌 에러
+        }
+
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDto", br);
         return "redirect:/register";
     }
+
 
     /**
      * 리소스를 찾지 못했을 때의 예외를 처리합니다.

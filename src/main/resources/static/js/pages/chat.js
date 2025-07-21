@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentAssistantId = '';
     let socket = null;
     let isConnected = false;
+    window.isBotChat = false;
 
     // 초기화
     init();
@@ -46,9 +47,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 const roomId = this.getAttribute("data-room-id");
                 const partnerName = this.getAttribute("data-partner-name");
 
-                selectChatRoom(roomId, partnerName);
+                console.log("✅ chat-item 클릭됨!", roomId, partnerName);
+
+                // 챗봇일 경우 일반 채팅방 로직을 건너뛰고 openBotChat 실행
+                if (roomId === "BOT_CHAT") {
+                    console.log("🤖 챗봇 클릭 → openBotChat 실행");
+                    openBotChat();
+                } else {
+                    console.log("💬 일반 채팅 클릭 → selectChatRoom 실행");
+                    selectChatRoom(roomId, partnerName);
+                }
             });
         });
+
 
         // 메시지 전송 (폼 제출)
         if (messageForm) {
@@ -462,6 +473,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 채팅방 선택
     function selectChatRoom(roomId, partnerName) {
+        isBotChat = false; // 일반 채팅 모드
+        toggleChatRoomButtons(true); // 오른쪽 버튼 표시
+
         if (roomId === currentRoomId) {
             return; // 이미 선택된 채팅방
         }
@@ -496,6 +510,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // 상대방 이름 가져오기
             const partnerName = selectedItem.getAttribute("data-partner-name");
             currentAssistantId = partnerName;
+        }
+
+        // 일반 채팅이면 partner-info UI 복구 (AI 챗봇일 땐 유지)
+        if (roomId !== "BOT_CHAT") {
+            document.getElementById("partner-info").innerHTML = `
+                <span class="partner-name" id="partner-name"></span>
+            `;
         }
 
         // 대화 영역 표시
@@ -610,14 +631,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 메시지 전송
     function sendMessage() {
-        const content = messageInput?.value.trim();
+        console.log("📝 sendMessage 실행됨! isBotChat =", window.isBotChat);
 
-        if (!content || !currentRoomId) {
+        const content = messageInput?.value.trim();
+        if (!content) return;
+
+        // ✅ 챗봇 모드
+        if (isBotChat) {
+            console.log("🤖 챗봇 모드에서 전송");
+
+            if (!botSocket || botSocket.readyState !== WebSocket.OPEN) {
+                showErrorMessage("챗봇 연결이 끊겼습니다. 새로고침 후 다시 시도해주세요.");
+                return;
+            }
+
+            // 1) 내 질문을 UI에 먼저 표시
+            addBotMessage(content);
+
+            // 2) 챗봇 WebSocket으로 질문 전송
+            botSocket.send(content);
+
+            // 3) 입력창 초기화
+            messageInput.value = "";
+            if (charCount) charCount.textContent = "0";
+
+            return; // ✅ 챗봇 모드면 일반 채팅 로직 스킵
+        }
+
+        // ✅ 일반 채팅 모드
+        if (!currentRoomId) {
+            console.warn("💬 일반 채팅방이 선택되지 않음 → 전송 불가");
             return;
         }
 
         if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
-            showErrorMessage('연결이 끊어졌습니다. 페이지를 새로고침해주세요.');
+            showErrorMessage("연결이 끊어졌습니다. 페이지를 새로고침해주세요.");
             return;
         }
 
@@ -627,7 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // 전송 버튼 비활성화
         if (sendBtn) {
             sendBtn.disabled = true;
-            sendBtn.textContent = '전송중...';
+            sendBtn.textContent = "전송중...";
         }
 
         const messageData = {
@@ -642,12 +690,10 @@ document.addEventListener("DOMContentLoaded", function () {
             socket.send(JSON.stringify(messageData));
 
             // 입력창 초기화
-            messageInput.value = '';
-            if (charCount) {
-                charCount.textContent = '0';
-            }
+            messageInput.value = "";
+            if (charCount) charCount.textContent = "0";
 
-            // 내 메시지를 즉시 UI에 추가 (낙관적 업데이트)
+            // 낙관적 UI 업데이트
             const optimisticMessage = {
                 ...messageData,
                 sentAt: formatCurrentTime()
@@ -656,14 +702,13 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollToBottom();
 
         } catch (error) {
+          
             console.error('Failed to send message:', error);
             showErrorMessage('메시지 전송에 실패했습니다.');
-
         } finally {
-            // 전송 버튼 복원
             if (sendBtn) {
                 sendBtn.disabled = false;
-                sendBtn.textContent = '전송';
+                sendBtn.textContent = "전송";
             }
         }
     }
@@ -953,6 +998,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
+
     function removeNoMessagesPlaceholder() {
         if (!messagesContainer) return;
 
@@ -962,6 +1008,33 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('No messages placeholder removed');
         }
     }
+
+    // 채팅방 상단 헤더 챗봇 버튼 숨기기
+    window.toggleChatRoomButtons = function(show) {
+        // 거래완료 버튼
+        const completeTradeBtn = document.getElementById('completeTradeBtn');
+        if (completeTradeBtn) {
+            completeTradeBtn.style.display = show ? 'inline-flex' : 'none';
+        }
+
+        // 기존 설정 버튼
+        const settingsBtn = document.getElementById('chatSettingsBtn');
+        if (settingsBtn) {
+            settingsBtn.style.display = show ? 'inline-flex' : 'none';
+        }
+
+        // 더보기 버튼
+        const moreOptionsBtn = document.querySelector('.chat-more-options');
+        if (moreOptionsBtn) {
+            moreOptionsBtn.style.display = show ? 'inline-flex' : 'none';
+        }
+
+        // 빠른 채팅방 나가기 버튼
+        const quickLeaveBtn = document.getElementById('quickLeaveBtn');
+        if (quickLeaveBtn) {
+            quickLeaveBtn.style.display = show ? 'inline-flex' : 'none';
+        }
+    };
 
     // 페이지 언로드 시 WebSocket 연결 해제
     window.addEventListener('beforeunload', function () {
