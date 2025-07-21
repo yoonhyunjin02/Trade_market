@@ -23,23 +23,22 @@ public class FaqLoader {
         }
     }
 
-    public static String findAnswer(String question) {
-        for (FaqEntry entry : faqList) {
-            for (String keyword : entry.getKeywords()) {
-                if (question.contains(keyword)) {
-                    return entry.getAnswer();
-                }
-            }
-        }
-        return null; // 매칭되는 FAQ 없으면 null
+    /** 버튼 질문과 완전히 일치하는 FAQ 응답 반환 */
+    public static String findFaqByQuestion(String exactQuestion) {
+        return faqList.stream()
+                .filter(entry -> entry.getQuestion().equals(exactQuestion))
+                .map(FaqEntry::getAnswer)
+                .findFirst()
+                .orElse(null);
     }
 
     public static class FaqEntry {
-        private List<String> keywords;
+        private String question;
         private String answer;
 
-        public List<String> getKeywords() { return keywords; }
-        public void setKeywords(List<String> keywords) { this.keywords = keywords; }
+        public String getQuestion() { return question; }
+        public void setQuestion(String question) { this.question = question; }
+
         public String getAnswer() { return answer; }
         public void setAnswer(String answer) { this.answer = answer; }
     }
