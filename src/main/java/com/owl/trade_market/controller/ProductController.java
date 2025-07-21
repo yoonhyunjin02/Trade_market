@@ -276,9 +276,15 @@ public class ProductController {
                             RedirectAttributes redirectAttributes) {
 
         User user = getCurrentUser(session, oauth2User);
+        model.addAttribute("googleMapsApiKey",googleMapsApiKey);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
-            return "redirect:/users/login";
+            return "redirect:/login";
+        }
+
+        if (user.getUserLocation() == null || user.getUserLocation().isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "상품 등록은 '내 동네 설정'이 필요합니다.");
+            return "pages/location";
         }
 
         // FlashAttribute나 Session에 남은 이전 productDto 제거
@@ -319,6 +325,10 @@ public class ProductController {
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";
+        }
+        if (user.getUserLocation() == null || user.getUserLocation().isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "상품 등록은 '내 동네 설정'이 필요합니다.");
+            return "redirect:/pages/location";
         }
 
         // 유효성 실패 시에도 categories를 다시 세팅해야 함
