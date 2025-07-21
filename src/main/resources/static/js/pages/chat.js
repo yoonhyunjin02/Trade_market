@@ -476,6 +476,8 @@ document.addEventListener("DOMContentLoaded", function () {
         isBotChat = false; // 일반 채팅 모드
         toggleChatRoomButtons(true); // 오른쪽 버튼 표시
 
+        showFaqButtons(false); // FAQ 버튼 숨기기
+
         if (roomId === currentRoomId) {
             return; // 이미 선택된 채팅방
         }
@@ -998,6 +1000,10 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
+    window.showFaqButtons = function(show) {
+        const faqContainer = document.getElementById("bot-faq-buttons");
+        if (faqContainer) {
+            faqContainer.style.display = show ? "flex" : "none";
 
     function removeNoMessagesPlaceholder() {
         if (!messagesContainer) return;
@@ -1006,6 +1012,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (placeholder) {
             placeholder.remove();
             console.log('No messages placeholder removed');
+
         }
     }
 
