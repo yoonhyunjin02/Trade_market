@@ -9,7 +9,9 @@ import com.owl.trade_market.entity.User;
 import com.owl.trade_market.security.CustomUserDetails;
 import com.owl.trade_market.service.ChatService;
 import com.owl.trade_market.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -93,10 +95,14 @@ public class ChatController {
             return "redirect:/chats";
         }
 
+        boolean isSeller = currentUser.getUserId()
+                        .equals(selectedChatRoom.getSellerId());
+
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("allChatRooms", allChatRooms);
         model.addAttribute("unreadChatRooms", unreadChatRooms);
         model.addAttribute("selectedChatRoom", selectedChatRoom);
+        model.addAttribute("isSeller", isSeller); // 현재 사용자가 판매자인지 여부
 
         return "pages/chat";
     }
@@ -225,5 +231,38 @@ public class ChatController {
         }
 
         throw new IllegalStateException("지원하지 않는 인증 타입: " + principal.getClass().getName());
+    }
+
+    /**
+     * 거래완료 처리
+     */
+    @PostMapping("/api/chats/{roomId}/complete")
+    @ResponseBody
+    public ResponseEntity<?> completeTrade(@PathVariable Long roomId,
+                                           Authentication authentication) {
+        try {
+            User currentUser = getCurrentUserOrThrow(authentication);
+            chatService.completeTrade(roomId, currentUser);
+
+            return ResponseEntity.ok().body(Map.of(
+                    "success", true,
+                    "message", "거래가 완료되었습니다."
+            ));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "message", "거래 완료 처리 중 오류가 발생했습니다."
+            ));
+        }
     }
 }
