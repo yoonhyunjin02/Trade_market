@@ -131,7 +131,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-
     @Transactional
     public void markAsSold(Long productId) {
         Product product = productRepository.findById(productId)
