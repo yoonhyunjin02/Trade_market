@@ -49,12 +49,6 @@ public class ChatController {
         // 사용자의 채팅방 목록 조회
         List<ChatRoomListDto> allChatRooms = chatService.findRoomsForUser(currentUser);
 
-        // 채팅방이 있으면 가장 최근 채팅방으로 리다이렉션
-        if (!allChatRooms.isEmpty()) {
-            Long latestRoomId = allChatRooms.get(0).getChatRoomId();
-            return "redirect:/chats/" + latestRoomId;
-        }
-
         // 채팅방이 없으면 빈 채팅 페이지 표시
         List<ChatRoomListDto> unreadChatRooms = chatService.findUnreadRoomsForUser(currentUser);
 
