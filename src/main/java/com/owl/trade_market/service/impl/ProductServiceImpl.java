@@ -131,7 +131,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-
     @Transactional
     public void markAsSold(Long productId) {
         Product product = productRepository.findById(productId)
@@ -145,4 +144,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findBySeller(User seller, Sort sort) {
         return productRepository.findBySeller(seller, sort);
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Product> findByIdWithImages(Long id) {
+        return productRepository.findByIdWithImages(id);
+    }
+
 }

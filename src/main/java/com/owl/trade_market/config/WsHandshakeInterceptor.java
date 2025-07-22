@@ -17,7 +17,7 @@ public class WsHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) throws Exception {
 
-        // ✅ 로그인 유저 정보 추출
+        // 로그인 유저 정보 추출
         Principal principal = request.getPrincipal();
 
         if (principal != null) {
@@ -28,11 +28,11 @@ public class WsHandshakeInterceptor implements HandshakeInterceptor {
             // WebSocket 세션 Attributes에 userId 저장
             attributes.put("userId", username);
 
-            System.out.println("✅ WebSocket Handshake - 로그인 사용자: " + username);
+            System.out.println("WebSocket Handshake - 로그인 사용자: " + username);
         } else {
             // 비로그인 사용자는 guest로 처리
             attributes.put("userId", "guest");
-            System.out.println("✅ WebSocket Handshake - 게스트 접속");
+            System.out.println("WebSocket Handshake - 게스트 접속");
         }
         return true;
     }

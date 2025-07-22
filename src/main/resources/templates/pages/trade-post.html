@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head :: common-head('상품 상세')"></th:block>
+    <link rel="stylesheet" th:href="@{/css/pages/trade-post.css}">
+</head>
+<body>
+
+<!-- Header Fragment -->
+<header th:replace="fragments/header :: header"></header>
+
+<main class="product-detail">
+    <!-- 뒤로가기 -->
+    <div class="back-nav">
+        <button class="back-btn" onclick="window.location.href='/products'">← 뒤로가기</button>
+    </div>
+
+    <div class="product-container">
+        <!-- 상품 이미지 -->
+        <div class="product-image">
+            <!-- 이미지가 있으면 첫 번째 이미지 -->
+            <th:block th:if="${product.images != null and !#lists.isEmpty(product.images)}">
+                <img th:src="${product.images[0].image}"
+                     th:alt="${product.title}"
+                     alt="상품 이미지">
+            </th:block>
+
+            <!-- 이미지가 없으면 기본 이미지 -->
+            <th:block th:if="${product.images == null or #lists.isEmpty(product.images)}">
+                <img src="/images/default-product.jpg"
+                     th:alt="${product.title}"
+                     alt="기본 상품 이미지">
+            </th:block>
+        </div>
+
+        <!-- 상품 정보 -->
+        <div class="product-info">
+            <!-- 판매자 정보와 채팅하기 버튼 -->
+            <div class="seller-section">
+                <div class="seller-info">
+                    <div class="seller-name" th:text="${product.seller.userName}">판매자명</div>
+                    <div class="seller-location" th:text="${product.seller.userLocation}">판매자 위치</div>
+                </div>
+                <div class="action-buttons" th:unless="${isOwner}">
+                    <!-- 채팅하기 버튼 -> 채팅방 생성/이동 폼으로 변경 -->
+                    <form th:action="@{/chats/create}" method="post" style="margin: 0;">
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                        <button type="submit" class="btn-chat">채팅하기</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 구분선 -->
+            <div class="divider"></div>
+
+            <!-- 제목과 가격, 통계 -->
+            <div class="title-price-section">
+                <div class="title-info">
+                    <h1 class="product-title" th:text="${product.title}">상품 제목</h1>
+                </div>
+                <div class="price-stats">
+                    <div class="price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' 원'">가격</div>
+                    <div class="stats">
+                        <span>조회 <span th:text="${product.viewCount}">0</span></span>
+                        <span>채팅 <span th:text="${product.chatCount}">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상품 설명 -->
+            <div class="product-description">
+                <p th:text="${product.description}">상품 설명</p>
+            </div>
+
+            <!-- 거래 희망 장소 -->
+            <div class="trade-location">
+                <span class="label">희망 거래장소 · </span>
+                <span class="location" th:text="${product.location}">거래장소</span>
+                <div id="map" class="map-placeholder">지도</div>
+            </div>
+            <!-- 하단 관리 링크 -->
+            <div class="bottom-actions">
+                <div class="action-links" th:if="${isOwner}">
+                    <!-- 삭제하기 폼 -->
+                    <form th:action="@{'/products/' + ${product.id} + '/delete'}"
+                          method="post"
+                          style="display: inline;"
+                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit" class="delete-btn">삭제하기</button>
+                    </form>
+                    <span> | </span>
+                    <!-- 수정하기 링크 -->
+                    <a th:href="@{'/products/' + ${product.id} + '/edit'}" class="edit-link">수정하기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Fragment -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script th:inline="javascript">
+    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
+    const productLocation = /*[[${product.location}]]*/ "";
+</script>
+<script src="/js/pages/trade_post.js"></script>
+
+</body>
+</html>

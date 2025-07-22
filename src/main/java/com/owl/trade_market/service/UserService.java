@@ -43,4 +43,10 @@ public interface UserService {
 
     // UserDetails 안전한 조회 또는 생성 (추가)
     UserDetails getOrCreateUserDetails(User user);
+
+    // 판매 완료 시 매너온도 증가 (5도 증가)
+    void increaseMannerTemperatureForSale(User user);
+
+    //사용자 ID로 매너온도 증가
+    void increaseMannerTemperatureForSale(String userId);
 }
