@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head :: common-head(${productId != null ? '상품 수정' : '상품 등록'})"></th:block>
+    <th:block th:replace="fragments/head :: common-head(${productId} != null ? '상품 수정' : '상품 등록')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/write.css}">
 </head>
 <body>
@@ -12,8 +12,9 @@
     <section class="write-section">
         <div class="write-container">
             <!-- 상품 등록/수정 폼 -->
-            <form th:action="${productId != null ? '/products/' + productId + '/edit' : '/products/new'}"
+            <form th:action="@{${productId != null} ? '/products/' + productId + '/edit' : '/products/new'}"
                   method="post"
+                  enctype="multipart/form-data"
                   th:object="${productDto}"
                   class="write-form">
 
@@ -27,6 +28,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 실제 파일 업로드 필드 -->
+                    <input type="file"
+                           name="imageFile"
+                           accept="image/*"
+                           style="margin-top: 10px;">
 
                     <!-- 제목 + 가격 영역 -->
                     <div class="title-price-section">
