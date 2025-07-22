@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head :: common-head(${productId != null ? '상품 수정' : '상품 등록'})"></th:block>
+    <th:block th:replace="fragments/head :: common-head(${productId} != null ? '상품 수정' : '상품 등록')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/write.css}">
 </head>
 <body>
@@ -12,8 +12,9 @@
     <section class="write-section">
         <div class="write-container">
             <!-- 상품 등록/수정 폼 -->
-            <form th:action="${productId != null ? '/products/' + productId + '/edit' : '/products/new'}"
+            <form th:action="@{${productId != null} ? '/products/' + productId + '/edit' : '/products/new'}"
                   method="post"
+                  enctype="multipart/form-data"
                   th:object="${productDto}"
                   class="write-form">
 
@@ -21,12 +22,21 @@
                 <div class="top-section">
                     <!-- 이미지 업로드 영역 -->
                     <div class="image-upload-section">
-                        <div class="image-upload-area">
-                            <div class="upload-placeholder">
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <div class="upload-placeholder" id="uploadPlaceholder">
                                 <div class="camera-icon">📷</div>
                             </div>
+                            <img id="previewImage" class="preview-image" style="display: none;">
                         </div>
+                        <div class="file-name-display" id="fileNameDisplay">파일 선택</div>
                     </div>
+
+                    <!-- 실제 파일 업로드 필드 -->
+                    <input type="file"
+                           th:field="*{imageFile}"
+                           accept="image/*"
+                           class="hidden-file-input"
+                           id="hiddenFileInput">
 
                     <!-- 제목 + 가격 영역 -->
                     <div class="title-price-section">
@@ -52,12 +62,12 @@
                                     name="categoryName"
                                     th:classappend="${#fields.hasErrors('categoryName') ? 'error' : ''}">
 
-                                <!-- ✅ placeholder (기본 선택됨) -->
+                                <!-- placeholder (기본 선택됨) -->
                                 <option value=""
                                         th:selected="${#strings.isEmpty(productDto.categoryName)}"
                                         disabled>카테고리를 선택해주세요</option>
 
-                                <!-- ✅ DB에서 넘어온 카테고리 목록 -->
+                                <!-- DB에서 넘어온 카테고리 목록 -->
                                 <option th:each="category : ${categories}"
                                         th:value="${category.name}"
                                         th:text="${category.name}"
@@ -65,13 +75,11 @@
                                 </option>
                             </select>
 
-                            <!-- ✅ 에러 메시지 -->
+                            <!-- 에러 메시지 -->
                             <div class="error-message"
                                  th:if="${#fields.hasErrors('categoryName')}"
                                  th:errors="*{categoryName}"></div>
                         </div>
-
-
 
                         <!-- 가격 -->
                         <div class="form-group">

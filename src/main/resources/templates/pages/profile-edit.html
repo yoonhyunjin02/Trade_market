@@ -46,18 +46,6 @@
                             <span th:errors="*{userName}"></span>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="userLocation">거주 지역</label>
-                        <input type="text"
-                               id="userLocation"
-                               th:field="*{userLocation}"
-                               class="form-control"
-                               placeholder="예: 서울시 강남구">
-                        <div th:if="${#fields.hasErrors('userLocation')}" class="error-message">
-                            <span th:errors="*{userLocation}"></span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 개인 정보 섹션 -->

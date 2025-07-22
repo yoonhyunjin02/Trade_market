@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ProductDto {
 
@@ -24,6 +25,8 @@ public class ProductDto {
     @NotBlank(message = "카테고리 선택은 필수입니다.")
     private String categoryName;
 
+    // 이미지 추가
+    private MultipartFile imageFile;
 
     private String location;
 
@@ -79,6 +82,14 @@ public class ProductDto {
     public String getLocation() {return location;}
 
     public void setLocation(String location) {this.location = location;}
+
+    public MultipartFile getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(MultipartFile imageFile) {
+        this.imageFile = imageFile;
+    }
 
     @Override
     public String toString() {

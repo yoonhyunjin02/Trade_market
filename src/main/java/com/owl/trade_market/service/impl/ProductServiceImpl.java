@@ -29,14 +29,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product(seller, title, description, price, location, category);
 
         // 상품을 먼저 저장
-        Product savedProduct = productRepository.save(product);
-
-        // 기본 이미지 엔티티 생성 및 추가
-        Image defaultImage = new Image(savedProduct, "/images/default-product.jpg");
-        savedProduct.getImages().add(defaultImage);
-
-        // 변경사항 저장 (cascade 옵션으로 Image도 함께 저장됨)
-        return productRepository.save(savedProduct);
+        return productRepository.save(product);
     }
 
     @Override
@@ -125,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
                                         Boolean availableOnly,
                                         Pageable pageable) {
         String kw = (keyword == null || keyword.isBlank()) ? null : keyword.trim();
-        return productRepository.filterProducts(
+        return productRepository.filterProductsWithImages(
                 kw, category, minPrice, maxPrice, location, availableOnly, pageable
         );
     }
@@ -144,4 +137,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findBySeller(User seller, Sort sort) {
         return productRepository.findBySeller(seller, sort);
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Product> findByIdWithImages(Long id) {
+        return productRepository.findByIdWithImages(id);
+    }
+
 }

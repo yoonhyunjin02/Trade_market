@@ -25,7 +25,12 @@ public class Category {
     public Category() {
     }
 
-
+    public Category(Long id, String name, int count, List<Product> products) {
+        this.id = id;
+        this.name = name;
+        this.count = count;
+        this.products = products;
+    }
     //Getter and Setters
 
     public Long getId() {

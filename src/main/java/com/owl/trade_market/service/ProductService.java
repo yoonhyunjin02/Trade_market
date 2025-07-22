@@ -55,4 +55,6 @@ public interface ProductService {
 
     // 상품을 판매완료 상태로 변경
     void markAsSold(Long productId);
+
+    Optional<Product> findByIdWithImages(Long id);
 }

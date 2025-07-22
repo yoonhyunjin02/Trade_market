@@ -2,10 +2,13 @@ package com.owl.trade_market.controller;
 
 import com.owl.trade_market.dto.ProductDto;
 import com.owl.trade_market.entity.Category;
+
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.service.CategoryService;
+import com.owl.trade_market.service.ImageUploadService;
 import com.owl.trade_market.service.ProductService;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 import java.util.*;
 
 @Controller
@@ -30,6 +34,9 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ImageUploadService imageUploadService;
 
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey;
@@ -368,6 +375,24 @@ public class ProductController {
                 categoryService.increaseCategoryCount(category);
             }
 
+            // 이미지 업로드 처리 추가
+            if (productDto.getImageFile() != null) {
+                System.out.println("✅ 이미지 파일 넘어옴: " + productDto.getImageFile().getOriginalFilename());
+                System.out.println("✅ 이미지 파일 크기: " + productDto.getImageFile().getSize());
+            } else {
+                System.out.println("❌ 이미지 파일이 null 입니다!");
+            }
+
+            // 이미지 업로드 처리 추가
+            if (productDto.getImageFile() != null && !productDto.getImageFile().isEmpty()) {
+                try {
+                    imageUploadService.uploadProductImage(product.getId(), productDto.getImageFile());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("error", "이미지 업로드 중 오류가 발생했습니다.");
+                    return "redirect:/products/new";
+                }
+            }
+
             redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 등록되었습니다.");
             return "redirect:/products/" + product.getId();
 
@@ -390,14 +415,8 @@ public class ProductController {
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 
         try {
-            Optional<Product> productOpt = productService.findById(id);
-
-            if (productOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/products";
-            }
-
-            Product product = productOpt.get();
+            Product product = productService.findByIdWithImages(id)
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
 
             // 조회수 증가
             productService.increaseViewCount(id);
@@ -405,8 +424,7 @@ public class ProductController {
             model.addAttribute("product", product);
 
             // 현재 사용자가 판매자인지 확인
-            boolean isOwner = user != null &&
-                    user.getId().equals(product.getSeller().getId());
+            boolean isOwner = (user != null && user.getId().equals(product.getSeller().getId()));
             model.addAttribute("isOwner", isOwner);
 
         } catch (Exception e) {
@@ -416,6 +434,7 @@ public class ProductController {
 
         return "pages/trade-post";
     }
+
 
     //상품 수정 폼 페이지
     @GetMapping("/{id}/edit")

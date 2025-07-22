@@ -60,7 +60,40 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("availableOnly") Boolean availableOnly,
             Pageable pageable
     );
+
+    @Query("""
+    SELECT DISTINCT p FROM Product p
+    LEFT JOIN FETCH p.images
+    WHERE
+        (:keyword IS NULL OR :keyword = '' OR
+            LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+         OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+         OR LOWER(p.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        )
+    AND (:category IS NULL OR p.category = :category)
+    AND (:minPrice IS NULL OR p.price >= :minPrice)
+    AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+    AND (:location IS NULL OR p.location = :location)
+    AND (:availableOnly IS NULL OR p.sold = false)
+    """)
+    Page<Product> filterProductsWithImages(
+            @Param("keyword") String keyword,
+            @Param("category") Category category,
+            @Param("minPrice") Integer minPrice,
+            @Param("maxPrice") Integer maxPrice,
+            @Param("location") String location,
+            @Param("availableOnly") Boolean availableOnly,
+            Pageable pageable
+    );
+
     // 판매자별 상품 조회 (프로필 페이지용)
     List<Product> findBySeller(User seller, Sort sort);
     List<Product> findBySeller(User seller);
+
+    @Query("""
+    SELECT p FROM Product p
+    LEFT JOIN FETCH p.images
+    WHERE p.id = :id
+""")
+    Optional<Product> findByIdWithImages(@Param("id") Long id);
 }

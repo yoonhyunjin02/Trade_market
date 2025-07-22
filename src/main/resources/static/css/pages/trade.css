@@ -52,7 +52,7 @@
   object-fit: cover;
 }
 
-/* ===== 필터 & 그리드 레이아웃 정렬 ===== */
+/* ===== 필터 & 그리드 레이아웃 ===== */
 .trade-content-container {
   display: flex;
   justify-content: center;
@@ -61,6 +61,7 @@
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  align-items: flex-start;
 }
 
 /* ===== 필터 영역 ===== */
@@ -68,82 +69,125 @@
   width: 250px;
   flex-shrink: 0;
   background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px 20px;
   font-size: 14px;
   color: #111;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 20px;
 }
 
 .trade-filter aside {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
-/* ===== 필터 헤더 (초기화 포함) ===== */
+/* ===== 필터 헤더 ===== */
 .filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.filter-header h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
 }
 
 .reset-filter {
-  font-size: 12px;
+  font-size: 13px;
   color: #ff6f0e;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
-/* ===== 필터 제목 (h4) ===== */
-.trade-filter h4 {
-  font-size: 25px;            /* ✅ 통일된 제목 크기 */
-  font-weight: 700;
-  color: #111;
-  margin: 20px 0 12px;        /* ✅ 그룹 간 위아래 간격 */
+.reset-filter:hover {
+  background-color: #fff5f0;
+  color: #e55a00;
 }
 
-/* ===== 필터 항목 기본 스타일 ===== */
+/* ===== 필터 그룹 제목 ===== */
+.trade-filter h4:not(.filter-header h4) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+  margin: 24px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f3f4;
+  position: relative;
+}
+
+.trade-filter h4:not(.filter-header h4)::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #ff6f0e;
+  border-radius: 1px;
+}
+
+/* ===== 필터 항목 ===== */
 .trade-filter label {
   display: flex;
   align-items: center;
-  gap: 8px;                   /* ✅ 라디오/체크박스와 글자 간격 */
-  font-size: 20px;            /* ✅ 항목 글자 크기 */
-  color: #333;
+  gap: 10px;
+  font-size: 14px;
+  color: #495057;
   cursor: pointer;
-  margin-bottom: 10px;        /* ✅ 항목 간 간격 */
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
-/* 라디오/체크박스 크기 통일 */
+.trade-filter label:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* ===== 라디오/체크박스 ===== */
 .trade-filter input[type="radio"],
 .trade-filter input[type="checkbox"] {
-  transform: scale(1.3);      /* ✅ 버튼 크기 키움 */
-  accent-color: #ff6f0e;      /* ✅ 오렌지 포인트 색상 */
+  width: 16px;
+  height: 16px;
+  accent-color: #ff6f0e;
   cursor: pointer;
 }
 
-/* ===== 필터 그룹 전체 간격 ===== */
+/* ===== 필터 그룹 ===== */
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;                   /* ✅ 같은 그룹 내 항목 간격 */
-  margin-bottom: 20px;        /* ✅ 그룹과 그룹 사이 간격 */
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 0 4px;
 }
 
-/* ===== 가격 입력창 영역 ===== */
+/* ===== 가격 입력창 - 세로 배치 ===== */
 .price-inputs {
   display: flex;
-  align-items: center;
-  gap: 12px;                  /* ✅ "-"와의 간격 */
-  margin: 12px 0;             /* ✅ 위/아래 여백 */
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 0 8px;
 }
 
-/* 가격 입력창 통일 */
 .price-inputs input {
-  width: 120px;               /* ✅ 넓이 통일 */
+  width: 100%;
   padding: 8px 10px;
-  font-size: 15px;            /* ✅ 글자 크기 */
+  font-size: 15px;
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fff;
@@ -152,16 +196,35 @@
   box-sizing: border-box;
 }
 
+.price-inputs input:focus {
+  outline: none;
+  border-color: #ff6f0e;
+}
+
+.price-inputs input::placeholder {
+  color: #adb5bd;
+}
+
+/* 가격 구분자 */
+.price-inputs > span,
+.price-inputs > div {
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  margin: -4px 0;
+}
+
 /* ===== 적용하기 버튼 ===== */
 .price-apply-btn {
   background: none;
   color: #444;
   border: none;
-  font-size: 15px;            /* ✅ 버튼 글자 크기 */
+  font-size: 15px;
   text-decoration: underline;
   cursor: pointer;
-  transition: color 0.2s ease;
-  margin-bottom: 20px;        /* ✅ 필터 그룹과의 간격 */
+  margin-bottom: 20px;
+  padding: 0;
 }
 
 .price-apply-btn:hover {
@@ -179,26 +242,42 @@
   margin-bottom: 32px;
 }
 
-.hidden-item {
-  display: none;
+/* ===== 상품 그리드 ===== */
+.product-grid {
+  flex: 1;
+  min-width: 0;
 }
 
-.toggle-btn {
-  background: none;
-  border: none;
-  color: #ff6f0e;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 8px;
-  text-decoration: underline;
-}
-
-.toggle-btn:hover {
-  color: #e65c00;
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .item-grid > div {
   display: contents;
+}
+
+/* ===== 숨김 기능 ===== */
+.hidden-item {
+  display: none;
+}
+
+/* ===== 더보기 버튼 ===== */
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 13px;
+  margin: 8px 12px 0 12px;
+  padding: 6px 0;
+  text-decoration: underline;
+}
+
+.toggle-btn:hover {
+  color: #ff6f0e;
 }
 
 /* ===== 플로팅 버튼 ===== */
@@ -223,16 +302,95 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
 .floating-btn:hover {
   background-color: #e65c00;
 }
 
+/* ===== 검색 결과 없음 ===== */
 .no-results {
+  text-align: center;
+  color: #868e96;
+  font-size: 1.2rem;
+  padding: 60px 40px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin: 40px 0;
+}
+
+/* ===== 스크롤 센티넬 ===== */
+#scroll-sentinel {
+  height: 20px;
+  margin: 20px 0;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 1024px) {
+  .trade-content-container {
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+  }
+
+  .trade-filter {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-inner {
+    flex-direction: column;
     text-align: center;
-    color: #888;
-    font-size: 1.2rem;
-    padding: 40px 0;
+    padding: 40px 20px;
+  }
+
+  .banner-inner .text h1 {
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .banner-inner .text p {
+    font-size: 18px;
+  }
+
+  .banner-inner .image img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+
+  .trade-filter {
+    padding: 20px 16px;
+  }
+
+  .price-inputs input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .popular-items h2 {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .floating-btn {
+    width: 80px;
+    height: 80px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 14px;
+  }
 }
