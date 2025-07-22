@@ -197,9 +197,9 @@
 }
 
 .partner-name {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
-    color: #333;
+    color: #ff6f00;
     margin: 0;
 }
 
@@ -866,7 +866,8 @@
     }
 
     .partner-name {
-        font-size: 15px;
+        font-size: 20px;
+        color: #ff6f00;
     }
 
     .btn-complete-trade {
