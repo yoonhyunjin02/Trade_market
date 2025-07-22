@@ -17,6 +17,7 @@ public class TradeMarketApplication {
 		System.setProperty("GOOGLE_API_KEY", dotenv.get("GOOGLE_API_KEY"));
 		System.setProperty("AWS_ACCESS_KEY", dotenv.get("AWS_ACCESS_KEY"));
 		System.setProperty("AWS_SECRET_KEY", dotenv.get("AWS_SECRET_KEY"));
+		System.setProperty("SERVER_BASE_URL", dotenv.get("SERVER_BASE_URL"));
 
 		SpringApplication.run(TradeMarketApplication.class, args);
 	}
