@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class ImageUploadService {
@@ -26,26 +28,64 @@ public class ImageUploadService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * 상품 이미지 업로드 & DB 저장
+     */
     @Transactional
     public Image uploadProductImage(Long productId, MultipartFile multipartFile) throws IOException {
-        // ✅ 1. 상품 조회
+
+        System.out.println("📸 [uploadProductImage] START 호출됨 productId=" + productId);
+
+        /* 1) 상품 조회 ------------------------------------------------------- */
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> {
+                    System.err.println("❌ productRepository.findById 실패! ID=" + productId);
+                    return new IllegalArgumentException("상품을 찾을 수 없습니다. ID = " + productId);
+                });
+        System.out.println("✅ product 조회 성공: title=" + product.getTitle() + ", seller=" + product.getSeller().getUserName());
 
-        // ✅ 2. MultipartFile → 임시 파일 변환
+        /* 2) MultipartFile → 임시 파일 변환 ---------------------------------- */
         String originalFilename = multipartFile.getOriginalFilename();
-        File tempFile = File.createTempFile("upload-", originalFilename);
+        System.out.println("📂 originalFilename(raw)=" + originalFilename);
+
+        if (originalFilename != null) {
+            originalFilename = originalFilename.substring(originalFilename.lastIndexOf("/") + 1);
+            originalFilename = originalFilename.substring(originalFilename.lastIndexOf("\\") + 1);
+        }
+        System.out.println("📂 originalFilename(clean)=" + originalFilename);
+
+        File tempFile = File.createTempFile("upload-", "-" + originalFilename);
         multipartFile.transferTo(tempFile);
+        System.out.println("✅ tempFile 생성 완료: " + tempFile.getAbsolutePath() + ", size=" + tempFile.length());
 
-        // ✅ 3. S3에 업로드
-        String key = "product/" + productId + "/" + originalFilename; // S3 내 경로
+        /* 3) S3 업로드 ------------------------------------------------------- */
+        String encodedName = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8);
+        String key = "product/%d/%s".formatted(productId, encodedName);
+        System.out.println("☁️ S3 key=" + key);
+
         s3Service.uploadFile(key, tempFile);
+        System.out.println("✅ S3 업로드 완료");
 
-        // ✅ 4. S3 URL 생성
+        /* 4) S3 URL 생성 ----------------------------------------------------- */
         String imageUrl = s3Service.getFileUrl(key);
+        System.out.println("🌐 imageUrl=" + imageUrl);
 
-        // ✅ 5. Image 엔티티 생성 & DB 저장
+        /* 5) Image 엔티티 저장 & 양방향 컬렉션 동기화 -------------------------- */
         Image image = new Image(product, imageUrl);
-        return imageRepository.save(image);
+        product.getImages().add(image);
+
+        System.out.println("💾 imageRepository.save 호출 직전");
+        Image saved = imageRepository.save(image);
+        System.out.println("✅ imageRepository.save 완료: imageId=" + saved.getId());
+
+        /* 6) 임시 파일 삭제 --------------------------------------------------- */
+        if (!tempFile.delete()) {
+            System.err.println("[WARN] tempFile 삭제 실패: " + tempFile.getAbsolutePath());
+        } else {
+            System.out.println("🗑 tempFile 삭제 완료");
+        }
+
+        System.out.println("📸 [uploadProductImage] END");
+        return saved;
     }
 }

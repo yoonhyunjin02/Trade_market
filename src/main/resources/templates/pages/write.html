@@ -31,7 +31,7 @@
 
                     <!-- 실제 파일 업로드 필드 -->
                     <input type="file"
-                           name="imageFile"
+                           th:field="*{imageFile}"
                            accept="image/*"
                            style="margin-top: 10px;">
 
@@ -59,12 +59,12 @@
                                     name="categoryName"
                                     th:classappend="${#fields.hasErrors('categoryName') ? 'error' : ''}">
 
-                                <!-- ✅ placeholder (기본 선택됨) -->
+                                <!-- placeholder (기본 선택됨) -->
                                 <option value=""
                                         th:selected="${#strings.isEmpty(productDto.categoryName)}"
                                         disabled>카테고리를 선택해주세요</option>
 
-                                <!-- ✅ DB에서 넘어온 카테고리 목록 -->
+                                <!-- DB에서 넘어온 카테고리 목록 -->
                                 <option th:each="category : ${categories}"
                                         th:value="${category.name}"
                                         th:text="${category.name}"
@@ -72,7 +72,7 @@
                                 </option>
                             </select>
 
-                            <!-- ✅ 에러 메시지 -->
+                            <!-- 에러 메시지 -->
                             <div class="error-message"
                                  th:if="${#fields.hasErrors('categoryName')}"
                                  th:errors="*{categoryName}"></div>
