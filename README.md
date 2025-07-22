@@ -32,7 +32,7 @@
     - Google Maps API로 위치 인증 기능
 - 🦉 팀명: 올빼미 : 밤늦게까지 코딩 중..
 - 📚[Notion](https://www.notion.so/2252233de69380d0bd52de0b615160ec?source=copy_link)
-- 📬[배포]()
+- 📬[배포](http://54.180.153.218:8080)
 - 📢[발표 자료]()
 ---
 
@@ -114,9 +114,87 @@
 <img width="1273" height="777" alt="Image" src="https://github.com/user-attachments/assets/b98eb097-c294-42ae-925d-fb44557854eb" />
 
 ## 4. 페이지 구성
+
 - 로그인(login)
   <br>
+  <img width="930" height="1117" alt="Image" src="https://github.com/user-attachments/assets/3738c9df-89e3-4995-9e22-80c4a6a591ce" />
+  - 로그인 시 헤더
+    <img width="923" height="160" alt="Image" src="https://github.com/user-attachments/assets/05c7808a-627f-4eea-b288-2d3c3c67a017" />
+
+
+- 회원가입(register)
+  <br>
+  <img width="930" height="1157" alt="Image" src="https://github.com/user-attachments/assets/f030e5ee-e302-427a-a59f-87d14838cd2a" />
+
+
+- 메인(main)
+  <br>
+  <img width="930" height="3733" alt="Image" src="https://github.com/user-attachments/assets/a6559397-aee4-46ad-a0ca-1ade84ee18d1" />
+
+
+- 상품(trade)
+  <br>
+  <img width="1920" height="1032" alt="Image" src="https://github.com/user-attachments/assets/a913fd18-22d4-4c3a-a9f8-54004ee63371" />
+
+
+- 상품 상세(trad-post)
+  <br>
+  <img width="1892" height="1544" alt="Image" src="https://github.com/user-attachments/assets/4fa3e93a-cdc1-43da-becb-db9e6ca3e8da" />
+
+
+- 상품 등록(wirte)
+  <br>
+  <img width="1892" height="1648" alt="Image" src="https://github.com/user-attachments/assets/638a57bc-7d4c-46bc-8ead-00a22853f40c" />
+
+
+- 검색(search)
+  <br>
+  <img width="1892" height="1149" alt="Image" src="https://github.com/user-attachments/assets/f1802daf-2d92-4434-9e7f-1b58a62f7ff3" />
+
+- 채팅
+  <br>
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/01d475ce-9f5c-462c-98a8-7d543ee01b93" />
+
+
+- 일반 채팅(chat)
+  <br>
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/e2602e0b-7e21-4be6-843f-10edcfe5a4af" />
+
+
+- 챗봇 채팅(chatBot)
+  <br>
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/60b8db9a-f84c-4a2f-a7b6-7854a2dac3cf" />
+
+
+- 위치(location)
+  <br>
+  <img width="1892" height="1049" alt="Image" src="https://github.com/user-attachments/assets/23fc0496-14dd-40f2-b304-c14fcfdfab6f" />
+
+
+- 프로필(mypage)
+  <br>
+  <img width="1892" height="1471" alt="Image" src="https://github.com/user-attachments/assets/9741bb86-e0f2-4b3d-8c03-354e99bbd9f7" />
+
+
+## 5. 페이지별 주요 상세 기능
+<details>
+<summary>header</summary>
+
+- 비로그인시<br>
+<img width="941" height="69" alt="Image" src="https://github.com/user-attachments/assets/2174d309-f74e-497a-b512-0ece92276ff1" />
+
+- 로그인시<br>
+<img width="937" height="237" alt="Image" src="https://github.com/user-attachments/assets/e06f52aa-4486-4720-990b-e1cf53b8610a" />
+</details>
+
+- 로그인
+
+- 로그인(login) 및 회원가입
+  <br>
   로그인 페이지 이미지 넣기
+  - 로컬 회원가입/로그인 구현
+  - 소셜 OAuth 구글 로그인 구현
+  - 
 
 
 - 회원가입(register)
@@ -168,89 +246,49 @@
   <br>
   페이지 이미지 넣기
 
-## 5. 페이지별 주요 기능
-- 로그인(login)
-  <br>
-  로그인 페이지 이미지 넣기
-
-
-- 회원가입(register)
-  <br>
-  회원가입 페이지 이미지 넣기
-
-
-- 메인(main)
-  <br>
-  페이지 이미지 넣기
-
-
-- 상품(trade)
-  <br>
-  페이지 이미지 넣기
-
-
-- 상품 상세(trad-post)
-  <br>
-  페이지 이미지 넣기
-
-
-- 상품 등록(wirte)
-  <br>
-  페이지 이미지 넣기
-
-
-- 검색(search)
-  <br>
-  페이지 이미지 넣기
-
-
-- 일반 채팅(chat)
-  <br>
-  페이지 이미지 넣기
-
-
-- 챗봇 채팅(chatBot)
-  <br>
-  페이지 이미지 넣기
-
-
-- 위치(location)
-  <br>
-  페이지 이미지 넣기
-
-
-- 프로필(mypage)
-  <br>
-  페이지 이미지 넣기
-
-## 6. 디렉토리 구조(아직 다 안함)
+## 6. 디렉토리 구조
 ```
 TradeMarket/
 ├── src/
 │   └── main/
-│       ├── java/com/example/trade_market/
+│       ├── java/com/owl/trade_market/
 │       │   ├── config/
+│       │   │   ├── auth/
+│       │   │   ├── exception/
+│       │   │   └── handler/
 │       │   ├── controller/
 │       │   ├── dto/
 │       │   ├── entity/
 │       │   ├── repository/
+│       │   ├── security/
 │       │   ├── service/
 │       │   │   └── impl/
 │       │   └── util/
 │       └── resources/
+│           ├── faq/
+│           ├── prompts/
 │           ├── static/
 │           │   ├── css/
 │           │   │   ├── common/
 │           │   │   └── pages/
-│           │   ├── js/
-│           │   │   ├── common/
-│           │   │   └── pages/
-│           │   └── images/
-│           │       ├── icons/
-│           │       └── logo/
+│           │   ├── images/
+│           │   │   ├── icons/
+│           │   │   └── logo/
+│           │   └── js/
+│           │       └── pages/
 │           └── templates/
 │               ├── fragments/
 │               └── pages/
+├── test/
+├── target/
+├── .env
+├── .gitattributes
+├── .gitignore
+├── HELP.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── README.md
 ```
 
 ## 7. 브랜치 전략 및 컨벤션
@@ -299,6 +337,7 @@ TradeMarket/
   - 중괄호: K&R 스타일
   - 문장종료: 반드시 세미콜론을 사용
 
+
 - 의존성<br>
   - lombok 사용 안함
 
@@ -332,6 +371,8 @@ TradeMarket/
 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
   <img src="https://img.shields.io/badge/spring%20boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+  <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white">
+  <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
 </div>
 
 ---
