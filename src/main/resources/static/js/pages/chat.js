@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".chat-item").forEach(item => {
             item.addEventListener("click", function () {
                 const roomId = this.dataset.roomId;
-                const partnerName = this.dataset.partnername;
+                const partnerName = this.dataset.partnerName;
 
                 console.log("✅ chat-item 클릭됨!", roomId, partnerName);
 
