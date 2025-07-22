@@ -3,12 +3,14 @@ package com.owl.trade_market.controller;
 import com.owl.trade_market.dto.ProductDto;
 import com.owl.trade_market.entity.Category;
 
+import com.owl.trade_market.entity.Image;
 import com.owl.trade_market.entity.Product;
 import com.owl.trade_market.entity.User;
 import com.owl.trade_market.service.CategoryService;
 import com.owl.trade_market.service.ImageUploadService;
 import com.owl.trade_market.service.ProductService;
 
+import com.owl.trade_market.service.S3Service;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class ProductController {
 
     @Autowired
     private ImageUploadService imageUploadService;
+
+    @Autowired
+    private S3Service s3Service;
 
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey;
@@ -446,50 +451,51 @@ public class ProductController {
 
         User user = getCurrentUser(session, oauth2User);
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";
         }
 
         try {
-            Optional<Product> productOpt = productService.findById(id);
-            if (productOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/products";
-            }
+            Product product = productService.findByIdWithImages(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-            Product product = productOpt.get();
-
-            // 소유자 체크
+            // ✅ 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "수정 권한이 없습니다.");
                 return "redirect:/products/" + id;
             }
 
-            // ProductDto로 변환 (카테고리명 포함)
-            String categoryName = product.getCategory() != null ? product.getCategory().getName() : "";
-            ProductDto productDto = new ProductDto(
-                    product.getTitle(),
-                    product.getDescription(),
-                    product.getPrice(),
-                    product.getCategory() != null ? product.getCategory().getName() : "",
-                    categoryName
-            );
+            // ✅ Product → ProductDto 변환
+            ProductDto productDto = new ProductDto();
+            productDto.setTitle(product.getTitle());              // ✅ getProductTitle → getTitle
+            productDto.setDescription(product.getDescription());  // ✅ getProductDescription → getDescription
+            productDto.setPrice(product.getPrice());              // ✅ getProductPrice → getPrice
+            productDto.setLocation(product.getLocation());        // ✅ getProductLocation → getLocation
+            if (product.getCategory() != null) {
+                productDto.setCategoryName(product.getCategory().getName());
+            }
 
+            // ✅ 기존 이미지가 있으면 첫 번째 URL 넘기기
+            String existingImageUrl = null;
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                existingImageUrl = product.getImages().get(0).getImage();
+            }
+
+            // ✅ 모델에 담기
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
             model.addAttribute("productId", id);
-
-            // 인기 카테고리 목록 추가
-            List<Category> popularCategories = categoryService.getPopularCategories(20);
-            model.addAttribute("popularCategories", popularCategories);
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("existingImageUrl", existingImageUrl); // ✅ 추가
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "상품 정보를 불러오는 중 오류가 발생했습니다.");
             return "redirect:/products/" + id;
         }
 
-        return "pages/write"; // 같은 폼 재사용
+        return "pages/write";
     }
 
     //상품 수정 처리
@@ -512,48 +518,46 @@ public class ProductController {
             model.addAttribute("user", user);
             model.addAttribute("productDto", productDto);
             model.addAttribute("productId", id);
-
-            // 인기 카테고리 목록 다시 설정
-            List<Category> popularCategories = categoryService.getPopularCategories(20);
-            model.addAttribute("popularCategories", popularCategories);
+            model.addAttribute("categories", categoryService.findAll());
             return "pages/write";
         }
 
         try {
-            Optional<Product> productOpt = productService.findById(id);
-            if (productOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/products";
-            }
+            Product product = productService.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-            Product product = productOpt.get();
-
-            // 소유자 체크
+            // ✅ 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "수정 권한이 없습니다.");
                 return "redirect:/products/" + id;
             }
 
-            // 기존 카테고리 저장 (카운트 조정용)
+            // ✅ 기존 카테고리 저장
             Category oldCategory = product.getCategory();
 
-            // 새 카테고리 처리
+            // ✅ 새 카테고리 생성/찾기
             Category newCategory = null;
             if (productDto.getCategoryName() != null && !productDto.getCategoryName().trim().isEmpty()) {
                 newCategory = categoryService.findOrCreateCategory(productDto.getCategoryName().trim());
             }
 
-            // 상품 정보 업데이트
-            Product updatedProduct = productService.updateProduct(
+            // ✅ 상품 정보 업데이트 (DB 저장 포함)
+            productService.updateProduct(
                     id,
                     productDto.getTitle().trim(),
                     productDto.getDescription().trim(),
                     productDto.getPrice(),
-                    user.getUserLocation(),
+                    productDto.getLocation(),
                     newCategory
             );
 
-            // 카테고리 변경 시 카운트 조정
+            // ✅ 이미지 새 업로드 시 교체
+            if (productDto.getImageFile() != null && !productDto.getImageFile().isEmpty()) {
+                System.out.println("🔄 새 이미지 업로드됨 → 기존 이미지 교체 진행");
+                imageUploadService.replaceProductImage(product.getId(), productDto.getImageFile());
+            }
+
+            // ✅ 카테고리 카운트 변경
             if (oldCategory != null && !oldCategory.equals(newCategory)) {
                 categoryService.decreaseCategoryCount(oldCategory);
             }
@@ -561,11 +565,12 @@ public class ProductController {
                 categoryService.increaseCategoryCount(newCategory);
             }
 
+            // ✅ 수정 후 상세 페이지로 이동
             redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 수정되었습니다.");
             return "redirect:/products/" + id;
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "상품 수정 중 오류가 발생했습니다.");
+            redirectAttributes.addFlashAttribute("error", "상품 수정 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/products/" + id + "/edit";
         }
     }
@@ -584,27 +589,36 @@ public class ProductController {
         }
 
         try {
-            Optional<Product> productOpt = productService.findById(id);
-            if (productOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/products";
-            }
+            // ✅ 상품 + 이미지까지 로딩
+            Product product = productService.findByIdWithImages(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-            Product product = productOpt.get();
-
-            // 소유자 체크
+            // ✅ 소유자 체크
             if (!product.getSeller().getId().equals(user.getId())) {
                 redirectAttributes.addFlashAttribute("error", "삭제 권한이 없습니다.");
                 return "redirect:/products/" + id;
             }
 
-            // 카테고리 정보 저장 (삭제 후 카운트 감소용)
+            // ✅ 기존 이미지가 있다면 S3에서 삭제
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                System.out.println("🗑 기존 이미지 개수: " + product.getImages().size());
+                for (Image img : product.getImages()) {
+                    // URL → Key 변환
+                    String key = s3Service.extractKeyFromUrl(img.getImage());
+                    System.out.println("🗑 S3 이미지 삭제 key=" + key);
+                    s3Service.deleteFile(key);
+                }
+            } else {
+                System.out.println("➡ 삭제할 이미지 없음");
+            }
+
+            // ✅ 카테고리 정보 저장 (삭제 후 카운트 감소용)
             Category category = product.getCategory();
 
-            // 상품 삭제
+            // ✅ 상품 삭제 (Image 엔티티는 cascade로 자동 삭제)
             productService.deleteProduct(id);
 
-            // 카테고리 상품 수 감소
+            // ✅ 카테고리 상품 수 감소
             if (category != null) {
                 categoryService.decreaseCategoryCount(category);
             }
@@ -613,7 +627,8 @@ public class ProductController {
             return "redirect:/products";
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "상품 삭제 중 오류가 발생했습니다.");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "상품 삭제 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/products/" + id;
         }
     }

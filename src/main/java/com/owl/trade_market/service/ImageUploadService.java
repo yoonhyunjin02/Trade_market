@@ -88,4 +88,39 @@ public class ImageUploadService {
         System.out.println("📸 [uploadProductImage] END");
         return saved;
     }
+
+    @Transactional
+    public void replaceProductImage(Long productId, MultipartFile newFile) throws IOException {
+        System.out.println("🔄 [replaceProductImage] 시작 productId=" + productId);
+
+        Product product = productRepository.findByIdWithImages(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. ID = " + productId));
+
+        // ✅ 기존 이미지 삭제 (S3 + DB)
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            System.out.println("🗑 기존 이미지 개수: " + product.getImages().size());
+            for (Image img : product.getImages()) {
+                // S3 URL → Key 변환
+                String key = s3Service.extractKeyFromUrl(img.getImage());
+                System.out.println("🗑 S3 이미지 삭제 key=" + key);
+
+                // S3에서 삭제
+                s3Service.deleteFile(key);
+                // DB에서 삭제
+                imageRepository.delete(img);
+            }
+            // JPA 연관관계 초기화
+            product.getImages().clear();
+        } else {
+            System.out.println("➡ 기존 이미지 없음");
+        }
+
+        // ✅ 새 이미지 업로드
+        System.out.println("⬆ 새 이미지 업로드 시작");
+        uploadProductImage(productId, newFile);
+
+        System.out.println("✅ [replaceProductImage] 완료");
+    }
+
+
 }
