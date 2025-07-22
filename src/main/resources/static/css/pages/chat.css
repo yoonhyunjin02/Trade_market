@@ -96,10 +96,6 @@
     border-left: 4px solid #ff6f00;
 }
 
-.chat-item.has-unread {
-    background: #fff8f0;
-}
-
 .chat-avatar {
     width: 48px;
     height: 48px;
