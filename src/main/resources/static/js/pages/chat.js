@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentAssistantId = '';
     let socket = null;
     let isConnected = false;
+    let showUnreadOnly = false; // 읽지 않은 필터 상태 저장
     window.isBotChat = false;
 
     // 초기화
@@ -55,6 +56,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     openBotChat();
                     return;
                 }
+
+                // 선택된 클래스 부여
+                updateChatRoomSelection(roomId);
+
+                // URL만 바꾸고 데이터 로드
+                selectChatRoom(roomId, partnerName);
+
+                // 페이지 이동전에 즉시 읽음 처리
+                markAsRead(roomId);
 
                 window.location.href = `/chats/${roomId}`;
             });
@@ -102,11 +112,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // 읽지 않은 토글 스위치
-        const toggleSwitch = document.getElementById("toggleUnreadSwitch");
+        const toggleSwitch = document.getElementById('toggleUnreadSwitch');
         if (toggleSwitch) {
-            toggleSwitch.addEventListener("change", function () {
-                toggleUnreadChats(this.checked);
-            });
+            toggleSwitch.addEventListener('change', e => toggleUnreadChats(e.target.checked));
         }
     }
 
@@ -497,8 +505,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return; // 이미 선택된 채팅방
         }
 
+        // 📌 즉시 읽음 처리 (채팅방 데이터 로드 전)
+        markAsRead(roomId);
+
         currentRoomId = roomId;
-        currentAssistantId = partnerName; // 임시로 partnerName을 assistantId로 사용
+        currentAssistantId = partnerName;
 
         // 📌 2. 브라우저 URL 변경 (페이지 새로고침 없이)
         const newUrl = `/chats/${roomId}`;
@@ -751,23 +762,54 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // 현재 채팅방의 메시지가 아니면 리스트만 업데이트
-        if (messageData.chatRoomId != currentRoomId) {
-            updateChatListPreview(messageData);
-            return;
+        // 전체 리스트 미리보기 먼저 갱신
+        updateChatListPreview(messageData);
+
+        // 현재 열려 있지 않은 방이라면 → unread 리스트에 추가
+        if (messageData.chatRoomId != currentRoomId &&
+            messageData.userId !== currentUserId) {          // 내 메시지는 제외
+            addToUnreadList(messageData.chatRoomId);
+            return;                                          // UI에 찍을 필요 없으므로 여기서 끝
         }
 
-        // 내가 보낸 메시지는 이미 UI에 추가되어 있으므로 중복 방지
-        if (messageData.userId === currentUserId) {
-            return;
-        }
+        // 현재 열려있는 채팅방이 있다면 return
+        if (messageData.userId === currentUserId) return;
 
-        // 상대방 메시지 추가
         appendMessageToUI(messageData);
         scrollToBottom();
-
-        // 읽음 처리
         markAsRead(currentRoomId);
+    }
+
+    // 읽지 않은 리스트에 자동 추가
+    function addToUnreadList(roomId) {
+        const origin = document.querySelector(`#all-chats-list  [data-room-id='${roomId}']`);
+        const alreadyOne = document.querySelector(`#unread-chats-list [data-room-id='${roomId}']`);
+        if (!origin || alreadyOne) return;          // 원본 없거나 이미 있음
+
+        // 플레이스 홀더 삭제
+        document.querySelectorAll('#unread-chats-list .no-unread')
+            .forEach(el => el.remove());
+
+        const clone = origin.cloneNode(true);
+        clone.classList.add('has-unread');
+
+        // 새로 붙는 아이템도 클릭되도록 동일 핸들러 부착
+        clone.addEventListener('click', function () {
+            const rid = this.dataset.roomId;
+            const pname = this.dataset.partnerName;
+
+            if (rid === 'BOT_CHAT') {
+                openBotChat();
+                return;
+            }
+
+            updateChatRoomSelection(rid);
+            selectChatRoom(rid, pname);
+            markAsRead(rid);
+            window.location.href = `/chats/${rid}`;
+        });
+
+        document.getElementById('unread-chats-list').prepend(clone);
     }
 
     // UI에 메시지 추가
@@ -804,33 +846,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 채팅 리스트 미리보기 업데이트
-    function updateChatListPreview(messageData) {
-        const chatItem = document.querySelector(`[data-room-id="${messageData.chatRoomId}"]`);
-        if (chatItem) {
-            const previewElement = chatItem.querySelector('.chat-preview');
-            const timeElement = chatItem.querySelector('.chat-time');
-            const unreadElement = chatItem.querySelector('.unread-count');
+    function updateChatListPreview(msg) {
+        // 내가 보낸 메시지는 읽지 않은 수를 늘리지 않는다
+        const delta = (msg.userId === currentUserId) ? 0 : 1;
 
-            if (previewElement) {
-                previewElement.textContent = messageData.content;
-            }
-            if (timeElement) {
-                timeElement.textContent = formatCurrentTime();
-            }
+        /* ------ 공통 카드 갱신 유틸 ------ */
+        const refresh = (card, d) => {
+            if (!card) return;
 
-            // 읽지 않은 메시지 카운트 업데이트
-            if (messageData.userId !== currentUserId) {
-                if (!unreadElement) {
-                    const newUnreadElement = document.createElement('div');
-                    newUnreadElement.className = 'unread-count';
-                    newUnreadElement.textContent = '1';
-                    chatItem.querySelector('.chat-meta').appendChild(newUnreadElement);
-                } else {
-                    const currentCount = parseInt(unreadElement.textContent) || 0;
-                    unreadElement.textContent = currentCount + 1;
+            // 최근 메시지 내용·시간 갱신
+            card.querySelector('.chat-preview').textContent = msg.content;
+            card.querySelector('.chat-time').textContent    = formatCurrentTime();
+
+            // 배지(읽지 않은 수) 처리
+            let badge = card.querySelector('.unread-count');
+            if (d > 0) {                         // ➕ 상대방 새 메시지
+                if (!badge) {
+                    badge = document.createElement('div');
+                    badge.className = 'unread-count';
+                    badge.textContent = '0';
+                    card.querySelector('.chat-meta').appendChild(badge);
                 }
-                chatItem.classList.add('has-unread');
+                badge.textContent = String(+badge.textContent + d);
+                card.classList.add('has-unread');
+            } else if (d < 0) {                  // ➖ 읽음 처리
+                badge?.remove();
+                card.classList.remove('has-unread');
             }
+        };
+
+        /* ① 전체 목록 카드 -------------------------------------------------- */
+        const allCard = document.querySelector(`#all-chats-list [data-room-id='${msg.chatRoomId}']`);
+        refresh(allCard, delta);
+
+        /* ② 읽지 않은 목록 카드 -------------------------------------------- */
+        let unreadCard = document.querySelector(`#unread-chats-list [data-room-id='${msg.chatRoomId}']`);
+
+        if (delta > 0) {                         // 상대방 메시지 ⇒ 읽지 않은 목록 관리
+            if (!unreadCard) {                   // 카드가 없으면 복제해서 새로 추가
+                addToUnreadList(msg.chatRoomId);
+                unreadCard = document.querySelector(`#unread-chats-list [data-room-id='${msg.chatRoomId}']`);
+                refresh(unreadCard, 0);          // 처음엔 이미 1이 찍혀 있으므로 추가 증가 X
+            } else {
+                refresh(unreadCard, delta);      // 기존 카드면 +1
+            }
+        } else {                                 // 내 메시지 ⇒ 읽음 간주
+            unreadCard?.remove();
         }
     }
 
@@ -838,40 +899,66 @@ document.addEventListener("DOMContentLoaded", function () {
     function markAsRead(roomId) {
         if (!roomId) return;
 
+        /* 1) 전체 채팅 목록 카드 정리 --------------------------- */
+        const allItem = document.querySelector(
+            `#all-chats-list  [data-room-id='${roomId}']`
+        );
+        if (allItem) {
+            allItem.classList.remove('has-unread');
+            allItem.querySelector('.unread-count')?.remove();
+            if (showUnreadOnly) allItem.style.display = 'none';
+        }
+
+        /* 2) 읽지 않은 목록에서 해당 카드 제거 ------------------ */
+        document
+            .querySelector(`#unread-chats-list [data-room-id='${roomId}']`)
+            ?.remove();
+
+        /* 3) 플레이스홀더 정리 ---------------------------------- */
+        const unreadList = document.getElementById('unread-chats-list');
+
+        /* 3-a. 기존에 남아 있는 플레이스홀더는 모두 제거 */
+        unreadList.querySelectorAll('.no-unread').forEach(el => el.remove());
+
+        /* 3-b. 읽지 않은 채팅이 하나도 없으면 새 플레이스홀더 한 개만 추가 */
+        if (!unreadList.querySelector('.chat-item')) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'no-unread';
+            placeholder.innerHTML =
+                '<p>읽지 않은 메시지가 없습니다.</p>' +
+                '<small>모든 메시지를 확인했습니다.</small>';
+            unreadList.appendChild(placeholder);
+        }
+
+        /* 4) 서버에 읽음 상태 통보 (실패해도 UI는 유지) ---------- */
         fetch(`/api/chats/${roomId}/read`, {
             method: 'POST',
             headers: createHeaders(),
             credentials: 'include'
-        })
-            .then(response => {
-                if (response.ok) {
-                    // 읽지 않은 메시지 카운트 제거
-                    const chatItem = document.querySelector(`[data-room-id="${roomId}"]`);
-                    if (chatItem) {
-                        const unreadElement = chatItem.querySelector('.unread-count');
-                        if (unreadElement) {
-                            unreadElement.remove();
-                        }
-                        chatItem.classList.remove('has-unread');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Failed to mark messages as read:', error);
-            });
+        }).catch(console.error);
+    }
+
+    // 현재 토글 상태에 맞춰 리스트를 즉시 재정렬/숨김
+    function syncUnreadFilter() {
+        toggleUnreadChats(showUnreadOnly);   // 아래 리팩터링 된 함수 호출
     }
 
     // 읽지 않은 채팅 토글
-    function toggleUnreadChats(showUnreadOnly) {
-        const allChats = document.getElementById("all-chats-list");
-        const unreadChats = document.getElementById("unread-chats-list");
+    function toggleUnreadChats(showOnly) {
+        showUnreadOnly = showOnly;            // 상태 저장
 
-        if (showUnreadOnly) {
-            if (allChats) allChats.style.display = "none";
-            if (unreadChats) unreadChats.style.display = "block";
+        // 두 개의 컨테이너를 간단히 on / off
+        const allList = document.getElementById('all-chats-list');
+        const unreadList = document.getElementById('unread-chats-list');
+
+        if (showOnly) {
+            // 읽지 않은 항목 보기
+            if (allList) allList.style.display = 'none';
+            if (unreadList) unreadList.style.display = 'block';
         } else {
-            if (allChats) allChats.style.display = "block";
-            if (unreadChats) unreadChats.style.display = "none";
+            // 전체 보기
+            if (allList) allList.style.display = 'block';
+            if (unreadList) unreadList.style.display = 'none';
         }
     }
 
