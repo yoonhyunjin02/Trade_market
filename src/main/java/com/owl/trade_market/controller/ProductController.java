@@ -415,19 +415,8 @@ public class ProductController {
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
 
         try {
-            Optional<Product> productOpt = productService.findByIdWithImages(id);
-
-            if (productOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
-                return "redirect:/products";
-            }
-
-            Product product = productOpt.get();
-
-            // 이미지가 null이면 안전하게 빈 리스트로 초기화
-            if (product.getImages() == null) {
-                product.setImages(Collections.emptyList());
-            }
+            Product product = productService.findByIdWithImages(id)
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
 
             // 조회수 증가
             productService.increaseViewCount(id);
@@ -435,8 +424,7 @@ public class ProductController {
             model.addAttribute("product", product);
 
             // 현재 사용자가 판매자인지 확인
-            boolean isOwner = user != null &&
-                    user.getId().equals(product.getSeller().getId());
+            boolean isOwner = (user != null && user.getId().equals(product.getSeller().getId()));
             model.addAttribute("isOwner", isOwner);
 
         } catch (Exception e) {
@@ -446,6 +434,7 @@ public class ProductController {
 
         return "pages/trade-post";
     }
+
 
     //상품 수정 폼 페이지
     @GetMapping("/{id}/edit")
