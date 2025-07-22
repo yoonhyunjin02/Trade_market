@@ -182,18 +182,48 @@
 
 - 비로그인시<br>
 <img width="941" height="69" alt="Image" src="https://github.com/user-attachments/assets/2174d309-f74e-497a-b512-0ece92276ff1" />
+  - 중고거래 페이지만 접속할 수 있으므로, 해당 페이지 이동 버튼만 남김
+  - 게시물의 제목과 동네로 검색할 수 있는 검색창
+  
 
 - 로그인시<br>
 <img width="937" height="237" alt="Image" src="https://github.com/user-attachments/assets/e06f52aa-4486-4720-990b-e1cf53b8610a" />
+  - 거래 글쓰기할 때 필요한 동네인증 페이지로 바로 갈 수 있는 토글 버튼 생김
+  - 닉네임과 함께 채팅 페이지, 프로필 페이지로 이동 가능
+  - 로그아웃 버튼을 누르면 메인 페이지로 이동
+  
 </details>
 
-- 로그인
+<details>
+<summary>login</summary>
 
-- 로그인(login) 및 회원가입
-  <br>
-  로그인 페이지 이미지 넣기
+
+<img width="533" height="573" alt="Image" src="https://github.com/user-attachments/assets/e34c66a0-c184-4b81-bbcf-00f0fd655959" />
+
+- 로컬 로그인
+- 소셜 OAuth 구글 로그인 구현
+- 로그인 성공 시 main 페이지로 이동
+- 회원가입 페이지로 바로 이동 가능
+- 로그인이 필요한 페이지에서 로그인 페이지로 이동했을 경우,
+  로그인 후 마지막에 있었던 페이지로 다시 이동
+
+- 로그인 실패시 예외처리<br>
+<img width="526" height="606" alt="Image" src="https://github.com/user-attachments/assets/8972d206-da8e-48db-9d9d-c8845a84e6f5" />
+  - 아이디나 비밀번호가 틀렸을 때 "사용자명 또는 비밀번호가 올바르지 않습니다." 문구 출력
+</details>
+
+<details>
+<summary>register</summary>
+
+- 회원가입 실패시 예외처리<br>
+<img width="612" height="699" alt="Image" src="https://github.com/user-attachments/assets/fe49e231-61f7-4d85-b95e-fac2d880ce8b" />
+- 로그인 페이지로 바로 이동 가능
+- 
+- 
+</details>
+
   - 로컬 회원가입/로그인 구현
-  - 소셜 OAuth 구글 로그인 구현
+  
   - 
 
 
