@@ -18,17 +18,19 @@
     <div class="product-container">
         <!-- 상품 이미지 -->
         <div class="product-image">
-            <!-- 이미지가 있으면 첫 번째 이미지, 없으면 기본 이미지 -->
-            <img th:if="${!#lists.isEmpty(product.images) and product.images[0]?.image != null}"
-                 th:src="@{${product.images[0].image}}"
-                 th:alt="${product.title}"
-                 alt="상품 이미지">
+            <!-- 이미지가 있으면 첫 번째 이미지 -->
+            <th:block th:if="${product.images != null and !#lists.isEmpty(product.images)}">
+                <img th:src="${product.images[0].image}"
+                     th:alt="${product.title}"
+                     alt="상품 이미지">
+            </th:block>
 
             <!-- 이미지가 없으면 기본 이미지 -->
-            <img th:if="${#lists.isEmpty(product.images) or product.images[0]?.image == null}"
-                 src="/images/default-product.jpg"
-                 th:alt="${product.title}"
-                 alt="기본 상품 이미지">
+            <th:block th:if="${product.images == null or #lists.isEmpty(product.images)}">
+                <img src="/images/default-product.jpg"
+                     th:alt="${product.title}"
+                     alt="기본 상품 이미지">
+            </th:block>
         </div>
 
         <!-- 상품 정보 -->

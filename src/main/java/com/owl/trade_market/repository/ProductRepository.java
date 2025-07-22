@@ -63,4 +63,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 판매자별 상품 조회 (프로필 페이지용)
     List<Product> findBySeller(User seller, Sort sort);
     List<Product> findBySeller(User seller);
+
+    @Query("""
+    SELECT p FROM Product p
+    LEFT JOIN FETCH p.images
+    WHERE p.id = :id
+""")
+    Optional<Product> findByIdWithImages(@Param("id") Long id);
 }
