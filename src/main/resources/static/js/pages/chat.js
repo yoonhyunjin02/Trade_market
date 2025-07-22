@@ -960,6 +960,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (allList) allList.style.display = 'block';
             if (unreadList) unreadList.style.display = 'none';
         }
+
+        document.getElementById('toggleUnreadSwitch')
+            ?.addEventListener('change', e => toggleUnreadChats(e.target.checked));
     }
 
     // 온라인 상태 업데이트
