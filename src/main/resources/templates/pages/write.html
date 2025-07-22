@@ -22,18 +22,21 @@
                 <div class="top-section">
                     <!-- 이미지 업로드 영역 -->
                     <div class="image-upload-section">
-                        <div class="image-upload-area">
-                            <div class="upload-placeholder">
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <div class="upload-placeholder" id="uploadPlaceholder">
                                 <div class="camera-icon">📷</div>
                             </div>
+                            <img id="previewImage" class="preview-image" style="display: none;">
                         </div>
+                        <div class="file-name-display" id="fileNameDisplay">파일 선택</div>
                     </div>
 
                     <!-- 실제 파일 업로드 필드 -->
                     <input type="file"
                            name="imageFile"
                            accept="image/*"
-                           style="margin-top: 10px;">
+                           class="hidden-file-input"
+                           id="hiddenFileInput">
 
                     <!-- 제목 + 가격 영역 -->
                     <div class="title-price-section">
@@ -77,8 +80,6 @@
                                  th:if="${#fields.hasErrors('categoryName')}"
                                  th:errors="*{categoryName}"></div>
                         </div>
-
-
 
                         <!-- 가격 -->
                         <div class="form-group">

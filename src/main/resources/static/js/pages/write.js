@@ -1,4 +1,40 @@
+const uploadArea = document.getElementById('imageUploadArea');
+const fileInput = document.getElementById('hiddenFileInput');
+const previewImage = document.getElementById('previewImage');
+const placeholder = document.getElementById('uploadPlaceholder');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
 
+function initImageUpload() {
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+
+        if (file) {
+            fileNameDisplay.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+                uploadArea.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.style.display = 'none';
+            placeholder.style.display = 'flex';
+            uploadArea.classList.remove('has-image');
+            fileNameDisplay.textContent = '파일 선택';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initImageUpload();
+});
 
 let autocomplete, map, geocoder
 // Google Maps API는 전역 객체 google.maps에 로딩됨. google.maps 바로 사용하면 됨(Legacy Script Loading 방식)
