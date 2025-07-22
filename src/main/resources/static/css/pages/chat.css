@@ -491,6 +491,12 @@
     max-height: 100px;
     overflow-y: auto;
     font-family: inherit;
+    height: 36px;
+    line-height: 36px;
+}
+.message-input:not(:placeholder-shown) {
+    font-size: 18px;
+    color: #333;
 }
 
 .message-input:focus {
@@ -498,6 +504,7 @@
 }
 
 .message-input::placeholder {
+    font-size: 16px;
     color: #999;
 }
 
