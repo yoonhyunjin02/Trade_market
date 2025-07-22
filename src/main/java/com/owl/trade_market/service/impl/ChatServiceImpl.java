@@ -157,7 +157,8 @@ public class ChatServiceImpl implements ChatService {
                     ChatRoom newRoom = new ChatRoom();
                     newRoom.setProduct(product);
                     newRoom.setBuyer(buyer);
-                    productService.increaseViewCount(productId); // 상품의 채팅 카운트 증가
+                    product.setChatCount(product.getChatCount() + 1);
+                    productRepository.save(product);
                     return chatRoomRepository.save(newRoom);
                 });
     }
