@@ -10,8 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 public class ImageUploadService {
@@ -48,19 +49,23 @@ public class ImageUploadService {
         String originalFilename = multipartFile.getOriginalFilename();
         System.out.println("📂 originalFilename(raw)=" + originalFilename);
 
-        if (originalFilename != null) {
-            originalFilename = originalFilename.substring(originalFilename.lastIndexOf("/") + 1);
-            originalFilename = originalFilename.substring(originalFilename.lastIndexOf("\\") + 1);
+        // ✅ 파일 확장자 추출
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        System.out.println("📂 originalFilename(clean)=" + originalFilename);
 
-        File tempFile = File.createTempFile("upload-", "-" + originalFilename);
+        // ✅ 안전한 파일명 생성: UUID + 타임스탬프 + 확장자
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String safeFilename = UUID.randomUUID().toString() + "_" + timestamp + fileExtension;
+        System.out.println("📂 safeFilename=" + safeFilename);
+
+        File tempFile = File.createTempFile("upload-", "-" + safeFilename);
         multipartFile.transferTo(tempFile);
         System.out.println("✅ tempFile 생성 완료: " + tempFile.getAbsolutePath() + ", size=" + tempFile.length());
 
         /* 3) S3 업로드 ------------------------------------------------------- */
-        String encodedName = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8);
-        String key = "product/%d/%s".formatted(productId, encodedName);
+        String key = "product/%d/%s".formatted(productId, safeFilename);
         System.out.println("☁️ S3 key=" + key);
 
         s3Service.uploadFile(key, tempFile);
@@ -121,6 +126,4 @@ public class ImageUploadService {
 
         System.out.println("✅ [replaceProductImage] 완료");
     }
-
-
 }

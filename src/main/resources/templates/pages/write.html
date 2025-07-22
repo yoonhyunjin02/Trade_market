@@ -26,21 +26,25 @@
                     <div class="image-upload-section">
                         <div class="image-upload-area" id="imageUploadArea">
 
-                            <!-- ✅ 기존 이미지가 있으면 미리보기 표시 -->
-                            <img th:if="${existingImageUrl != null}"
-                                 th:src="${existingImageUrl}"
-                                 alt="기존 상품 이미지"
-                                 id="previewImage"
+                            <!-- ✅ 미리보기 이미지 - 항상 DOM에 포함, 초기에는 숨김 -->
+                            <img id="previewImage"
                                  class="preview-image"
-                                 style="max-width: 200px; max-height: 200px;">
+                                 alt="미리보기 이미지"
+                                 th:src="${existingImageUrl != null ? existingImageUrl : ''}"
+                                 th:style="${existingImageUrl != null ? 'display: block;' : 'display: none;'}">
 
-                            <!-- ✅ 기존 이미지 없으면 placeholder -->
-                            <div th:if="${existingImageUrl == null}" class="upload-placeholder" id="uploadPlaceholder">
+                            <!-- ✅ placeholder - 초기 표시 또는 이미지 없을 때 표시 -->
+                            <div class="upload-placeholder"
+                                 id="uploadPlaceholder"
+                                 th:style="${existingImageUrl != null ? 'display: none;' : 'display: flex;'}">
                                 <div class="camera-icon">📷</div>
                             </div>
 
                         </div>
-                        <div class="file-name-display" id="fileNameDisplay">파일 선택</div>
+                        <div class="file-name-display" id="fileNameDisplay">
+                            <span th:if="${existingImageUrl != null}">기존 이미지</span>
+                            <span th:if="${existingImageUrl == null}">파일 선택</span>
+                        </div>
                     </div>
 
                     <!-- 실제 파일 업로드 필드 -->
