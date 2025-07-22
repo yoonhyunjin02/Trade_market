@@ -12,7 +12,9 @@
     <section class="write-section">
         <div class="write-container">
             <!-- 상품 등록/수정 폼 -->
-            <form th:action="@{${productId != null} ? '/products/' + productId + '/edit' : '/products/new'}"
+            <form th:action="${productId} != null ?
+                @{/products/{id}/edit(id=${productId})} :
+                @{/products/new}"
                   method="post"
                   enctype="multipart/form-data"
                   th:object="${productDto}"
@@ -23,10 +25,20 @@
                     <!-- 이미지 업로드 영역 -->
                     <div class="image-upload-section">
                         <div class="image-upload-area" id="imageUploadArea">
-                            <div class="upload-placeholder" id="uploadPlaceholder">
+
+                            <!-- ✅ 기존 이미지가 있으면 미리보기 표시 -->
+                            <img th:if="${existingImageUrl != null}"
+                                 th:src="${existingImageUrl}"
+                                 alt="기존 상품 이미지"
+                                 id="previewImage"
+                                 class="preview-image"
+                                 style="max-width: 200px; max-height: 200px;">
+
+                            <!-- ✅ 기존 이미지 없으면 placeholder -->
+                            <div th:if="${existingImageUrl == null}" class="upload-placeholder" id="uploadPlaceholder">
                                 <div class="camera-icon">📷</div>
                             </div>
-                            <img id="previewImage" class="preview-image" style="display: none;">
+
                         </div>
                         <div class="file-name-display" id="fileNameDisplay">파일 선택</div>
                     </div>

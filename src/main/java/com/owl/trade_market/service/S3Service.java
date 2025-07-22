@@ -82,4 +82,10 @@ public class S3Service {
         return String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s",
                 bucketName, key);
     }
+
+    public String extractKeyFromUrl(String imageUrl) {
+        String baseUrl = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/", bucketName);
+        return imageUrl.replace(baseUrl, "");
+    }
+
 }
