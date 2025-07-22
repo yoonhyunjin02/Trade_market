@@ -414,7 +414,7 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        return "pages/trade_post";
+        return "pages/trade-post";
     }
 
     //상품 수정 폼 페이지
