@@ -188,124 +188,93 @@
 
 
 ## 5. 페이지별 주요 상세 기능
+
+### [노션 페이지에서 전체 페이지 모아보기](https://www.notion.so/2372233de69380e496c6c9c118c7d6f4?source=copy_link)
+
 <details>
 <summary>header</summary>
+  <img width="721" height="723" alt="Image" src="https://github.com/user-attachments/assets/95af19b1-f0d1-4cb7-9791-3d5343d1cc24" />
+</details>
 
-- 비로그인시<br>
-<img width="941" height="69" alt="Image" src="https://github.com/user-attachments/assets/2174d309-f74e-497a-b512-0ece92276ff1" />
-  - 중고거래 페이지만 접속할 수 있으므로, 해당 페이지 이동 버튼만 남김
-  - 게시물의 제목과 동네로 검색할 수 있는 검색창
-  
-
-- 로그인시<br>
-<img width="937" height="237" alt="Image" src="https://github.com/user-attachments/assets/e06f52aa-4486-4720-990b-e1cf53b8610a" />
-  - 거래 글쓰기할 때 필요한 동네인증 페이지로 바로 갈 수 있는 토글 버튼 생김
-  - 닉네임과 함께 채팅 페이지, 프로필 페이지로 이동 가능
-  - 로그아웃 버튼을 누르면 메인 페이지로 이동
-  
+<details>
+<summary>footer</summary>
+  <img width="716" height="288" alt="Image" src="https://github.com/user-attachments/assets/727d7acc-3416-41e3-b3c9-234fd823a0aa" />
 </details>
 
 <details>
 <summary>login</summary>
-
-
-<img width="533" height="573" alt="Image" src="https://github.com/user-attachments/assets/e34c66a0-c184-4b81-bbcf-00f0fd655959" />
-
-- 로컬 로그인
-- 소셜 OAuth 구글 로그인 구현
-- 로그인 성공 시 main 페이지로 이동
-- 회원가입 페이지로 바로 이동 가능
-- 로그인이 필요한 페이지에서 로그인 페이지로 이동했을 경우,
-  로그인 후 마지막에 있었던 페이지로 다시 이동
-
-- 로그인 실패시 예외처리<br>
-<img width="526" height="606" alt="Image" src="https://github.com/user-attachments/assets/8972d206-da8e-48db-9d9d-c8845a84e6f5" />
-  - 아이디나 비밀번호가 틀렸을 때 "사용자명 또는 비밀번호가 올바르지 않습니다." 문구 출력
+  <img width="721" height="592" alt="Image" src="https://github.com/user-attachments/assets/ee0d3ee5-665d-4f43-a347-bc839e9301c0" />
 </details>
 
 <details>
 <summary>register</summary>
-
-- 회원가입 실패시 예외처리<br>
-<img width="612" height="699" alt="Image" src="https://github.com/user-attachments/assets/fe49e231-61f7-4d85-b95e-fac2d880ce8b" />
-- 로그인 페이지로 바로 이동 가능
-- 
-- 
+  <img width="721" height="574" alt="Image" src="https://github.com/user-attachments/assets/88e7e51e-c12d-4a4d-a29d-6fd75672f8d5" />
 </details>
 
 <details>
 <summary>main</summary>
-  <br>
-  <img width="908" height="573" alt="Image" src="https://github.com/user-attachments/assets/76b78e00-dca2-4cda-ae9d-a9ee1caa9771" />
-- 2번째 세션 인기매물 보기 버튼 -> 상품 페이지로 이동
-<img width="622" height="635" alt="Image" src="https://github.com/user-attachments/assets/edb32c99-6eb7-41bb-8d49-87482949bf3e" />
-- 4번째 세션 중고거래 인기 매물 -> 조회순 정렬
-  인기매물 더보기 버튼 -> 상품 페이지로 이동
+  <img width="725" height="635" alt="Image" src="https://github.com/user-attachments/assets/042ec653-fbc7-4a8e-a3f9-cd18d5ece9bf" />
+  <img width="720" height="1016" alt="Image" src="https://github.com/user-attachments/assets/28cbc259-97d5-469d-abd3-5bb4894ab064" />
 </details>
 
 <details>
 <summary>trade</summary>
-- 무한 스크롤 기능 구현
-- 필터바
-  - 거래 가능한 물건만 모아보기
-  - 게시물 정보(조회수, 채팅수, 최신순) 정렬
-  - 가격순(낮은 순, 높은 순, 지정한 범위 순)
-  - 카테고리 모아보기
-  - 위치 모아보기
-
+  <img width="720" height="574" alt="Image" src="https://github.com/user-attachments/assets/bd9ebc9d-9520-4c2d-a6d9-8b0d87b78ada" />
+  <img width="735" height="499" alt="Image" src="https://github.com/user-attachments/assets/73a9a3bd-3aaa-4dc1-aacd-745a74c277c3" />
+  <img width="778" height="2906" alt="Image" src="https://github.com/user-attachments/assets/f144ae0c-eb51-460f-b881-98d3580bcc1c" />
 </details>
 
 <details>
 <summary>trade-post</summary>
-- s3에 사진 저장
-- 채팅하기 버튼(자신이 올린 게시물일 경우 버튼 안 보임)
-희망 거래 장소 지도로 띄워줌
-- 자신이 작성한 게시물일 경우 수정하기 / 삭제하기 버튼 보임
+<img width="716" height="880" alt="Image" src="https://github.com/user-attachments/assets/86fe871b-bc18-4510-8cc8-9c624df089e6" />
+<img width="708" height="724" alt="Image" src="https://github.com/user-attachments/assets/19ae923f-9c7e-4ae5-af51-417c95854e66" />
+<img width="719" height="318" alt="Image" src="https://github.com/user-attachments/assets/2477a928-0104-438d-b294-9f9667b04cdc" />
 </details>
 
 <details>
 <summary>trade-write</summary>
-- 동네 인증을 필수적으로 해야 작성 가능
-- 사진 미리보기
-- 필수 값 안 적었을 때 예외처리
-- 거래 희망 장소 지도 API 기능으로 지도에 찍으면 위치가 자동으로 적힘
+<img width="721" height="774" alt="Image" src="https://github.com/user-attachments/assets/5d055e2b-fbb5-43f9-b8b8-e8f54e24cda0" />
+<img width="724" height="870" alt="Image" src="https://github.com/user-attachments/assets/21722290-710e-40f3-9548-2d3b2a5fbb43" />
+<img width="683" height="616" alt="Image" src="https://github.com/user-attachments/assets/9bad7a96-d386-4262-b2d8-ea4f414db503" />
+<img width="757" height="1063" alt="Image" src="https://github.com/user-attachments/assets/09a4554f-b7c0-47b7-a1a9-6142eb7a9b6f" />
+<img width="738" height="1163" alt="Image" src="https://github.com/user-attachments/assets/0d1b344e-8ac7-4c7f-b93d-7dfac2eb2201" />
+<img width="706" height="638" alt="Image" src="https://github.com/user-attachments/assets/bc991004-53f9-4316-8af6-30813cdc3a4e" />
+<img width="715" height="742" alt="Image" src="https://github.com/user-attachments/assets/15ac5fe7-9d1a-4226-a2ea-d1b6bd7cac56" />
 </details>
 
 <details>
 <summary>search</summary>
-- 페이지네이션 구현
-- 밑에 숫자 input으로 원하는 페이지로 바로 이동 가능
+<img width="712" height="915" alt="Image" src="https://github.com/user-attachments/assets/0630ad7f-6b9b-46d8-92b4-a2550a06a13e" />
+<img width="660" height="797" alt="Image" src="https://github.com/user-attachments/assets/79d292ce-e979-4858-b962-2e5b7ebf05bd" />
+<img width="667" height="343" alt="Image" src="https://github.com/user-attachments/assets/c396706b-a41d-46d6-af99-2e8360e90d98" />
 </details>
 
 <details>
 <summary>chat</summary>
-- 채팅이 없을 경우 상품 둘러보기 버튼으로 상품 페이지로 이동
-- 웹소켓으로 실시간 통신 가능
-- 구매자일 경우 헤더에 "채팅방 나가기"버튼과 토글 활성화
-- 판매자일 경우 "거래하기" 버튼 보임 -> 거래완료됨 -> 거래 완료 되면 온도 5도 상승
+<img width="718" height="577" alt="Image" src="https://github.com/user-attachments/assets/525862de-ec97-420a-bcf8-0821ded200c8" />
+<img width="722" height="583" alt="Image" src="https://github.com/user-attachments/assets/ec9392fe-54fe-47b8-bacf-46520e3128ba" />
+<img width="717" height="612" alt="Image" src="https://github.com/user-attachments/assets/3edf7348-9deb-4b87-b855-0c0d7e3e0584" />
+<img width="691" height="868" alt="Image" src="https://github.com/user-attachments/assets/0793e493-b722-49b9-924b-ed45c2590714" />
 </details>
 
 <details>
 <summary>chatBot</summary>
-상단에 FAQ 4개 버튼으로 구성
-대화를 끝내고 싶을 때 대화 종료 및 초기화 버튼이 있음
-당근 마켓과 관련된 내용을 챗봇에게 질문하면 프롬프트 체이닝 기술로
-사용자의 질문이 먼저 카테고리를 분류하는 챗에게 가서 특화된 챗으로 보내줌, 특화된 챗을 찾지 못했을 경우에는 모든 내용이 전부 적혀있는 챗으로 보내줌
+<img width="721" height="753" alt="Image" src="https://github.com/user-attachments/assets/10152083-d0d9-4564-88ba-508480568ab4" />
+<img width="694" height="638" alt="Image" src="https://github.com/user-attachments/assets/c4093a0b-2760-488d-8f27-55798199731c" />
+<img width="695" height="702" alt="Image" src="https://github.com/user-attachments/assets/60c12255-a374-4b0d-961d-047991dd32af" />
 </details>
 
 <details>
 <summary>location</summary>
-- 지도 API 사용
-- 검색창에 위치 적으면 자동 완성
-- 내가 선택한 위치와 실제 위치가 동일한지 판단 후 동일하면 동네 등록 완료
+<img width="722" height="713" alt="Image" src="https://github.com/user-attachments/assets/a8259d18-4f2b-4022-ae4d-845afe7328ba" />
+<img width="724" height="904" alt="Image" src="https://github.com/user-attachments/assets/074a67fb-01c8-4033-b72a-2d774e3c0266" />
+<img width="705" height="968" alt="Image" src="https://github.com/user-attachments/assets/dbe33aa1-a3d7-4f4b-8bfa-7ecd98d01c52" />
 </details>
 
 <details>
 <summary>mypage</summary>
-- 닉네임, 아이디, 위치, 온도를 볼 수 있음
-- 소개와 나이, 성별을 등록할 수 있음
-- 내가 판매중인 상품을 모아볼 수 있음
-- 판매중인 상품이 없을 경우 등록하기 버튼으로 게시물 글쓰기로 바로 이동 가능
+<img width="722" height="774" alt="Image" src="https://github.com/user-attachments/assets/a0c4dc74-7028-4c4e-9f4f-b1ffd07e92a4" />
+<img width="720" height="673" alt="Image" src="https://github.com/user-attachments/assets/5f395a78-d118-4c13-a051-e357cb870e6c" />
 </details>
 
 ## 6. 디렉토리 구조
@@ -401,7 +370,7 @@ TradeMarket/
 
 
 - 의존성<br>
-  - lombok 사용 안함
+  - lombok, STOMP 사용 안함
 
 ### 🔸 깃허브 컨벤션
 - 커밋 컨벤션<br>
@@ -484,23 +453,38 @@ TradeMarket/
 
 ## 9. 최종 회고
 - 김성연
-  - 프로젝트를 진행하면서 JavaSpring의 기본적인 구조와 흐름을 경험할 수 있었습니다. AWS, 웹소켓처럼 생소한 기술을 접할 때, 당황하지 않고 침착하게 익혀나가는 자세의 중요성을 배운 것 같습니다.
-    
-    팀 프로젝트에서 팀장을 맡게 되었는데, 처음이라 부족한 점이 많았던 것 같습니다. 다음에 다시 팀장을 맡게 된다면 더 넓은 시야로 프로젝트를 바라보고, 체계적인 계획을 만들어보고 싶습니다.
-    
-    인상깊은 기능은 역시 AWS인 것 같습니다. 로컬에서 실행할 때와는 많은 부분에서 신경써야 할것도 많았기 때문에, 프로젝트에 대한 스스로의 이해도를 다시 한번 시험하는 것 같았습니다.
   
+  프로젝트를 진행하면서 JavaSpring의 기본적인 구조와 흐름을 경험할 수 있었습니다. AWS, 웹소켓처럼 생소한 기술을 접할 때, 당황하지 않고 침착하게 익혀나가는 자세의 중요성을 배운 것 같습니다.
+    
+  팀 프로젝트에서 팀장을 맡게 되었는데, 처음이라 부족한 점이 많았던 것 같습니다. 다음에 다시 팀장을 맡게 된다면 더 넓은 시야로 프로젝트를 바라보고, 체계적인 계획을 만들어보고 싶습니다.
+    
+  인상깊은 기능은 역시 AWS인 것 같습니다. 로컬에서 실행할 때와는 많은 부분에서 신경써야 할것도 많았기 때문에, 프로젝트에 대한 스스로의 이해도를 다시 한번 시험하는 것 같았습니다.
+  
+
 - 김진욱
-  - 이번 프로젝트를 통해 다양한 기술 스택을 직접 써보며 새로운 걸 많이 배울 수 있었습니다.
-    스프링, AWS, 웹소켓은 처음 써보는 기술이었지만, 실제로 적용해보면서 기본적인 개념과 사용법은 익힐 수 있었습니다.
-    아직은 미숙하지만, 어느 정도 감을 잡는 데 도움이 되었던 것 같습니다.
-    
-    팀원들과의 소통도 잘 이루어져 협업 과정이 즐거웠고, 전체적인 프로젝트 진행도 매끄러웠습니다. 
-    
-    이번 경험을 바탕으로 다음 프로젝트는 더 잘해보고 싶습니다. 많이 배우고 성장할 수 있었던 값진 시간이었습니다.
   
+  이번 프로젝트를 통해 다양한 기술 스택을 직접 써보며 새로운 걸 많이 배울 수 있었습니다.
+  스프링, AWS, 웹소켓은 처음 써보는 기술이었지만, 실제로 적용해보면서 기본적인 개념과 사용법은 익힐 수 있었습니다.
+  아직은 미숙하지만, 어느 정도 감을 잡는 데 도움이 되었던 것 같습니다.
+    
+  팀원들과의 소통도 잘 이루어져 협업 과정이 즐거웠고, 전체적인 프로젝트 진행도 매끄러웠습니다. 
+    
+  이번 경험을 바탕으로 다음 프로젝트는 더 잘해보고 싶습니다. 많이 배우고 성장할 수 있었던 값진 시간이었습니다.
+  
+
 - 이수완
-  - 아직 안적음
   
+  이번 프로젝트에서 가장 큰 도전은 WebSocket을 활용한 실시간 채팅 시스템 구현이었습니다.
+  단순한 메시지 전송으로 생각했던 기능이 실제로는 세션 관리, 연결 끊김 처리, 브로드캐스팅 등 복잡한 요소들을 포함하고 있어 예상보다 훨신 많은 학습이 필요했습니다.
+
+  바닐라 JavaScript로 실시간 채팅 UI를 구현하며 프론트엔드 상태 관리의 복잡성을 경험했고, 특히 채팅 목록과 메시지 동기화 과정에서 UI 일관성 유지의 중요성을 깨달았습니다.
+
+  또한 GlobalExceptionHandler를 통한 일관된 예외 처리 구현으로 사용자 경험 개선의 중요성을 배웠습니다.
+
+  문제가 발생했을 때 문제 내용을 팀원들과 지속적으로 공유하고 모두가 같이 문제를 해결하려고 해서 좋은 경험이었습니다.
+
+  전체적으로 기술적 성장뿐만 아니라 협업을 통한 문제 해결 능력까지 향상시킬 수 있었던 의미 있는 경험이었습니다.
+  
+
 - 윤현진
   - 아직 안적음
