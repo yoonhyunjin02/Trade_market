@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* 메인 컨텐츠 스타일 */
 main {
     min-height: calc(100vh - 64px);

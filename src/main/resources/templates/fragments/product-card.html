@@ -9,7 +9,7 @@
 
             <!-- 첫 이미지가 존재할 때만 -->
             <img th:if="${product.images != null and product.images.size() > 0 and product.images[0].image != null}"
-                 th:src="@{${product.images[0].image}}"
+                 th:src="${product.images[0].image}"
                  alt="상품 이미지" />
 
             <div class="item-info">
