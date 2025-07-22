@@ -116,57 +116,63 @@
 ## 4. 페이지 구성
 - 로그인(login)
   <br>
-  로그인 페이지 이미지 넣기
+  <img width="930" height="1117" alt="Image" src="https://github.com/user-attachments/assets/3738c9df-89e3-4995-9e22-80c4a6a591ce" />
+  - 로그인 시 헤더
+    <img width="923" height="160" alt="Image" src="https://github.com/user-attachments/assets/05c7808a-627f-4eea-b288-2d3c3c67a017" />
 
 
 - 회원가입(register)
   <br>
-  회원가입 페이지 이미지 넣기
+  <img width="930" height="1157" alt="Image" src="https://github.com/user-attachments/assets/f030e5ee-e302-427a-a59f-87d14838cd2a" />
 
 
 - 메인(main)
   <br>
-  페이지 이미지 넣기
+  <img width="930" height="3733" alt="Image" src="https://github.com/user-attachments/assets/a6559397-aee4-46ad-a0ca-1ade84ee18d1" />
 
 
 - 상품(trade)
   <br>
-  페이지 이미지 넣기
+  <img width="1920" height="1032" alt="Image" src="https://github.com/user-attachments/assets/a913fd18-22d4-4c3a-a9f8-54004ee63371" />
 
 
 - 상품 상세(trad-post)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1544" alt="Image" src="https://github.com/user-attachments/assets/4fa3e93a-cdc1-43da-becb-db9e6ca3e8da" />
 
 
 - 상품 등록(wirte)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1648" alt="Image" src="https://github.com/user-attachments/assets/638a57bc-7d4c-46bc-8ead-00a22853f40c" />
 
 
 - 검색(search)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1149" alt="Image" src="https://github.com/user-attachments/assets/f1802daf-2d92-4434-9e7f-1b58a62f7ff3" />
+
+- 채팅
+  <br>
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/01d475ce-9f5c-462c-98a8-7d543ee01b93" />
 
 
 - 일반 채팅(chat)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/e2602e0b-7e21-4be6-843f-10edcfe5a4af" />
 
 
 - 챗봇 채팅(chatBot)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1069" alt="Image" src="https://github.com/user-attachments/assets/60b8db9a-f84c-4a2f-a7b6-7854a2dac3cf" />
 
 
 - 위치(location)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1049" alt="Image" src="https://github.com/user-attachments/assets/23fc0496-14dd-40f2-b304-c14fcfdfab6f" />
 
 
 - 프로필(mypage)
   <br>
-  페이지 이미지 넣기
+  <img width="1892" height="1471" alt="Image" src="https://github.com/user-attachments/assets/9741bb86-e0f2-4b3d-8c03-354e99bbd9f7" />
 
 ## 5. 페이지별 주요 기능
 - 로그인(login)
