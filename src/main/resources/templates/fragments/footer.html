@@ -1,9 +1,9 @@
-<footer th:fragment="common-footer">
+<footer th:fragment="common-footer" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="footer-container">
         <nav aria-label="푸터 메뉴">
             <ul>
                 <li><a th:href="@{/products}">중고거래</a></li>
-                <li><a th:href="@{/chat}">채팅하기</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/chat}">채팅하기</a></li>
             </ul>
         </nav>
 
@@ -14,3 +14,4 @@
         </div>
     </div>
 </footer>
+</body>
