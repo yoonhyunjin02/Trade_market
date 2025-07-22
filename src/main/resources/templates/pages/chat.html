@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head :: common-head('채팅')"></th:block>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link rel="stylesheet" th:href="@{/css/pages/chat.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/chat-toggle.css}">
+	<th:block th:replace="fragments/head :: common-head('채팅')"></th:block>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	<link rel="stylesheet" th:href="@{/css/pages/chat.css}">
+	<link rel="stylesheet" th:href="@{/css/pages/chat-toggle.css}">
 </head>
 <body>
 <!-- 공통 헤더 -->
@@ -21,10 +21,11 @@
 					<h3>내 채팅</h3>
 				</div>
 				<div class="toggle-switch-wrapper">
-					<label class="toggle-switch">
-						<span>읽지 않은 항목</span>
+					<label class="switch">
 						<input type="checkbox" id="toggleUnreadSwitch">
+						<span class="slider"></span>
 					</label>
+					<span class="switch-label">읽지 않은 항목</span>
 				</div>
 			</div>
 
@@ -105,7 +106,9 @@
 
 						<div class="chat-meta">
 							<div class="chat-time" th:text="${chatRoom.lastMessageTime}"></div>
-							<div class="unread-count" th:text="${chatRoom.unreadCount}"></div>
+							<div th:if="${chatRoom.unreadCount > 0}" class="unread-count"
+							     th:text="${chatRoom.unreadCount}">
+							</div>
 						</div>
 					</div>
 
