@@ -3,6 +3,9 @@
 <head>
     <th:block th:replace="fragments/head :: common-head('상품 상세')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/trade-post.css}">
+    <meta name="gmaps-api-key" th:content="${googleMapsApiKey}">
+    <meta name="product-location" th:content="${product.location}">
+    <script th:src="@{/js/pages/trade-post.js}" defer></script>
 </head>
 <body>
 
@@ -101,12 +104,6 @@
 
 <!-- Footer Fragment -->
 <footer th:replace="fragments/footer :: footer"></footer>
-
-<script th:inline="javascript">
-    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
-    const productLocation = /*[[${product.location}]]*/ "";
-</script>
-<script src="/js/pages/trade-post.js"></script>
 
 </body>
 </html>

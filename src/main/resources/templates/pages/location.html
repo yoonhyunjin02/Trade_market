@@ -4,6 +4,8 @@
 <head>
     <th:block th:replace="fragments/head :: common-head('동네인증')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/location.css}">
+    <meta name="gmaps-api-key" th:content="${googleMapsApiKey}">
+    <script th:src="@{/js/pages/location.js}" defer></script>
 </head>
 
 <body>
@@ -53,12 +55,6 @@
 
 <!-- 공통 푸터 -->
 <div th:replace="fragments/footer :: common-footer"></div>
-
-
-<script th:inline="javascript">
-    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
-</script>
-<script th:src="@{/js/pages/location.js}"></script>
 
 </body>
 </html>

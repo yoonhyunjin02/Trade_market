@@ -1,6 +1,14 @@
 let map
 
-async function initMap() {
+(function loadGoogleMap() {
+    const apiKey = document.querySelector('meta[name="gmaps-api-key"]').content;
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+})();
+window.initMap = async function () {
     const { Map } = await google.maps.importLibrary("maps");
     const { Geocoder } = await google.maps.importLibrary("geocoding");
 
@@ -10,7 +18,7 @@ async function initMap() {
         center: { lat: 0, lng: 0},
         zoom: 13,
     });
-
+    const productLocation = getProductLocation();
     if (productLocation) {
         geocoder.geocode({address:productLocation}, (result,status) => {
             if(status === "OK" && result[0]) {
@@ -29,10 +37,10 @@ async function initMap() {
     }
 
 }
+function getProductLocation() {
+  const meta = document.querySelector('meta[name="product-location"]');
+  return meta && meta.content ? meta.content.trim() : null;
+}
 
 
-const script = document.createElement("script");
-script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&v=weekly&callback=initMap`;
-script.async = true;
-script.defer = true;
-document.head.appendChild(script);
+
