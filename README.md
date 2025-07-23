@@ -353,7 +353,7 @@ TradeMarket/
   </tr>
 </table>
 
-### 🔸 프로젝트 컨벤션 (이미지 넣기)
+### 🔸 프로젝트 컨벤션
 - 패키지 컨벤션<br>
   <img width="731" height="141" alt="Image" src="https://github.com/user-attachments/assets/98795f09-43ef-4396-b3dd-9cbf532c1183" />
 
