@@ -1,7 +1,16 @@
 let autocomplete, map, geocoder, userSetAddress, currentAddress; // 지역변수
 
-async function initMap() {
+(function loadGoogleMaps() { // 함수 표현식으로 만들고 ()를 붙여서 즉시 실행
+  const apiKey = document.querySelector('meta[name="gmaps-api-key"]').content;
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&libraries=places,geocoding&callback=initMap`;
+  script.async = true;
+  script.defer = true;
+  // <head>에 추가하여, 스크립트가 로드되면 src가 실행됨
+  document.head.appendChild(script);
+})();
 
+window.initMap = async function () {
     const { Map } = await google.maps.importLibrary("maps"); // 지도 라이브러리
     const { Autocomplete } = await google.maps.importLibrary("places"); // 자동완성 라이브러리
     const { Geocoder } = await google.maps.importLibrary("geocoding");
@@ -143,10 +152,3 @@ function showMessage(text, ok) {
     msgEl.style.display = "block";
     msgEl.style.color = ok ? "green" : "red";
 }
-
-// 동적 bootstrap 로더 삽입
-const script = document.createElement("script");
-script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&v=weekly&callback=initMap`;
-script.async = true;
-script.defer = true;
-document.head.appendChild(script);
