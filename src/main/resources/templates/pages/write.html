@@ -3,6 +3,8 @@
 <head>
     <th:block th:replace="fragments/head :: common-head(${productId} != null ? '상품 수정' : '상품 등록')"></th:block>
     <link rel="stylesheet" th:href="@{/css/pages/write.css}">
+    <meta name="gmaps-api-key" th:content="${googleMapsApiKey}">
+    <script th:src="@{/js/pages/write.js}" defer></script>
 </head>
 <body>
 <!--* 공통 헤더 *-->
@@ -148,11 +150,6 @@
 
 <!--* 공통 푸터 *-->
 <div th:replace="~{fragments/footer :: common-footer}"></div>
-
-<script th:inline="javascript">
-    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
-</script>
-<script src="/js/pages/write.js"></script>
 
 </body>
 </html>
