@@ -43,6 +43,7 @@
 
 - 📬[배포](http://52.79.32.135:8080/)
 
+- 📺[시연 영상](https://youtu.be/zZ3qpZk6BsA)
 
 - 📢[발표 자료](https://docs.google.com/presentation/d/1pkdxTkQesBKk9VrHnFIHIGLQvONDTxth/edit?usp=drive_link&ouid=107771278135945552523&rtpof=true&sd=true)
 ---
