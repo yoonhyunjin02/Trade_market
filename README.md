@@ -41,7 +41,7 @@
 - 📚[Notion](https://www.notion.so/2252233de69380d0bd52de0b615160ec?source=copy_link)
 
 
-- 📬[배포](http://52.79.32.135:8080/)
+- 📬[배포](http://52.79.32.135:8080/) 중단함
 
 - 📺[시연 영상](https://youtu.be/zZ3qpZk6BsA)
 
