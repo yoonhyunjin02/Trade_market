@@ -45,7 +45,7 @@
 
 - 📺[시연 영상](https://youtu.be/zZ3qpZk6BsA)
 
-- 📢[발표 자료](https://docs.google.com/presentation/d/1pkdxTkQesBKk9VrHnFIHIGLQvONDTxth/edit?usp=drive_link&ouid=107771278135945552523&rtpof=true&sd=true)
+- 📢[발표 자료](https://drive.google.com/file/d/1O9oqlUx3AtV9feVxPndTyJextelHl0up/view?usp=sharing)
 ---
 
 ## 2. 팀원 소개 및 역할
